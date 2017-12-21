@@ -68,7 +68,7 @@ DecayPlot = function(geneID,
       paste(strwrap(x, ...), collapse = "\n")
     }
   if (any(what %in% "models"))
-    mod = mod.results[geneID, "model"]
+    mod = mod.results[geneID, "mod"]
   else
     mod = NA
   if (any(what %in% "models"))

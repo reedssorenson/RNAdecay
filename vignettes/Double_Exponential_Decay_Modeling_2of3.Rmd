@@ -50,7 +50,7 @@ decaydata = decaydata[order(decaydata$t.decay), ]
 decaydata = decaydata[order(decaydata$rep), ]
 decaydata = decaydata[order(as.numeric(decaydata$treatment)), ] 
 decaydata = decaydata[order(decaydata$geneID), ]
-ids = unique(decaydata$geneID) # 118 in example set
+ids = as.character(unique(decaydata$geneID)) # 118 in example set
 decaydata[1:10, ]
 ```
 

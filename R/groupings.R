@@ -18,7 +18,7 @@
 #'                      t.decay=0:3,rep=rep("rep1"),value=c(1,0.5,0.25,0.12)))
 #'
 groupings = function(decaydata) {
-  nTreat = length(levels(decaydata$treatment))
+  nTreat = length(as.character(unique(decaydata$treatment)))
   nEquivGrp = if (nTreat == 2)
     2
   else if (nTreat == 3)
@@ -26,7 +26,7 @@ groupings = function(decaydata) {
   else if (nTreat == 4)
     15
   groupings = matrix(nrow = nEquivGrp + 1, ncol = nTreat)
-  colnames(groupings) = levels(decaydata$treatment)
+  colnames(groupings) = as.character(unique(decaydata$treatment))
   rownames(groupings) = paste0("gp", 1:(nEquivGrp + 1))
   if (nTreat == 2) {
     groupings[1, ] = c(1, 2)
@@ -39,7 +39,7 @@ groupings = function(decaydata) {
     groupings[3, ] = c(1, 2, 1)
     groupings[4, ] = c(1, 1, 2)
     groupings[5, ] = c(1, 1, 1)
-    groupings[16, ] = c(NA, NA, NA)
+    groupings[6, ] = c(NA, NA, NA)
   }
   if (nTreat == 4) {
     groupings[1, ] = c(1, 2, 3, 4)

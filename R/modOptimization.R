@@ -59,7 +59,7 @@
 
 modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group, mod,file.only=TRUE, path="modeling_results") {
   if (!file.exists(path)) {dir.create(path)}
-  try(if(sum(grepl(paste0("_",nTreat,"sse"),names(getLoadedDLLs())))!=2) stop("high performance objective functions need to be loaded as compilied dynamically linked libraries (.dll or .so) before modeling. You can check which are loaded using loaded using getLoadedDLLs()",call. = F))
+  try(if(sum(grepl(paste0("_",nTreat,"sse"),names(getLoadedDLLs())))!=2) stop("high performance objective functions need to be loaded as compilied dynamically linked libraries (.dll or .so) before modeling. You can check which are loaded using 'getLoadedDLLs()'",call. = F))
 
   genoSet = 1:(length(unique(data$rep)) * length(unique(data$t.decay)))
   nTreat=length(unique(data$treatment))
@@ -67,8 +67,10 @@ modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group,
 
   try(if(nTreat>4) stop("modOptimization can only handle up to 4 treatments."))
 
+  gene = as.character(gene)
+
   # pull out the data the specific gene data
-  gdata=data[data$geneID==gene,]
+  gdata=data[data$geneID==as.character(gene),]
   t <- gdata$t.decay
   m <- gdata$value
   const = constraint_fun_list_maker(mods = mod,groups = group)
@@ -136,7 +138,7 @@ modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group,
                          fits = data.frame(t(fits))
                          fits[,-c(1:2)] = sapply(fits[,-c(1,2)],function(x)as.numeric(as.character(x)))
                          fits = as.data.frame(fits)
-                         colnames(fits) =  c("geneID","mod",c(paste0("alpha_",levels(gdata$treatment)),paste0("beta_",levels(gdata$treatment))),"SSE","conv.code")
+                         colnames(fits) =  c("geneID","mod",c(paste0("alpha_",as.character(unique(gdata$treatment))),paste0("beta_",as.character(unique(gdata$treatment)))),"SSE","conv.code")
 
                          fits=fits[fits$conv.code == 4,]
                          fits$sigma2 = sig.fun(x=fits$SSE,n=nSet)
@@ -155,7 +157,7 @@ modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group,
                          AICc = fun_aicc(max.LL,nPar,nSet)
                          AICc_est = fun_aicc(LL.fun(x = obj.dExp$fn(par.est),y = sig.fun(x = obj.dExp$fn(par.est), n = nSet), n = nSet), p = nPar, n = nSet)
                          fit = c(as.character(fits$geneID[1]),as.character(fits$mod[1]),par.est,sigma2,max.LL,nPar,nrow(fits),nrow(tmp),range.LL,n.LL,C.alpha,C.beta,C.tot,AICc,AICc_est)
-                         names(fit) = c("geneID","mod",c(paste0("alpha_",levels(gdata$treatment)),paste0("beta_",levels(gdata$treatment))),
+                         names(fit) = c("geneID","mod",c(paste0("alpha_",as.character(unique(gdata$treatment))),paste0("beta_",as.character(unique(gdata$treatment)))),
                                         "sigma2","logLik","nPar","nStarts","J","range.LL","nUnique.LL","C.alpha","C.beta","C.tot","AICc","AICc_est")
                          return(fit)
                        },eps=eps,nSet=nSet,grp=group,md=mod,alpha.bounds=alpha.bounds,beta.bounds=beta.bounds)
@@ -182,7 +184,7 @@ modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group,
                         fits = data.frame(t(fits))
                         fits[,-c(1:2)] = sapply(fits[,-c(1,2)],function(x)as.numeric(as.character(x)))
                         fits = as.data.frame(fits)
-                        colnames(fits) =  c("geneID","mod",c(paste0("alpha_",levels(gdata$treatment)),paste0("beta_",levels(gdata$treatment))),"SSE","conv.code")
+                        colnames(fits) =  c("geneID","mod",c(paste0("alpha_",as.character(unique(gdata$treatment))),paste0("beta_",as.character(unique(gdata$treatment)))),"SSE","conv.code")
 
                         fits=fits[fits$conv.code == 4,]
                         fits$sigma2 = sig.fun(x=fits$SSE,n=nSet)
@@ -199,9 +201,9 @@ modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group,
                         sigma2=mean(tmp$sigma2)
                         nPar=fun_nPar(x,mod=md,group=grp)
                         AICc = fun_aicc(max.LL,nPar,nSet)
-                        AICc_est = fun_aicc(LL.fun(x = obj.Exp$fn(par.est[1:4]),y = sig.fun(x = obj.Exp$fn(par.est[1:4]), n = nSet), n = nSet), p = nPar, n = nSet)
+                        AICc_est = fun_aicc(LL.fun(x = obj.Exp$fn(par.est[1:nTreat]),y = sig.fun(x = obj.Exp$fn(par.est[1:nTreat]), n = nSet), n = nSet), p = nPar, n = nSet)
                         fit = c(as.character(fits$geneID[1]),as.character(fits$mod[1]),par.est,sigma2,max.LL,nPar,nrow(fits),nrow(tmp),range.LL,n.LL,C.alpha,C.beta,C.tot,AICc,AICc_est)
-                        names(fit) = c("geneID","mod",c(paste0("alpha_",levels(gdata$treatment)),paste0("beta_",levels(gdata$treatment))),
+                        names(fit) = c("geneID","mod",c(paste0("alpha_",as.character(unique(gdata$treatment))),paste0("beta_",as.character(unique(gdata$treatment)))),
                                        "sigma2","logLik","nPar","nStarts","J","range.LL","nUnique.LL","C.alpha","C.beta","C.tot","AICc","AICc_est")
                         return(fit)
                       },eps=eps,nSet=nSet,grp=group,md=mod,alpha.bounds=alpha.bounds)

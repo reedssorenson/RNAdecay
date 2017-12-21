@@ -13,6 +13,7 @@
 #' @examples
 #' a.high(7.5)
 #' a.low(480)
+#' b.high() # returns a default value of 0.075
 #' b.low(480)
 
 a.high <- function(t_min){

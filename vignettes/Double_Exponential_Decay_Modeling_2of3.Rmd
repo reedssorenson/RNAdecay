@@ -245,7 +245,7 @@ results$rA_vcssov.WT = results$alpha_vcs.sov  / results$alpha_WT
 
 write.table(results, paste0(wrdir,"/alphas+betas+mods+grps+patterns+relABs.txt"), sep = "\t")
 
-results = read.delim(paste0(wrdir,"/alphas+betas+mods+grps+patterns+relABs.txt"), header = TRUE, colClasses =  c(NA, rep("numeric", 10), rep("integer", 2), rep("character", 2), rep("integer", 2), rep("numeric", 3)))
+results = read.delim(paste0(wrdir,"/alphas+betas+mods+grps+patterns+relABs.txt"), header = TRUE, colClasses =  c(NA, rep("numeric", 2+2*nTreat), rep("integer", 2), rep("character", 2), rep("integer", 2), rep("numeric", 3)))
 # results$alpha_subgroup = factor(results$alpha_subgroup, levels = unique(results$alpha_subgroup))
 results$alphaPattern = factor(results$alphaPattern, levels = unique(results$alphaPattern))
 results$betaPattern = factor(results$betaPattern, levels = unique(results$betaPattern))

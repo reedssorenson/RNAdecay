@@ -98,7 +98,7 @@ wrdir =<span class="st"> &quot;~/DecayAnalysis/Example analysis results 2&quot;<
 <p>Sort the <code>decaydata</code> data.frame as follows (<em>REQUIRED step for proper indexing below</em>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(decaydata<span class="op">$</span>t.decay), ]
 decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(decaydata<span class="op">$</span>rep), ]
-decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(<span class="kw">as.numeric</span>(decaydata<span class="op">$</span>treatment)), ] 
+decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(<span class="kw">as.numeric</span>(decaydata<span class="op">$</span>treatment)), ]
 decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(decaydata<span class="op">$</span>geneID), ]
 ids =<span class="st"> </span><span class="kw">unique</span>(decaydata<span class="op">$</span>geneID) <span class="co"># 118 in example set</span>
 decaydata[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ]</code></pre></div>
@@ -119,7 +119,7 @@ decaydata[<span class="dv">1</span><span class="op">:</span><span class="dv">10<
 <p>Create objects and set varables used in the modeling based on <code>decaydata</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># (no changes needed here - just execute the code)</span>
 nEquivGrp =<span class="st"> </span><span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) {<span class="dv">2</span>} <span class="cf">else</span>
-  <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) {<span class="dv">5</span>} <span class="cf">else</span> 
+  <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) {<span class="dv">5</span>} <span class="cf">else</span>
     <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">4</span>) {<span class="dv">15</span>}
 genoSet =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>(<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>rep)) <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>t.decay)))
 nTreat =<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment))
@@ -138,7 +138,7 @@ a.bounds;b.bounds</code></pre></div>
 <pre><code>## [1] 0.001 0.075</code></pre>
 <p>Create a colormap of model groups.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">groupMap</span>(<span class="dt">decaydata =</span> decaydata, <span class="dt">path =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/Model grouping colormap.pdf&quot;</span>), <span class="dt">nEquivGrp =</span> nEquivGrp, <span class="dt">groups =</span> groups, <span class="dt">mods =</span> mods)</code></pre></div>
-<pre><code>## png 
+<pre><code>## png
 ##   2</code></pre>
 <p>This file (Model grouping colormap.pdf) should now be in your working directory. This color map is a reference for understanding model constraints. For example, model 1 has all different colored boxes representing unconstrained <span class="math inline">\(\alpha\)</span>s and unconstrained betas, whereas, the second to last model has only two box colors - one for all <span class="math inline">\(\alpha\)</span>s indicating that they all have constrained equivalence and the other indicating that all <span class="math inline">\(\beta\)</span>s also have constrained equivalence. 1st order model <span class="math inline">\(\beta\)</span>s = 0 which is indicated with gray color.</p>
 </div>
@@ -226,22 +226,22 @@ test.ids</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a =<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
 models =<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> test.ids, <span class="co"># alternatively use `ids` here to complete the entire sample data set, but be prepared to wait 10 h. These gene IDs will get passed one at time to the &quot;gene&quot; argument of modOptimization() and return a list of the results data.frame.</span>
                 <span class="dt">FUN =</span> modOptimization,
-                <span class="dt">data =</span> decaydata, 
-                <span class="dt">group =</span> groups, 
+                <span class="dt">data =</span> decaydata,
+                <span class="dt">group =</span> groups,
                 <span class="dt">mod =</span> mods,
-                <span class="dt">alpha.bounds =</span> a.bounds, 
+                <span class="dt">alpha.bounds =</span> a.bounds,
                 <span class="dt">beta.bounds =</span> b.bounds,
-                <span class="dt">models =</span> <span class="kw">rownames</span>(mods), 
+                <span class="dt">models =</span> <span class="kw">rownames</span>(mods),
                 <span class="dt">path =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/modeling_results&quot;</span>),
                 <span class="dt">file.only =</span> <span class="ot">FALSE</span>) </code></pre></div>
 <pre><code>## 7 done     87 done     115 done</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(models) =<span class="st"> </span>test.ids
 b =<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
 (b<span class="op">-</span>a)<span class="op">/</span><span class="dv">60</span><span class="op">/</span><span class="kw">length</span>(test.ids) <span class="co"># gives you average min per gene </span></code></pre></div>
-<pre><code>##  elapsed 
+<pre><code>##  elapsed
 ## 4.728611</code></pre>
 <p>For each gene, read in the results data frame written by <code>modOptimization()</code> as an element of a single list object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models =<span class="st"> </span><span class="kw">lapply</span>( <span class="kw">paste0</span>( wrdir, <span class="st">&quot;/modeling_results/&quot;</span>, test.ids, <span class="st">&quot;_results.txt&quot;</span>), read.delim, <span class="dt">header =</span> <span class="ot">TRUE</span> )   
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models =<span class="st"> </span><span class="kw">lapply</span>( <span class="kw">paste0</span>( wrdir, <span class="st">&quot;/modeling_results/&quot;</span>, test.ids, <span class="st">&quot;_results.txt&quot;</span>), read.delim, <span class="dt">header =</span> <span class="ot">TRUE</span> )
 <span class="kw">names</span>(models) =<span class="st"> </span>test.ids</code></pre></div>
 </div>
 <div id="model-selection" class="section level2">
@@ -276,7 +276,7 @@ p =<span class="st"> </span><span class="kw">ggplot</span>(results)
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> range.LL), <span class="dt">bins =</span> <span class="dv">60</span>))
 <span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> nUnique.LL), <span class="dt">bins =</span> <span class="dv">60</span>))
 <span class="kw">dev.off</span>()</code></pre></div>
-<pre><code>## png 
+<pre><code>## png
 ##   2</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/lowest AICc model counts.pdf&quot;</span>), <span class="dt">height =</span> <span class="dv">8</span>, <span class="dt">width =</span> <span class="dv">32</span>)
 p =<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(
@@ -287,10 +287,10 @@ p =<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Model distribution of absolute lowest AICs&quot;</span>)
 <span class="kw">print</span>(p<span class="op">+</span><span class="kw">myTheme</span>(<span class="dv">25</span>))
 <span class="kw">dev.off</span>()</code></pre></div>
-<pre><code>## png 
+<pre><code>## png
 ##   2</code></pre>
 <p>Because two models are considered to perform differently if their AICc value difference is &gt;2, any models that have AICc values within two of the model with the lowest AICc are considered to have performed similarly. The number of models performing similarly to the best model are plotted as a histogram here. The number of different alpha groupings represented in these models is also plotted.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">minMods =<span class="st"> </span><span class="kw">sapply</span>(models, <span class="cf">function</span>(x) <span class="kw">which</span> (x[, <span class="st">&quot;AICc&quot;</span>] <span class="op">&lt;</span><span class="st"> </span>(<span class="dv">2</span><span class="op">+</span><span class="kw">min</span>(x[, <span class="st">&quot;AICc&quot;</span>])))) 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">minMods =<span class="st"> </span><span class="kw">sapply</span>(models, <span class="cf">function</span>(x) <span class="kw">which</span> (x[, <span class="st">&quot;AICc&quot;</span>] <span class="op">&lt;</span><span class="st"> </span>(<span class="dv">2</span><span class="op">+</span><span class="kw">min</span>(x[, <span class="st">&quot;AICc&quot;</span>]))))
 minAMods =<span class="st"> </span><span class="kw">lapply</span>(minMods, <span class="cf">function</span>(x) <span class="kw">unique</span>(mods[x, <span class="st">&quot;a&quot;</span>]))
 
 <span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/number of models that performed similar to the one selected.pdf&quot;</span>))
@@ -299,7 +299,7 @@ minAMods =<span class="st"> </span><span class="kw">lapply</span>(minMods, <span
 <span class="kw">barplot</span>(<span class="dt">height =</span> <span class="kw">table</span>(<span class="kw">sapply</span>(minAMods, length)), <span class="dt">xlab =</span> <span class="st">&quot;No. alpha groups in the lowest AICc group (not more than 2 different from lowest)&quot;</span>,
         <span class="dt">ylab =</span> <span class="st">&quot;No. genes&quot;</span>)
 <span class="kw">dev.off</span>()</code></pre></div>
-<pre><code>## png 
+<pre><code>## png
 ##   2</code></pre>
 <p>Build the modeling results data.frame. Group genes with similar <span class="math inline">\(\alpha\)</span> groupings and then group genes with similar <span class="math inline">\(\beta\)</span> groupings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results =<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/best model results.txt&quot;</span>))
@@ -334,7 +334,7 @@ results<span class="op">$</span>rA_vcssov.WT =<span class="st"> </span>results<s
 
 <span class="kw">write.table</span>(results, <span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
 
-results =<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">colClasses =</span>  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">10</span>), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">3</span>)))
+results =<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">colClasses =</span>  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, (<span class="dv">2</span><span class="op">*</span>nTreat<span class="op">+</span><span class="dv">2</span>)), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">3</span>)))
 <span class="co"># results$alpha_subgroup = factor(results$alpha_subgroup, levels = unique(results$alpha_subgroup))</span>
 results<span class="op">$</span>alphaPattern =<span class="st"> </span><span class="kw">factor</span>(results<span class="op">$</span>alphaPattern, <span class="dt">levels =</span> <span class="kw">unique</span>(results<span class="op">$</span>alphaPattern))
 results<span class="op">$</span>betaPattern =<span class="st"> </span><span class="kw">factor</span>(results<span class="op">$</span>betaPattern, <span class="dt">levels =</span> <span class="kw">unique</span>(results<span class="op">$</span>betaPattern))

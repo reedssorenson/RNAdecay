@@ -30,18 +30,18 @@ groupMap = function(decaydata,
                     nEquivGrp = nEquivGrp,
                     groups = groups,
                     mods = mods) {
-  nTreat = length(levels(decaydata$treatment))
+  nTreat = length(unique(decaydata$treatment))
   groupingsA = t(matrix(rep(groups[1, ], nEquivGrp + 1), nrow = nTreat))
   for (i in 2:nEquivGrp) {
     groupingsA = rbind(groupingsA, t(matrix(rep(
       groups[i, ], nEquivGrp + 1
     ), nrow = nTreat)))
   }
-  colnames(groupingsA) = paste0("alpha_", levels(decaydata$treatment))
+  colnames(groupingsA) = paste0("alpha_", unique(decaydata$treatment))
   groupingsB = rbind(groups[1:nEquivGrp, ] + nTreat, rep(NA, nTreat))
   rownames(groupingsB)[nEquivGrp + 1] = paste0("grp", nEquivGrp + 1)
   groupingsB = t(matrix(rep(t(groupingsB), nEquivGrp), nrow = nTreat))
-  colnames(groupingsB) = paste0("beta_", levels(decaydata$treatment))
+  colnames(groupingsB) = paste0("beta_", unique(decaydata$treatment))
   groupings = cbind(groupingsA, groupingsB)
   rm(groupingsA, groupingsB)
   rownames(groupings) = rownames(mods)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/myTheme.R
 \name{myTheme}
 \alias{myTheme}
-\title{a custom Theme for ggplot2}
+\title{a custom ggplot2 theme}
 \usage{
 myTheme(bigFont = 30, smFont = 0.85, x.ang = 0, leg.pos = c(0.85, 0.85))
 }
@@ -19,7 +19,7 @@ myTheme(bigFont = 30, smFont = 0.85, x.ang = 0, leg.pos = c(0.85, 0.85))
 returns a ggplot2 theme of class "theme" "gg"
 }
 \description{
-a custom Theme generating function for ggplot2 plots; can be further manipulated using standard ggplot2 syntax
+A custom ggplot2 theme generating function for ggplot2 plots; can be further manipulated using standard ggplot2 syntax.
 }
 \examples{
 myTheme(10)

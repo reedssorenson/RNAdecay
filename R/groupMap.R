@@ -1,7 +1,7 @@
 
 #' model color map
 #'
-#' groupMap makes a color map of alpha and beta equivalence groups by model
+#' GroupMap makes a color map of alpha and beta equivalence groups by model. Similar colors in a row indicate constrained parameter equivalence between treatements. Gray indicates values of 0.
 #'
 #' @param decaydata 5 column data.frame with colnames "geneID","treatment","t.decay","rep","value"
 #' @param path write path and file name, must end in ".pdf"

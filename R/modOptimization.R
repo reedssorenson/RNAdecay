@@ -9,7 +9,7 @@
 #' (4) Parameter values are optimized for maximum likelihood using each of these 50 starting parameter sets using pre-compiled C++ functions loaded from dynamically linked libraries stored in the package on all models specified in the models argument.
 #' (5) evaluates parameter estimates of all 50 optimizations based on the reported maximum liklihood upon convergence. Only parameter estimates that converged on the same and highest maximum likelihood are returned.
 #' (6) returns the optimized parameter estimates, with model selection statistics.
-#'#'
+#'
 #' @param gene geneID from \code{data} to be modeled
 #' @param data decay data data.frame with columns including
 #' @param models vector spceifying which models to run optimization on (e.g., c("mod1", "mod239"))
@@ -34,7 +34,10 @@
 #' optimizations that converged on the highest maximum likelihood of all starting parameter value sets.)
 #'
 #' @examples
-#' dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_4sse")))
+#' TMB::compile(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse.cpp"))
+#' TMB::compile(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse.cpp"))
+#' dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))
+#' dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))
 #' modOptimization(gene = "Gene_BooFu",
 #'                 data = data.frame(geneID=rep("Gene_BooFu",30),
 #'                             treatment=c(rep("WT",15),rep("mut",15)),
@@ -59,10 +62,10 @@
 
 modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group, mod,file.only=TRUE, path="modeling_results") {
   if (!file.exists(path)) {dir.create(path)}
-  try(if(sum(grepl(paste0("_",nTreat,"sse"),names(getLoadedDLLs())))!=2) stop("high performance objective functions need to be loaded as compilied dynamically linked libraries (.dll or .so) before modeling. You can check which are loaded using 'getLoadedDLLs()'",call. = F))
 
   genoSet = 1:(length(unique(data$rep)) * length(unique(data$t.decay)))
   nTreat=length(unique(data$treatment))
+  try(if(sum(grepl(paste0("_",nTreat,"sse"),names(getLoadedDLLs())))!=2) stop("high performance objective functions need to be loaded as compilied dynamically linked libraries (.dll or .so) before modeling. You can check which are loaded using 'getLoadedDLLs()'", call. = FALSE))
   nSet=length(genoSet)*nTreat
 
   try(if(nTreat>4) stop("modOptimization can only handle up to 4 treatments."))

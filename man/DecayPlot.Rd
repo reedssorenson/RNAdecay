@@ -39,7 +39,7 @@ DecayPlot(geneID, xlim = c(0, 500), ylim = c(0, 1.25), xticks = NA,
 returns a ggplot to be used with print; could also be modified using the syntax of ggplot2 e.g.'+geom_XXXX(...)'
 }
 \description{
-plots RNA decay data and/or decay models using the ggplot2 package
+Plots RNA decay data and/or decay models using the ggplot2 package.
 }
 \examples{
 p=DecayPlot("Gene_BooFu",

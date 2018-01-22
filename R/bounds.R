@@ -1,7 +1,10 @@
 
 #' calculates bounds for modeled parameters
 #'
-#' calculates maximum and minimum bounds for parameters alpha and beta based on experimental time points. These are based on the time points in each experiment. For example if an RNA degrades to 0.1% of the initial (T0) amount by 10 min but the 1st time point measured is at 2 h, it will not be possible to estimate that decay rate.
+#' Calculates maximum and minimum bounds for parameter alpha based on experimental time points (t_0, t_1, t_2, t_3, ..., t_max). If RNA level is too low at t_1, then the decay has happened before our observations began - there is an upper bound to the decay rate we can detect (a.high).
+#' If RNA level is too high at t_max, then relatively little decay has happened and we can not distinguish the decay rate and the decay of the decay rate  - there is a lower bound to the base decay rate of the decaying decay model (a.low).
+#'
+#' Similarly, limits on beta are required to prevent precude ranges in which the decay rate and decaing decay are indistinguishable. See vignette 2: _RNA Decay Modeling_ for more information.
 #'
 #' @param t_min time of first experiemtal time point after inhibition of transcription (not T0)
 #' @param t_max time of last experimental time point
@@ -13,7 +16,6 @@
 #' @examples
 #' a.high(7.5)
 #' a.low(480)
-#' b.high() # returns a default value of 0.075
 #' b.low(480)
 
 a.high <- function(t_min){
@@ -27,12 +29,6 @@ a.low <- function(t_max){
   10^(floor(log(-(1/t_max)*log(0.95),base=10)))
 }
 
-#' @rdname a.high
-#' @export
-
-b.high <- function() {
-  0.075
-}
 
 #' @rdname a.high
 #' @export

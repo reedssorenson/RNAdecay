@@ -1,7 +1,7 @@
 
-#' a custom Theme for ggplot2
+#' a custom ggplot2 theme
 #'
-#' a custom Theme generating function for ggplot2 plots; can be further manipulated using standard ggplot2 syntax
+#' A custom ggplot2 theme generating function for ggplot2 plots; can be further manipulated using standard ggplot2 syntax.
 #'
 #' @param bigFont larger font size of axis labels in points (used for plot title, axis titles, facet titles)
 #' @param smFont fractional mulitiplier of \code{bigFont} (used for axis text)

@@ -4,20 +4,20 @@
 \alias{LL.fun}
 \title{log likelihood}
 \usage{
-LL.fun(x, y, n = 128)
+LL.fun(x, y, n)
 }
 \arguments{
 \item{x}{is the minimum SSE from the slsqp() fitting}
 
 \item{y}{is sigma2 cooresponding to the minimum SSE}
 
-\item{n}{is the total number of observations 8 time points, 4 replicates, 4 treatments (or genotypes)}
+\item{n}{is the total number of observations of a single gene (e.g., 8 time points X 4 replicates X 4 treatments/genotypes = 128)}
 }
 \value{
 returns Log Likelihood
 }
 \description{
-calculates the log likelihood value from the sum of the squared errors, sigma2, and the total number of data points
+Calculates the log likelihood value from the sum of the squared errors, sigma2, and the total number of data points.
 }
 \examples{
 LL.fun(1,1/128,128)

@@ -17,7 +17,7 @@ fun_nPar(model, mod, group)
 returns the integer value of number of parameters in \code{model}
 }
 \description{
-function calculates number of parameters in each model
+Calculates number of parameters for a specified model given the model parameter constraints.
 }
 \examples{
 fun_nPar("mod1",data.frame("a"=1:5,"b"=rep(2,5),row.names=paste0("mod",1:5)),

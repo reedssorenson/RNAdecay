@@ -1,21 +1,21 @@
 ---
-title: "_RNAdecay_ Vignette 2: Double Exponential RNA Decay Modeling"
+title: "_RNAdecay_ Vignette 2: RNA Decay Modeling"
 author: "Reed Sorenson | reed.sorenson@utah.edu | Department of Biology | University of Utah"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Double Exponential RNA Decay Modeling}
+  %\VignetteIndexEntry{RNA Decay Modeling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-RNA degradation is typically modeled with a single exponential decay model. This model assumes a constant decay rate throughout the decay time course. However, a number of issues might violate this assumption. For example, decay might depend on continuous transcription of rapidly turned over components of decay  machinery; inhibition of this transcription would cause slowed decay due to lost supply of decay components. Alternatively, decay rate might be regulated (e.g., diurnally) leading to a slow change in decay rate over a long time course evaluating decay. Decay feedback due to slowed transcription could also lead to slowing decay. We, therefore, apply both a single exponential decay model and a slowing (double exponential) decay model. However, besides these possibilies, other distinct mechanisms could lead to an apparent slowing of RNA decay. For example, because RNA-seq reads are pooled from multiple cell types and mapped to genes, distinct gene mRNA subpopulations might have different decay rates (i.e., different splice isoforms, or the same mRNA in different cell types of a multicellular organism) that are not separately measured but averaged.  We believe that for these the double exponential model will also better capture this average than a single exponential model. 
+RNA degradation is typically modeled with a constant exponential decay model. This model assumes a constant decay rate throughout the decay time course. However, a number of issues might violate this assumption. For example, decay might depend on continuous transcription of rapidly turned over components of decay  machinery; inhibition of this transcription would cause slowed decay due to lost supply of decay components. Alternatively, decay rate might be regulated (e.g., diurnally) leading to a slow change in decay rate over a long time course evaluating decay. Decay feedback due to slowed transcription could also lead to slowing decay. We, therefore, apply both a constant exponential decay model and a time-dependent exponential decay model. However, besides these possibilies, other distinct mechanisms could lead to an apparent slowing of RNA decay. For example, because RNA-seq reads are pooled from multiple cell types and mapped to genes, distinct gene mRNA subpopulations might have different decay rates (i.e., different splice isoforms, or the same mRNA in different cell types of a multicellular organism) that are not separately measured but averaged.  We believe that for these the time-dependent exponential decay model will also better capture this average than a constant exponential decay model. 
 
 The dynamic nature of RNA decay can be a point of gene regulation. To identify treatments that might affect decay rate, we model all possibilities of treatment effect on both [initital] decay rates ($\alpha$) and decay of decay rates ($\beta$) using maximum likelihood modeling to estimate the parameters of decay for each treatment. 
 
 This is done by running the modeling with constraints on treatment decay rates (i.e., constraining decay rates of treatments to be equal or allowing them to combinatorially vary in  independent groups). This can be done with up to four treatments in this package. Modeling is done gene by gene with each set of constraints, and then the models are compared using the AICc statistic. In this package, we refer to these as equivalence constraint  groupings. 
 
-For the detailed mathematical framework of the double exponential model see Sorenson et. al. (2018). Below we describe the steps of the algorithmic implementation and walk though an example data set. 
+For the detailed mathematical framework of the decaying decay model see Sorenson et. al. (2018). Below we describe the steps of the algorithmic implementation and walk though an example data set. 
 
 ## 3. LOAD NORMALIZED AND CORRECTED DATA AND CHECK THE FORMAT
 [For steps 1 (normalization) and 2 (decay factor correction) see _RNAdecay Vignette 1: Decay Factor Normalization of RNA-seq RPM data for Decay Modeling_ in this package.] 
@@ -73,10 +73,13 @@ mods = data.frame(
 )
 ```
 
-Calculate the bounds for alpha and beta parameters using the functions `a.high`, `a.low`, `b.high`, and `b.low`. These limits are calculated based on the timepoints data were collected. For example, if the first time point was collected at 1 h and for a given rapidly degraded mRNA only 0.02% of the initial abundance is measured at that time point, the actual decay rate can not be estimated, so `a.high()` caluclates the maximum estimatable decay rate, which for this example would be 0.088 or a half-life of log(2)/0.088 = 7.87 min.  
+Determine the bounds for $\alpha$ and $\beta$ parameters. The bounds on $\alpha$ and $\beta$ are related to distinguishing constant decay, and decaying decay as described in the modeling supplement (Sorenson et. al., _PNAS_, 2018). 
+
+Care should be taken in determining these bounds given each experimental design. We have provided functions to aid in selection of the lower bounds of $\alpha$ and $\beta$ (`a.low` and `b.low`, respectively), and upper bound for $\alpha$ (`a.high`). These functions calculate limits based on the time points data were collected. For example, if abundance for an unstable mRNA is measured at the first time point to be 0.02% of the initial (T0) abundance, the information needed to estimate this decay rate was not collected. So, `a.high()` caluclates the maximum estimatable decay rate based on the time at which the first decay data point was collected. Similarly, the lower bound for $\beta$ is required to distinguish the constant decay model (Exp()) from the decaying decay model (dExp()). The upper bound for $\beta$ is required to distinguish the no decay model (Exp(0,t)) from decaying decay model. If $\beta$ is too small 1-exp(-$\beta$\*t) ~ -$\beta$\*t and c(t) ~ exp(-$\alpha$\*t), we can't distinguish between constant decay and decaying decay models. If $\beta$ is too big 1-exp(-$\beta$\*t) ~ 1 and c(t) ~ exp(-$\alpha$/$\beta$), a constant, we can't distinguish between no decay and decaying decay models. Refer to the supplement for more detail about how we calculated the bound for $\alpha$ and $\beta$ (Sorenson et. al., _PNAS_, 2018).
+
 ```{r}
 a.bounds = c(a.low(max(decaydata$t.decay)), a.high(min(unique(decaydata$t.decay)[unique(decaydata$t.decay)>0])))
-b.bounds = c(b.low(max(decaydata$t.decay)), b.high())########################  NEED UPPER BOUND FUNCTION FOR BETA ###
+b.bounds = c(b.low(max(decaydata$t.decay)), 0.075)
 a.bounds;b.bounds
 ```
 
@@ -97,13 +100,13 @@ First, compile the C++ source code into dynamically linked library (\*.dll, for 
 
 ```{r}
 # only run once after installing RNAdecay pacakage
-src_files = dir(paste0(find.package("RNAdecay"), "/src"), full.names = T)
+src_files = dir(paste0(find.package("RNAdecay"), "/src"), full.names = TRUE)
 for (i in src_files) {TMB::compile(i)}
 ```
 
 Load the compiled dynamically linked libraries. 
 ```{r}
-libs = gsub(".cpp", "", dir(paste0(find.package("RNAdecay"), "/src"), pattern = ".cpp", full.names = T))
+libs = gsub(".cpp", "", dir(paste0(find.package("RNAdecay"), "/src"), pattern = ".cpp", full.names = TRUE))
 for (i in libs) {dyn.load(TMB::dynlib(i))}
 ```
 
@@ -116,7 +119,8 @@ modOptimization("AT4G09680", decaydata, group = groups, mod = mods, a.bounds, b.
 Next, run all the models on each and every gene. This requires significant computational resources depending on data set size, number of models, and computing speed. The sample data set has 8 time points x 4 replicates each x 4 treatments (= 128 samples) for 118 genes and requires about 10 h processor time. 20000 genes at ~5 min each is ~70 d processor time, so be sure to test a few different models on a few handfuls of genes to feel comfortable running all the modeling. We recommend parallel processing (on multiple processor cores) using `parallel::mclapply` to cut overall time. If this function is unavailable on your machine (e.g., on _Windows_) you can use lapply, but it will take much longer. `modOptimization()` writes results to file in tab-delimited form and, optionally, can also return them as a data.frame object. 
 ```{r}
 ####### To run all genes in parallel use:
-# parallel::mclapply(ids, data = decaydata, group = groups, mod = mods, 
+# parallel::mclapply(ids, FUN = modOptimization, 
+#                    data = decaydata, group = groups, mod = mods, 
 #                    alpha.bounds = a.bounds, beta.bounds = b.bounds,
 #                    models = paste0("mod", 1:240), 
 #                    path = paste0(wrdir, "/modeling_results"),
@@ -252,4 +256,4 @@ results$betaPattern = factor(results$betaPattern, levels = unique(results$betaPa
 results[1:3, ]
 ```
 
-All files were written to the `wrdir`. The modeling results are now ready to be visualized using `DecayPlotter()' as described in _RNAdecay Vignette 3: Decay Plotter_.
+All files were written to the `wrdir`. The modeling results are now ready to be visualized using `DecayPlotter` as described in _RNAdecay Vignette 3: Decay Plotter_.

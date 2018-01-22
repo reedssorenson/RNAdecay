@@ -1,7 +1,7 @@
 
 #' Indexes column names with multiple patterns (i.e., multigrep)
 #'
-#' identifies dataframe column names that have all of the pattern arguments (up to 4)
+#' Identifies dataframe column names that have all of the pattern arguments (up to 4).
 #'
 #' Be aware that column data labels that are part of another data label are not advisable (e.g. mut1, mut2, mut1.mut2; cols(df,"mut1") will return indices for both "mut1" and "mut1.mut2" labeled columns
 #'

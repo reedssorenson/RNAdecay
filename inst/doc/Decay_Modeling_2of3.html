@@ -12,9 +12,9 @@
 
 <meta name="author" content="Reed Sorenson | reed.sorenson@utah.edu | Department of Biology | University of Utah" />
 
-<meta name="date" content="2017-12-21" />
+<meta name="date" content="2018-01-22" />
 
-<title>RNAdecay Vignette 2: Double Exponential RNA Decay Modeling</title>
+<title>RNAdecay Vignette 2: RNA Decay Modeling</title>
 
 
 
@@ -68,16 +68,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore"><em>RNAdecay</em> Vignette 2: Double Exponential RNA Decay Modeling</h1>
+<h1 class="title toc-ignore"><em>RNAdecay</em> Vignette 2: RNA Decay Modeling</h1>
 <h4 class="author"><em>Reed Sorenson | <a href="mailto:reed.sorenson@utah.edu">reed.sorenson@utah.edu</a> | Department of Biology | University of Utah</em></h4>
-<h4 class="date"><em>2017-12-21</em></h4>
+<h4 class="date"><em>2018-01-22</em></h4>
 
 
 
-<p>RNA degradation is typically modeled with a single exponential decay model. This model assumes a constant decay rate throughout the decay time course. However, a number of issues might violate this assumption. For example, decay might depend on continuous transcription of rapidly turned over components of decay machinery; inhibition of this transcription would cause slowed decay due to lost supply of decay components. Alternatively, decay rate might be regulated (e.g., diurnally) leading to a slow change in decay rate over a long time course evaluating decay. Decay feedback due to slowed transcription could also lead to slowing decay. We, therefore, apply both a single exponential decay model and a slowing (double exponential) decay model. However, besides these possibilies, other distinct mechanisms could lead to an apparent slowing of RNA decay. For example, because RNA-seq reads are pooled from multiple cell types and mapped to genes, distinct gene mRNA subpopulations might have different decay rates (i.e., different splice isoforms, or the same mRNA in different cell types of a multicellular organism) that are not separately measured but averaged. We believe that for these the double exponential model will also better capture this average than a single exponential model.</p>
+<p>RNA degradation is typically modeled with a constant exponential decay model. This model assumes a constant decay rate throughout the decay time course. However, a number of issues might violate this assumption. For example, decay might depend on continuous transcription of rapidly turned over components of decay machinery; inhibition of this transcription would cause slowed decay due to lost supply of decay components. Alternatively, decay rate might be regulated (e.g., diurnally) leading to a slow change in decay rate over a long time course evaluating decay. Decay feedback due to slowed transcription could also lead to slowing decay. We, therefore, apply both a constant exponential decay model and a time-dependent exponential decay model. However, besides these possibilies, other distinct mechanisms could lead to an apparent slowing of RNA decay. For example, because RNA-seq reads are pooled from multiple cell types and mapped to genes, distinct gene mRNA subpopulations might have different decay rates (i.e., different splice isoforms, or the same mRNA in different cell types of a multicellular organism) that are not separately measured but averaged. We believe that for these the time-dependent exponential decay model will also better capture this average than a constant exponential decay model.</p>
 <p>The dynamic nature of RNA decay can be a point of gene regulation. To identify treatments that might affect decay rate, we model all possibilities of treatment effect on both [initital] decay rates (<span class="math inline">\(\alpha\)</span>) and decay of decay rates (<span class="math inline">\(\beta\)</span>) using maximum likelihood modeling to estimate the parameters of decay for each treatment.</p>
 <p>This is done by running the modeling with constraints on treatment decay rates (i.e., constraining decay rates of treatments to be equal or allowing them to combinatorially vary in independent groups). This can be done with up to four treatments in this package. Modeling is done gene by gene with each set of constraints, and then the models are compared using the AICc statistic. In this package, we refer to these as equivalence constraint groupings.</p>
-<p>For the detailed mathematical framework of the double exponential model see Sorenson et. al. (2018). Below we describe the steps of the algorithmic implementation and walk though an example data set.</p>
+<p>For the detailed mathematical framework of the decaying decay model see Sorenson et. al. (2018). Below we describe the steps of the algorithmic implementation and walk though an example data set.</p>
 <div id="load-normalized-and-corrected-data-and-check-the-format" class="section level2">
 <h2>3. LOAD NORMALIZED AND CORRECTED DATA AND CHECK THE FORMAT</h2>
 <p>[For steps 1 (normalization) and 2 (decay factor correction) see <em>RNAdecay Vignette 1: Decay Factor Normalization of RNA-seq RPM data for Decay Modeling</em> in this package.]</p>
@@ -89,7 +89,7 @@ wrdir =<span class="st"> &quot;~/DecayAnalysis/Example analysis results 2&quot;<
 <span class="cf">if</span>(<span class="op">!</span><span class="kw">file.exists</span>(wrdir)) <span class="kw">dir.create</span>(wrdir, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>Rename factor levels and specify level order of <code>decaydata$treatment</code> for sorting and making figures. The example data set is already ordered, but when data is read from a text file (e.g., .csv) factor levels are ordered automatically and should be reordered according to user preference now to avoid later headaches.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">levels</span>(decaydata<span class="op">$</span>treatment) <span class="co"># This can not be longer than 4 elements</span></code></pre></div>
-<pre><code>## [1] &quot;WT&quot;      &quot;sov&quot;     &quot;vcs&quot;     &quot;vcs sov&quot;</code></pre>
+<pre><code>## [1] &quot;WT&quot;  &quot;sov&quot; &quot;vcs&quot; &quot;vs&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># decaydata$treatment = factor(decaydata$treatment, levels = levels(decaydata$treatment)[c(4, 1, 2, 3)]) # numbers here refer to the current order position in the factor levels() - the order of the numbers designates the new position</span>
 
 <span class="kw">levels</span>(decaydata<span class="op">$</span>treatment)[<span class="dv">4</span>] =<span class="st"> &quot;vcs.sov&quot;</span>
@@ -98,9 +98,9 @@ wrdir =<span class="st"> &quot;~/DecayAnalysis/Example analysis results 2&quot;<
 <p>Sort the <code>decaydata</code> data.frame as follows (<em>REQUIRED step for proper indexing below</em>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(decaydata<span class="op">$</span>t.decay), ]
 decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(decaydata<span class="op">$</span>rep), ]
-decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(<span class="kw">as.numeric</span>(decaydata<span class="op">$</span>treatment)), ]
+decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(<span class="kw">as.numeric</span>(decaydata<span class="op">$</span>treatment)), ] 
 decaydata =<span class="st"> </span>decaydata[<span class="kw">order</span>(decaydata<span class="op">$</span>geneID), ]
-ids =<span class="st"> </span><span class="kw">unique</span>(decaydata<span class="op">$</span>geneID) <span class="co"># 118 in example set</span>
+ids =<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>geneID)) <span class="co"># 118 in example set</span>
 decaydata[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ]</code></pre></div>
 <pre><code>##         geneID treatment t.decay  rep     value
 ## 1    AT1G02860        WT     0.0 rep1 1.0051056
@@ -119,7 +119,7 @@ decaydata[<span class="dv">1</span><span class="op">:</span><span class="dv">10<
 <p>Create objects and set varables used in the modeling based on <code>decaydata</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># (no changes needed here - just execute the code)</span>
 nEquivGrp =<span class="st"> </span><span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) {<span class="dv">2</span>} <span class="cf">else</span>
-  <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) {<span class="dv">5</span>} <span class="cf">else</span>
+  <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) {<span class="dv">5</span>} <span class="cf">else</span> 
     <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">4</span>) {<span class="dv">15</span>}
 genoSet =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>(<span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>rep)) <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>t.decay)))
 nTreat =<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>treatment))
@@ -130,15 +130,16 @@ mods =<span class="st"> </span><span class="kw">data.frame</span>(
   <span class="st">&quot;b&quot;</span> =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>(nEquivGrp <span class="op">+</span><span class="st"> </span><span class="dv">1</span>), nEquivGrp),
   <span class="dt">row.names =</span> <span class="kw">paste0</span>(<span class="st">&quot;mod&quot;</span>, <span class="dv">1</span><span class="op">:</span>(nEquivGrp<span class="op">*</span>(nEquivGrp<span class="op">+</span><span class="dv">1</span>)))
 )</code></pre></div>
-<p>Calculate the bounds for alpha and beta parameters using the functions <code>a.high</code>, <code>a.low</code>, <code>b.high</code>, and <code>b.low</code>. These limits are calculated based on the timepoints data were collected. For example, if the first time point was collected at 1 h and for a given rapidly degraded mRNA only 0.02% of the initial abundance is measured at that time point, the actual decay rate can not be estimated, so <code>a.high()</code> caluclates the maximum estimatable decay rate, which for this example would be 0.088 or a half-life of log(2)/0.088 = 7.87 min.</p>
+<p>Determine the bounds for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters. The bounds on <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are related to distinguishing constant decay, and decaying decay as described in the modeling supplement (Sorenson et. al., <em>PNAS</em>, 2018).</p>
+<p>Care should be taken in determining these bounds given each experimental design. We have provided functions to aid in selection of the lower bounds of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> (<code>a.low</code> and <code>b.low</code>, respectively), and upper bound for <span class="math inline">\(\alpha\)</span> (<code>a.high</code>). These functions calculate limits based on the time points data were collected. For example, if abundance for an unstable mRNA is measured at the first time point to be 0.02% of the initial (T0) abundance, the information needed to estimate this decay rate was not collected. So, <code>a.high()</code> caluclates the maximum estimatable decay rate based on the time at which the first decay data point was collected. Similarly, the lower bound for <span class="math inline">\(\beta\)</span> is required to distinguish the constant decay model (Exp()) from the decaying decay model (dExp()). The upper bound for <span class="math inline">\(\beta\)</span> is required to distinguish the no decay model (Exp(0,t)) from decaying decay model. If <span class="math inline">\(\beta\)</span> is too small 1-exp(-<span class="math inline">\(\beta\)</span>*t) ~ -<span class="math inline">\(\beta\)</span>*t and c(t) ~ exp(-<span class="math inline">\(\alpha\)</span>*t), we can’t distinguish between constant decay and decaying decay models. If <span class="math inline">\(\beta\)</span> is too big 1-exp(-<span class="math inline">\(\beta\)</span>*t) ~ 1 and c(t) ~ exp(-<span class="math inline">\(\alpha\)</span>/<span class="math inline">\(\beta\)</span>), a constant, we can’t distinguish between no decay and decaying decay models. Refer to the supplement for more detail about how we calculated the bound for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> (Sorenson et. al., <em>PNAS</em>, 2018).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a.bounds =<span class="st"> </span><span class="kw">c</span>(<span class="kw">a.low</span>(<span class="kw">max</span>(decaydata<span class="op">$</span>t.decay)), <span class="kw">a.high</span>(<span class="kw">min</span>(<span class="kw">unique</span>(decaydata<span class="op">$</span>t.decay)[<span class="kw">unique</span>(decaydata<span class="op">$</span>t.decay)<span class="op">&gt;</span><span class="dv">0</span>])))
-b.bounds =<span class="st"> </span><span class="kw">c</span>(<span class="kw">b.low</span>(<span class="kw">max</span>(decaydata<span class="op">$</span>t.decay)), <span class="kw">b.high</span>())########################  NEED UPPER BOUND FUNCTION FOR BETA <span class="al">###</span>
+b.bounds =<span class="st"> </span><span class="kw">c</span>(<span class="kw">b.low</span>(<span class="kw">max</span>(decaydata<span class="op">$</span>t.decay)), <span class="fl">0.075</span>)
 a.bounds;b.bounds</code></pre></div>
 <pre><code>## [1] 0.0001 0.7100</code></pre>
 <pre><code>## [1] 0.001 0.075</code></pre>
 <p>Create a colormap of model groups.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">groupMap</span>(<span class="dt">decaydata =</span> decaydata, <span class="dt">path =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/Model grouping colormap.pdf&quot;</span>), <span class="dt">nEquivGrp =</span> nEquivGrp, <span class="dt">groups =</span> groups, <span class="dt">mods =</span> mods)</code></pre></div>
-<pre><code>## png
+<pre><code>## png 
 ##   2</code></pre>
 <p>This file (Model grouping colormap.pdf) should now be in your working directory. This color map is a reference for understanding model constraints. For example, model 1 has all different colored boxes representing unconstrained <span class="math inline">\(\alpha\)</span>s and unconstrained betas, whereas, the second to last model has only two box colors - one for all <span class="math inline">\(\alpha\)</span>s indicating that they all have constrained equivalence and the other indicating that all <span class="math inline">\(\beta\)</span>s also have constrained equivalence. 1st order model <span class="math inline">\(\beta\)</span>s = 0 which is indicated with gray color.</p>
 </div>
@@ -148,38 +149,38 @@ a.bounds;b.bounds</code></pre></div>
 <p>Efficient model parameter optimization is accomplished using objective functions coded as binary dynamically linked libraries. These libraries are compiled from functions coded in the C++ language on each machine using functionality of the <code>TMB</code> package.</p>
 <p>First, compile the C++ source code into dynamically linked library (*.dll, for Windows) or shared object (*.so, linux and Mac) files for each of the objective functions. This only needs to be done once on your machine after installation of the package. Compiling C++ code requires a compiler be installed separatedly on your system (e.g., Rtools34 or later for Windows, <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a>; Xcode comand line tools for Mac, <a href="http://railsapps.github.io/xcode-command-line-tools.html" class="uri">http://railsapps.github.io/xcode-command-line-tools.html</a>; R development package for Linux, r-base-dev). If you don’t already have one of these installed, stop and install one and restart R. C++ source files are located in the installed ‘RNAdecay/src’ folder. The compiled files should also be written to this same folder.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only run once after installing RNAdecay pacakage</span>
-src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw">paste0</span>(<span class="kw">find.package</span>(<span class="st">&quot;RNAdecay&quot;</span>), <span class="st">&quot;/src&quot;</span>), <span class="dt">full.names =</span> T)
+src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw">paste0</span>(<span class="kw">find.package</span>(<span class="st">&quot;RNAdecay&quot;</span>), <span class="st">&quot;/src&quot;</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)
 <span class="cf">for</span> (i <span class="cf">in</span> src_files) {TMB<span class="op">::</span><span class="kw">compile</span>(i)}</code></pre></div>
 <p>Load the compiled dynamically linked libraries.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">libs =<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.cpp&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">dir</span>(<span class="kw">paste0</span>(<span class="kw">find.package</span>(<span class="st">&quot;RNAdecay&quot;</span>), <span class="st">&quot;/src&quot;</span>), <span class="dt">pattern =</span> <span class="st">&quot;.cpp&quot;</span>, <span class="dt">full.names =</span> T))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">libs =<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.cpp&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">dir</span>(<span class="kw">paste0</span>(<span class="kw">find.package</span>(<span class="st">&quot;RNAdecay&quot;</span>), <span class="st">&quot;/src&quot;</span>), <span class="dt">pattern =</span> <span class="st">&quot;.cpp&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>))
 <span class="cf">for</span> (i <span class="cf">in</span> libs) {<span class="kw">dyn.load</span>(TMB<span class="op">::</span><span class="kw">dynlib</span>(i))}</code></pre></div>
 <p>Next, test the modeling on a couple of genes on a handful of models.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">modOptimization</span>(<span class="st">&quot;AT2G18150&quot;</span>, decaydata, <span class="dt">group =</span> groups, <span class="dt">mod =</span> mods, a.bounds, b.bounds, <span class="kw">c</span>(<span class="st">&quot;mod1&quot;</span>, <span class="st">&quot;mod2&quot;</span>, <span class="st">&quot;mod16&quot;</span>, <span class="st">&quot;mod239&quot;</span>, <span class="st">&quot;mod240&quot;</span>), <span class="dt">file.only =</span> <span class="ot">FALSE</span>) </code></pre></div>
 <pre><code>## AT2G18150 done</code></pre>
 <pre><code>##           geneID    mod     alpha_WT    alpha_sov    alpha_vcs
-## mod1   AT2G18150   mod1 0.0001000000 0.0005096286 0.0008160441
-## mod2   AT2G18150   mod2 0.0001000010 0.0001000005 0.0008160617
-## mod16  AT2G18150  mod16 0.0001000002 0.0001000001 0.0006962651
+## mod1   AT2G18150   mod1 0.0001000000 0.0005096309 0.0008160446
+## mod2   AT2G18150   mod2 0.0001000004 0.0001000005 0.0008160467
+## mod16  AT2G18150  mod16 0.0001000001 0.0001000001 0.0006962391
 ## mod239 AT2G18150 mod239 0.0009407433 0.0009407433 0.0009407433
 ## mod240 AT2G18150 mod240 0.0001403765 0.0001403765 0.0001403765
 ##        alpha_vcs.sov    beta_WT    beta_sov    beta_vcs beta_vcs.sov
-## mod1    0.0019003649 0.07500000 0.075000000 0.001000000  0.001000000
-## mod2    0.0019003670 0.07499985 0.001000003 0.001000003  0.001000003
-## mod16   0.0016237920 0.00000000 0.000000000 0.000000000  0.000000000
+## mod1    0.0019003662 0.07500000 0.074999999 0.001000000  0.001000000
+## mod2    0.0019003678 0.07499995 0.001000003 0.001000003  0.001000003
+## mod16   0.0016237714 0.00000000 0.000000000 0.000000000  0.000000000
 ## mod239  0.0009407433 0.01558834 0.015588337 0.015588337  0.015588337
 ## mod240  0.0001403765 0.00000000 0.000000000 0.000000000  0.000000000
 ##           sigma2    logLik nPar nStarts  J     range.LL nUnique.LL
-## mod1   0.1155597 -43.51417    9      50 50 1.983867e-07          1
-## mod2   0.1162461 -43.89319    7      50 48 2.888478e-04          3
-## mod16  0.1178604 -44.77586    5      50 44 1.762801e-02          7
+## mod1   0.1155597 -43.51417    9      50 50 1.395798e-07          1
+## mod2   0.1162461 -43.89319    7      50 49 1.299387e-04          2
+## mod16  0.1178604 -44.77586    5      50 45 1.503381e-02          6
 ## mod239 0.1314419 -51.75597    3      50 50 0.000000e+00          1
-## mod240 0.1321416 -52.09573    2      50 50 3.765876e-13          1
+## mod240 0.1321416 -52.09573    2      49 49 3.765876e-13          1
 ##             C.alpha       C.beta        C.tot     AICc AICc_est
-## mod1   2.445139e-05 2.469199e-07 2.469831e-05 106.5538 106.5538
-## mod2   1.207514e-04 6.052563e-05 1.812770e-04 102.7197 102.7197
-## mod16  1.020996e-03 0.000000e+00 1.020996e-03 100.0435 100.0435
-## mod239 2.845025e-07 2.823521e-07 5.668546e-07 109.7055 109.7055
-## mod240 1.118210e-07 0.000000e+00 1.118210e-07 108.2875 108.2875</code></pre>
+## mod1   1.002421e-05 3.195232e-07 1.034373e-05 106.5538 106.5538
+## mod2   3.570865e-05 5.841542e-05 9.412407e-05 102.7197 102.7197
+## mod16  4.913026e-04 0.000000e+00 4.913026e-04 100.0435 100.0435
+## mod239 3.321722e-07 3.020418e-07 6.342140e-07 109.7055 109.7055
+## mod240 1.428318e-07 0.000000e+00 1.428318e-07 108.2875 108.2875</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">modOptimization</span>(<span class="st">&quot;AT4G09680&quot;</span>, decaydata, <span class="dt">group =</span> groups, <span class="dt">mod =</span> mods, a.bounds, b.bounds, <span class="kw">c</span>(<span class="st">&quot;mod1&quot;</span>, <span class="st">&quot;mod2&quot;</span>, <span class="st">&quot;mod16&quot;</span>, <span class="st">&quot;mod239&quot;</span>, <span class="st">&quot;mod240&quot;</span>), <span class="dt">file.only =</span> <span class="ot">FALSE</span>) </code></pre></div>
 <pre><code>## AT4G09680 done</code></pre>
 <pre><code>##           geneID    mod    alpha_WT   alpha_sov   alpha_vcs alpha_vcs.sov
@@ -195,20 +196,21 @@ src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw"
 ## mod239 0.004544744 0.004544744 0.004544744  0.004544744 0.008177741
 ## mod240 0.000000000 0.000000000 0.000000000  0.000000000 0.012303559
 ##           logLik nPar nStarts  J     range.LL nUnique.LL      C.alpha
-## mod1   175.33971    9      50 50 5.400125e-13          1 4.229511e-08
-## mod2   173.98757    7      50 50 1.278977e-12          1 5.490227e-08
-## mod16  134.39147    5      50 50 1.875833e-12          1 8.049231e-08
-## mod239 125.98159    3      50 50 0.000000e+00          1 1.091125e-08
-## mod240  99.83933    2      50 50 0.000000e+00          1 5.387243e-09
+## mod1   175.33971    9      50 50 8.327561e-12          1 8.397136e-08
+## mod2   173.98757    7      50 50 2.188472e-12          1 6.550050e-08
+## mod16  134.39147    5      50 50 1.875833e-12          1 6.450925e-08
+## mod239 125.98159    3      50 50 0.000000e+00          1 2.249301e-08
+## mod240  99.83933    2      50 50 0.000000e+00          1 6.357051e-09
 ##              C.beta        C.tot      AICc  AICc_est
-## mod1   8.711464e-08 1.294097e-07 -331.1540 -331.1540
-## mod2   8.986969e-08 1.447720e-07 -333.0418 -333.0418
-## mod16  0.000000e+00 8.049231e-08 -258.2911 -258.2911
-## mod239 2.356774e-08 3.447899e-08 -245.7696 -245.7696
-## mod240 0.000000e+00 5.387243e-09 -195.5827 -195.5827</code></pre>
+## mod1   1.821221e-07 2.660935e-07 -331.1540 -331.1540
+## mod2   1.103249e-07 1.758254e-07 -333.0418 -333.0418
+## mod16  0.000000e+00 6.450925e-08 -258.2911 -258.2911
+## mod239 4.924834e-08 7.174135e-08 -245.7696 -245.7696
+## mod240 0.000000e+00 6.357051e-09 -195.5827 -195.5827</code></pre>
 <p>Next, run all the models on each and every gene. This requires significant computational resources depending on data set size, number of models, and computing speed. The sample data set has 8 time points x 4 replicates each x 4 treatments (= 128 samples) for 118 genes and requires about 10 h processor time. 20000 genes at ~5 min each is ~70 d processor time, so be sure to test a few different models on a few handfuls of genes to feel comfortable running all the modeling. We recommend parallel processing (on multiple processor cores) using <code>parallel::mclapply</code> to cut overall time. If this function is unavailable on your machine (e.g., on <em>Windows</em>) you can use lapply, but it will take much longer. <code>modOptimization()</code> writes results to file in tab-delimited form and, optionally, can also return them as a data.frame object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">####### To run all genes in parallel use:
-<span class="co"># parallel::mclapply(ids, data = decaydata, group = groups, mod = mods, </span>
+<span class="co"># parallel::mclapply(ids, FUN = modOptimization, </span>
+<span class="co">#                    data = decaydata, group = groups, mod = mods, </span>
 <span class="co">#                    alpha.bounds = a.bounds, beta.bounds = b.bounds,</span>
 <span class="co">#                    models = paste0(&quot;mod&quot;, 1:240), </span>
 <span class="co">#                    path = paste0(wrdir, &quot;/modeling_results&quot;),</span>
@@ -221,27 +223,26 @@ src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw"
 <p>The entire example data set takes ~ 10 h processor time with lapply so for this example we will randomly select two gene ID’s to run here.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test.ids =<span class="st"> </span><span class="kw">sample</span>(ids, <span class="dv">3</span>) <span class="co"># </span><span class="al">NOTE</span><span class="co">: that everytime this line is run it generates a different random sampling, therefore the genes modeled below will be different each time this code is run. To test the exact set of genes shown in the vignette make a new character vector of the gene ids reported below and pass it to the gene argument using lapply instead of passing 'test.ids' as we do here.  </span>
 test.ids</code></pre></div>
-<pre><code>## [1] AT1G28610 AT5G23535 ATMG00410
-## 118 Levels: AT1G02860 AT1G09660 AT1G13360 AT1G22470 AT1G26630 ... ATMG01320</code></pre>
+<pre><code>## [1] &quot;AT3G61210&quot; &quot;AT3G46090&quot; &quot;AT4G00975&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a =<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
 models =<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> test.ids, <span class="co"># alternatively use `ids` here to complete the entire sample data set, but be prepared to wait 10 h. These gene IDs will get passed one at time to the &quot;gene&quot; argument of modOptimization() and return a list of the results data.frame.</span>
                 <span class="dt">FUN =</span> modOptimization,
-                <span class="dt">data =</span> decaydata,
-                <span class="dt">group =</span> groups,
+                <span class="dt">data =</span> decaydata, 
+                <span class="dt">group =</span> groups, 
                 <span class="dt">mod =</span> mods,
-                <span class="dt">alpha.bounds =</span> a.bounds,
+                <span class="dt">alpha.bounds =</span> a.bounds, 
                 <span class="dt">beta.bounds =</span> b.bounds,
-                <span class="dt">models =</span> <span class="kw">rownames</span>(mods),
+                <span class="dt">models =</span> <span class="kw">rownames</span>(mods), 
                 <span class="dt">path =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/modeling_results&quot;</span>),
                 <span class="dt">file.only =</span> <span class="ot">FALSE</span>) </code></pre></div>
-<pre><code>## 7 done     87 done     115 done</code></pre>
+<pre><code>## AT3G61210 done     AT3G46090 done     AT4G00975 done</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(models) =<span class="st"> </span>test.ids
 b =<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
 (b<span class="op">-</span>a)<span class="op">/</span><span class="dv">60</span><span class="op">/</span><span class="kw">length</span>(test.ids) <span class="co"># gives you average min per gene </span></code></pre></div>
-<pre><code>##  elapsed
-## 4.728611</code></pre>
+<pre><code>## elapsed 
+##   3.227</code></pre>
 <p>For each gene, read in the results data frame written by <code>modOptimization()</code> as an element of a single list object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models =<span class="st"> </span><span class="kw">lapply</span>( <span class="kw">paste0</span>( wrdir, <span class="st">&quot;/modeling_results/&quot;</span>, test.ids, <span class="st">&quot;_results.txt&quot;</span>), read.delim, <span class="dt">header =</span> <span class="ot">TRUE</span> )
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models =<span class="st"> </span><span class="kw">lapply</span>( <span class="kw">paste0</span>( wrdir, <span class="st">&quot;/modeling_results/&quot;</span>, test.ids, <span class="st">&quot;_results.txt&quot;</span>), read.delim, <span class="dt">header =</span> <span class="ot">TRUE</span> )   
 <span class="kw">names</span>(models) =<span class="st"> </span>test.ids</code></pre></div>
 </div>
 <div id="model-selection" class="section level2">
@@ -255,10 +256,8 @@ results[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">1<
 <span class="kw">write.table</span>(results, <span class="dt">file =</span> <span class="kw">paste0</span>(wrdir,<span class="st">&quot;/best model results.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
 results =<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/best model results.txt&quot;</span>))</code></pre></div>
 <p>Generate some graphics to visualize results.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)</code></pre></div>
-<pre><code>## Need help getting started? Try the cookbook for R:
-## http://www.cookbook-r.com/Graphs/</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/distributions of stats.pdf&quot;</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/distributions of stats.pdf&quot;</span>))
 p =<span class="st"> </span><span class="kw">ggplot</span>(results)
 <span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sigma2), <span class="dt">bins =</span> <span class="dv">300</span>)<span class="op">+</span>
 <span class="st">        </span><span class="kw">xlim</span>(<span class="dv">0</span>,<span class="fl">0.5</span>)<span class="op">+</span>
@@ -276,7 +275,7 @@ p =<span class="st"> </span><span class="kw">ggplot</span>(results)
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> range.LL), <span class="dt">bins =</span> <span class="dv">60</span>))
 <span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> nUnique.LL), <span class="dt">bins =</span> <span class="dv">60</span>))
 <span class="kw">dev.off</span>()</code></pre></div>
-<pre><code>## png
+<pre><code>## png 
 ##   2</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/lowest AICc model counts.pdf&quot;</span>), <span class="dt">height =</span> <span class="dv">8</span>, <span class="dt">width =</span> <span class="dv">32</span>)
 p =<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(
@@ -287,10 +286,10 @@ p =<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Model distribution of absolute lowest AICs&quot;</span>)
 <span class="kw">print</span>(p<span class="op">+</span><span class="kw">myTheme</span>(<span class="dv">25</span>))
 <span class="kw">dev.off</span>()</code></pre></div>
-<pre><code>## png
+<pre><code>## png 
 ##   2</code></pre>
 <p>Because two models are considered to perform differently if their AICc value difference is &gt;2, any models that have AICc values within two of the model with the lowest AICc are considered to have performed similarly. The number of models performing similarly to the best model are plotted as a histogram here. The number of different alpha groupings represented in these models is also plotted.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">minMods =<span class="st"> </span><span class="kw">sapply</span>(models, <span class="cf">function</span>(x) <span class="kw">which</span> (x[, <span class="st">&quot;AICc&quot;</span>] <span class="op">&lt;</span><span class="st"> </span>(<span class="dv">2</span><span class="op">+</span><span class="kw">min</span>(x[, <span class="st">&quot;AICc&quot;</span>]))))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">minMods =<span class="st"> </span><span class="kw">sapply</span>(models, <span class="cf">function</span>(x) <span class="kw">which</span> (x[, <span class="st">&quot;AICc&quot;</span>] <span class="op">&lt;</span><span class="st"> </span>(<span class="dv">2</span><span class="op">+</span><span class="kw">min</span>(x[, <span class="st">&quot;AICc&quot;</span>])))) 
 minAMods =<span class="st"> </span><span class="kw">lapply</span>(minMods, <span class="cf">function</span>(x) <span class="kw">unique</span>(mods[x, <span class="st">&quot;a&quot;</span>]))
 
 <span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/number of models that performed similar to the one selected.pdf&quot;</span>))
@@ -299,7 +298,7 @@ minAMods =<span class="st"> </span><span class="kw">lapply</span>(minMods, <span
 <span class="kw">barplot</span>(<span class="dt">height =</span> <span class="kw">table</span>(<span class="kw">sapply</span>(minAMods, length)), <span class="dt">xlab =</span> <span class="st">&quot;No. alpha groups in the lowest AICc group (not more than 2 different from lowest)&quot;</span>,
         <span class="dt">ylab =</span> <span class="st">&quot;No. genes&quot;</span>)
 <span class="kw">dev.off</span>()</code></pre></div>
-<pre><code>## png
+<pre><code>## png 
 ##   2</code></pre>
 <p>Build the modeling results data.frame. Group genes with similar <span class="math inline">\(\alpha\)</span> groupings and then group genes with similar <span class="math inline">\(\beta\)</span> groupings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results =<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/best model results.txt&quot;</span>))
@@ -334,7 +333,7 @@ results<span class="op">$</span>rA_vcssov.WT =<span class="st"> </span>results<s
 
 <span class="kw">write.table</span>(results, <span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
 
-results =<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">colClasses =</span>  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, (<span class="dv">2</span><span class="op">*</span>nTreat<span class="op">+</span><span class="dv">2</span>)), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">3</span>)))
+results =<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">colClasses =</span>  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">2</span><span class="op">+</span><span class="dv">2</span><span class="op">*</span>nTreat), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">3</span>)))
 <span class="co"># results$alpha_subgroup = factor(results$alpha_subgroup, levels = unique(results$alpha_subgroup))</span>
 results<span class="op">$</span>alphaPattern =<span class="st"> </span><span class="kw">factor</span>(results<span class="op">$</span>alphaPattern, <span class="dt">levels =</span> <span class="kw">unique</span>(results<span class="op">$</span>alphaPattern))
 results<span class="op">$</span>betaPattern =<span class="st"> </span><span class="kw">factor</span>(results<span class="op">$</span>betaPattern, <span class="dt">levels =</span> <span class="kw">unique</span>(results<span class="op">$</span>betaPattern))
@@ -359,7 +358,7 @@ results[<span class="dv">1</span><span class="op">:</span><span class="dv">3</sp
 ## AT2G01430    0.1762365
 ## AT1G69760    0.1202816
 ## AT5G11090    0.3814251</code></pre>
-<p>All files were written to the <code>wrdir</code>. The modeling results are now ready to be visualized using `DecayPlotter()’ as described in <em>RNAdecay Vignette 3: Decay Plotter</em>.</p>
+<p>All files were written to the <code>wrdir</code>. The modeling results are now ready to be visualized using <code>DecayPlotter</code> as described in <em>RNAdecay Vignette 3: Decay Plotter</em>.</p>
 </div>
 
 

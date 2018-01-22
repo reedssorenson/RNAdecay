@@ -1,7 +1,7 @@
 
 #' number of Parameters function
 #'
-#' function calculates number of parameters in each model
+#' Calculates number of parameters for a specified model given the model parameter constraints.
 #'
 #' @param model model name (e.g. "mod1")
 #' @param mod two column data.frame with combination of alpha and beta grouping numbers in each model with rownames "modX"

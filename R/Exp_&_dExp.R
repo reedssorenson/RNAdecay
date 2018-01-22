@@ -1,7 +1,7 @@
 
 #' exponential decay functions
 #'
-#' single exponential decay function (case when betas=0) e^-a*t; double exponential decay function  e^(-(a/b)*(1-e^(-b*t))); (normalized so at t=0 the function is 1)
+#' Constant decay rate function (Exp(), case when betas=0) e^-a*t; decaying decay rate function (dExp())  e^(-(a/b)*(1-e^(-b*t))). Functions are normalized so at t=0 the function is 1.
 #'
 #' @param t time (in minutes)
 #' @param a alpha (in per time, thus in per minute when time is in minutes)

@@ -1,11 +1,11 @@
 
 #' Akaike information criterion (with correction)
 #'
-#' calculates AIC or AICc
+#' Calculates AIC or AICc.
 #'
 #' @param maxlLik maximum log likelihood value identified upon model convergence
 #' @param p number of parameters in the model
-#' @param n number of measured values for a single gene
+#' @param n is the total number of observations of a single gene (e.g., 8 time points X 4 replicates X 4 treatments/genotypes = 128)
 #'
 #' @export
 #'

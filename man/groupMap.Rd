@@ -22,7 +22,7 @@ groupMap(decaydata, path, nEquivGrp = nEquivGrp, groups = groups,
 creates a model colormap and writes it to a pdf file named \code{path}
 }
 \description{
-groupMap makes a color map of alpha and beta equivalence groups by model
+GroupMap makes a color map of alpha and beta equivalence groups by model. Similar colors in a row indicate constrained parameter equivalence between treatements. Gray indicates values of 0.
 }
 \examples{
 groupMap(decaydata=data.frame(geneID=paste0("gene",1:4),

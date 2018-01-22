@@ -1,7 +1,7 @@
 
 #' Combinatorial groups matrix generator
 #'
-#' generates a combinatorial grouping matrix based on \code{decaydata} data.frame
+#' Generates a combinatorial grouping matrix based on the \code{decaydata} data.frame.
 #'
 #' The resulting matrix of indices is used to constrain treatment alphas or treatment betas in combination. For example, in one model, treatment alphas might be allowed to vary independently (gp1), but the beta models might be constrained to be equal for some treatments indicated by haveing the same index number (other gp).
 #'

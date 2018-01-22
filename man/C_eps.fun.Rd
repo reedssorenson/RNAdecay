@@ -2,7 +2,7 @@
 % Please edit documentation in R/C_eps.fun.R
 \name{C_eps.fun}
 \alias{C_eps.fun}
-\title{combined adjusteded coefficient of variation}
+\title{combined adjusted coefficient of variation}
 \usage{
 C_eps.fun(X, eps = 1e-04)
 }
@@ -15,7 +15,7 @@ C_eps.fun(X, eps = 1e-04)
 returns the sum of the coefficients of variation for all columns of \code{X}
 }
 \description{
-calculates the sum across columns of the respective column standard devation / (the column mean + a small value to avoid dividing by 0 (\code{eps}))
+Calculates the sum of the column standard devation divided by the sum of the column mean and a small value to avoid dividing by 0 (\code{eps})
 }
 \examples{
 C_eps.fun(data.frame(test1=rep(0,5),test2=c(0.2,0.3,0.35,0.27,0.21)))

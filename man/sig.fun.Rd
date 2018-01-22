@@ -4,18 +4,18 @@
 \alias{sig.fun}
 \title{sigma^2 estimation}
 \usage{
-sig.fun(x, n = 128)
+sig.fun(x, n)
 }
 \arguments{
 \item{x}{is the minimum SSE (sum of the squared errors) from the slsqp() fitting}
 
-\item{n}{is the total number of observations 8 time points, 4 replicates, 4 treatments (or genotypes)}
+\item{n}{is the total number of observations of a single gene (e.g., 8 time points X 4 replicates X 4 treatments/genotypes = 128)}
 }
 \value{
 returns the sigma squared estimate
 }
 \description{
-calculates the variance (sigma^2) estimate from the sum of the squared errors from the fit model.
+Calculates the variance (sigma^2) estimate from the sum of the squared errors from the fit model.
 }
 \examples{
 sig.fun(1,128)

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Reed Sorenson | reed.sorenson@utah.edu | Department of Biology | University of Utah" />
 
-<meta name="date" content="2017-12-21" />
+<meta name="date" content="2018-01-22" />
 
 <title>RNAdecay Vignette 1: Decay Factor Normalization of RNA-seq RPM data for Decay Modeling</title>
 
@@ -70,15 +70,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore"><em>RNAdecay</em> Vignette 1: Decay Factor Normalization of RNA-seq RPM data for Decay Modeling</h1>
 <h4 class="author"><em>Reed Sorenson | <a href="mailto:reed.sorenson@utah.edu">reed.sorenson@utah.edu</a> | Department of Biology | University of Utah</em></h4>
-<h4 class="date"><em>2017-12-21</em></h4>
+<h4 class="date"><em>2018-01-22</em></h4>
 
 
 
-<p>The functions and code of the <code>RNAdecay</code> package were written for the purpose of analyzing decreasing levels of RNA abundance as measured by RNA short read sequencing (aka RNA-seq) after inhibition of transcription. Tissue is treated to block transcription (e.g., using a chemical such as cordycepin or ActinomycinD) and tissue is collected at regular intervals (referred to as the RNA decay time course, e.g., T0, T30, T60 refer to 0, 30, and 60 min of blocked transcription). Total RNA is extracted from the tissue and measured by RNA-seq. Although we wrote this package to analyze RNA-seq data, it could also be adapted to analyze individual gene data from quantitative Reverse Transcription Polymerase Chain Reaction (qRT-PCR) measures, however, normalization (as herein described) is best performed using a number of stable reference genes.</p>
-<p>Raw (Illumina) RNA-seq data are typically libraries made of up 10M-250M short (50 nt) sequences. These sequences are aligned to the genome and counted based on the location of their alignment in annotated genomic ranges (e.g., genes, exons, etc). Read counts for each gene are normalized to the size of their respective RNA-seq library for comparison to libraries generated from other biological material, therefore, read counts are expressed as reads per million (RPM). We begin RNA double exponential decay analysis in this package with RPM RNA abundance data.</p>
+<p>The functions and code of the <code>RNAdecay</code> package were written for the purpose of analyzing decreasing levels of RNA abundance as measured by RNA short read sequencing (aka RNA-seq) after inhibition of transcription. Tissue is treated to block transcription (e.g., using a chemical such as cordycepin or ActinomycinD) and tissue is collected at regular intervals (referred to as the RNA decay time course, e.g., T0, T30, T60 refer to 0, 30, and 60 min of blocked transcription). Total RNA is extracted from the tissue and measured by RNA-seq. Although we wrote this package to analyze RNA-seq data, it could also be adapted to analyze individual gene data from quantitative reverse rranscription polymerase chain reaction (qRT-PCR) measures, however, normalization (as herein described) is best performed using a number of stable reference genes.</p>
+<p>Raw (Illumina) RNA-seq data are typically libraries made of up 10M-250M short (50 nt) sequences. These sequences are aligned to the genome and counted based on the location of their alignment in annotated genomic ranges (e.g., genes, exons, etc). Read counts for each gene are normalized to the size of their respective RNA-seq library for comparison to libraries generated from other biological material, therefore, read counts are expressed as reads per million (RPM). We begin RNA decay analysis in this package with RPM RNA abundance data.</p>
 <div id="t0-normalization" class="section level2">
 <h2>1. T0 NORMALIZATION</h2>
-<p>Prior to modeling RNA decay using the double exponential model, we normalize the read counts to the initial (T0) RNA abundance, the transcript level just prior to blocking transcription. This is unique for each gene and in an experiment with multiple replicates (reps), we use the mean value for all T0 reps. All RPM values in the time course are divided by the mean T0 value. For example:</p>
+<p>Prior to modeling RNA decay, we normalize the read counts to the initial (T0) RNA abundance, the transcript level just prior to blocking transcription. This is unique for each gene and in an experiment with multiple replicates (reps), we use the mean value for all T0 reps. All RPM values in the time course are divided by the mean T0 value. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># you can see that in this fabricated data the RNAs have a half-life of ~30 min</span>
 RPM_geneX =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">T0 =</span> <span class="kw">c</span>(<span class="dv">150</span>, <span class="dv">135</span>, <span class="dv">148</span>), <span class="dt">T30 =</span> <span class="kw">c</span>(<span class="dv">72</span>, <span class="dv">76</span>, <span class="dv">69</span>), <span class="dt">T60 =</span> <span class="kw">c</span>(<span class="dv">35</span>, <span class="dv">35</span>, <span class="dv">30</span>), 
                      <span class="dt">row.names =</span> <span class="kw">paste0</span>(<span class="st">&quot;rep&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>))
@@ -269,11 +269,11 @@ mT0norm_<span class="fl">2.1</span><span class="op">$</span>rep =<span class="st
 <span class="kw">write.table</span>(<span class="dt">x =</span> mT0norm_<span class="fl">2.1</span>,  <span class="dt">file =</span> <span class="kw">paste0</span>(wrdir, 
 <span class="st">&quot;/ExampleDecayData+stableGenes.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre></div>
 <p>Following the steps in this vignettes, the resulting normalized data frame should be identical to the one supplied in this package called decaydata. To check:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(decaydata[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="op">==</span><span class="st"> </span>mT0norm_<span class="fl">2.1</span>[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]) <span class="co"># should be all TRUE no FALSE</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(RNAdecay<span class="op">::</span>decaydata[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="op">==</span><span class="st"> </span>mT0norm_<span class="fl">2.1</span>[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]) <span class="co"># should be all TRUE no FALSE</span></code></pre></div>
 <pre><code>## 
 ##  TRUE 
 ## 60416</code></pre>
-<p>The normalized data is now ready to be used for modeling decay rates described in <em>RNAdecay Vignette 2: Double Exponential RNA Decay Modeling</em>.</p>
+<p>The normalized data is now ready to be used for modeling decay rates described in <em>RNAdecay Vignette 2: RNA Decay Modeling</em>.</p>
 </div>
 
 

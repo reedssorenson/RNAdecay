@@ -1,7 +1,7 @@
 
-#' combined adjusteded coefficient of variation
+#' combined adjusted coefficient of variation
 #'
-#' calculates the sum across columns of the respective column standard devation / (the column mean + a small value to avoid dividing by 0 (\code{eps}))
+#' Calculates the sum of the column standard devation divided by the sum of the column mean and a small value to avoid dividing by 0 (\code{eps})
 #'
 #' @param X data.frame or matrix of numeric data
 #' @param eps small value to add to the mean to avoid dividing by 0; defaults to 1e-4

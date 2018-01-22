@@ -1,7 +1,7 @@
 
 #' DecayPlot() function
 #'
-#' plots RNA decay data and/or decay models using the ggplot2 package
+#' Plots RNA decay data and/or decay models using the ggplot2 package.
 #'
 #' @param geneID single gene ID from data set (e.g. "AT1G00100") for which to plot data/model
 #' @param xlim,ylim vector of length 2 defineing the limits of the plot (zooms in on data)

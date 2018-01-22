@@ -1,7 +1,7 @@
 
 #' sum of the squared errors for null models
 #'
-#' For a single or double expoenential decay model, calculates the sum of the squared errors (differences between the supplied data points and the modeled values based on alpha and/or beta values). For these models all treatments are assumed to have the same \code{a} (alpha) and/or \code{b} (beta).
+#' For a model that uses a constant decay rate or a decaying decay rate, calculates the sum of the squared errors (differences between the supplied data points and the modeled values based on alpha and/or beta values). For these models all treatments are assumed to have the same \code{a} (alpha) and/or \code{b} (beta).
 #'
 #' @param a alpha value
 #' @param b beta value

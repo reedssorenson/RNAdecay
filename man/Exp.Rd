@@ -20,7 +20,7 @@ dExp(t, par)
 returns abundance after time \code{t}  at alpha initial decay rate and beta decay of decay rate relative to an initial abundance of 1
 }
 \description{
-single exponential decay function (case when betas=0) e^-a*t; double exponential decay function  e^(-(a/b)*(1-e^(-b*t))); (normalized so at t=0 the function is 1)
+Constant decay rate function (Exp(), case when betas=0) e^-a*t; decaying decay rate function (dExp())  e^(-(a/b)*(1-e^(-b*t))). Functions are normalized so at t=0 the function is 1.
 }
 \examples{
 Exp(10,log(2)/10) ## returns 0.5

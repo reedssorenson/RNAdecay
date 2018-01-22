@@ -1,4 +1,5 @@
 Package: RNAdecay
+Date: 2018-01-22
 Title: Maximum Likelihood Decay Modeling of RNA Degradation Data
 Version: 0.99.0
 Authors@R: c(person("Reed", "Sorenson", email = "reedssorenson@gmail.com", role = c("aut", "cre")), person("Katrina", "Johnson", email = "kjohnson@math.utah.edu", role = c("aut")))

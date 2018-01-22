@@ -1,0 +1,4 @@
+RNAdecay News
+
+Jan. 22, 2018 - Version 0.99.0 submission to Bioconductor. 
+

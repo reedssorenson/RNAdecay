@@ -34,12 +34,12 @@ results[1:3, ]
 Optionally, for printing gene descriptions directly on the plot, load a gene description file and then generate a character vector of descriptions with elements named with geneIDs 
 (e.g. for _Arabidopsis thaliana_, download and unzip   https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/gene_description_20131231.txt.gz, and place it in your working directory).
 ```{r}
-gene_desc = read.delim("~/gene_description_20140101.txt", quote = NULL, comment = '', header = FALSE)
-gene_desc[, 1] = substr(gene_desc[, 1], 1, 9)
-gene_desc = data.frame(gene_desc[!duplicated(gene_desc[, 1]), ], row.names = 1)
-colnames(gene_desc) = c("type", "short description", "long description", "computational description")
-descriptions = gene_desc[, "long description"]
-names(descriptions) = rownames(gene_desc)
+#gene_desc = read.delim("~/gene_description_20140101.txt", quote = NULL, comment = '', header = FALSE)
+#gene_desc[, 1] = substr(gene_desc[, 1], 1, 9)
+#gene_desc = data.frame(gene_desc[!duplicated(gene_desc[, 1]), ], row.names = 1)
+#colnames(gene_desc) = c("type", "short description", "long description", "computational description")
+#descriptions = gene_desc[, "long description"]
+#names(descriptions) = rownames(gene_desc)
 ```
 
 ## 8. PRINT DECAY PLOTS TO PDF

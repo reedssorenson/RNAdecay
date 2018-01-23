@@ -89,7 +89,7 @@ wrdir =<span class="st"> &quot;~/DecayAnalysis/Example analysis results 2&quot;<
 <span class="cf">if</span>(<span class="op">!</span><span class="kw">file.exists</span>(wrdir)) <span class="kw">dir.create</span>(wrdir, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>Rename factor levels and specify level order of <code>decaydata$treatment</code> for sorting and making figures. The example data set is already ordered, but when data is read from a text file (e.g., .csv) factor levels are ordered automatically and should be reordered according to user preference now to avoid later headaches.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">levels</span>(decaydata<span class="op">$</span>treatment) <span class="co"># This can not be longer than 4 elements</span></code></pre></div>
-<pre><code>## [1] &quot;WT&quot;  &quot;sov&quot; &quot;vcs&quot; &quot;vs&quot;</code></pre>
+<pre><code>## [1] &quot;WT&quot;      &quot;sov&quot;     &quot;vcs&quot;     &quot;vcs.sov&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># decaydata$treatment = factor(decaydata$treatment, levels = levels(decaydata$treatment)[c(4, 1, 2, 3)]) # numbers here refer to the current order position in the factor levels() - the order of the numbers designates the new position</span>
 
 <span class="kw">levels</span>(decaydata<span class="op">$</span>treatment)[<span class="dv">4</span>] =<span class="st"> &quot;vcs.sov&quot;</span>
@@ -151,6 +151,112 @@ a.bounds;b.bounds</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only run once after installing RNAdecay pacakage</span>
 src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw">paste0</span>(<span class="kw">find.package</span>(<span class="st">&quot;RNAdecay&quot;</span>), <span class="st">&quot;/src&quot;</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)
 <span class="cf">for</span> (i <span class="cf">in</span> src_files) {TMB<span class="op">::</span><span class="kw">compile</span>(i)}</code></pre></div>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_1sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 3 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 4 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 5 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 6 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 7 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 8 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 9 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 10 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 11 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 12 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 13 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 14 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 15 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 16 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 17 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 18 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 19 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 20 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 21 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 22 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 23 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 24 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 25 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 26 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 27 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 28 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 29 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_1sse.o'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_2sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 3 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 4 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 5 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_2sse.o'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_3sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 3 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 4 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_3sse.o'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_4sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_dExp_4sse.o'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_1sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 3 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 4 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 5 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 6 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_1sse.o'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_2sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 3 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 4 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 5 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 6 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 7 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 8 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_2sse.o'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_3sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_3sse.o'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_4sse.dll'</code></pre>
+<pre><code>## Warning in readLines(file): line 1 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 2 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 3 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): line 4 appears to contain an embedded nul</code></pre>
+<pre><code>## Warning in readLines(file): incomplete final line found on 'C:/Users/rss95/
+## Documents/R/win-library/3.4/RNAdecay/src/general_Exp_4sse.o'</code></pre>
 <p>Load the compiled dynamically linked libraries.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">libs =<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.cpp&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">dir</span>(<span class="kw">paste0</span>(<span class="kw">find.package</span>(<span class="st">&quot;RNAdecay&quot;</span>), <span class="st">&quot;/src&quot;</span>), <span class="dt">pattern =</span> <span class="st">&quot;.cpp&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>))
 <span class="cf">for</span> (i <span class="cf">in</span> libs) {<span class="kw">dyn.load</span>(TMB<span class="op">::</span><span class="kw">dynlib</span>(i))}</code></pre></div>
@@ -158,29 +264,29 @@ src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw"
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">modOptimization</span>(<span class="st">&quot;AT2G18150&quot;</span>, decaydata, <span class="dt">group =</span> groups, <span class="dt">mod =</span> mods, a.bounds, b.bounds, <span class="kw">c</span>(<span class="st">&quot;mod1&quot;</span>, <span class="st">&quot;mod2&quot;</span>, <span class="st">&quot;mod16&quot;</span>, <span class="st">&quot;mod239&quot;</span>, <span class="st">&quot;mod240&quot;</span>), <span class="dt">file.only =</span> <span class="ot">FALSE</span>) </code></pre></div>
 <pre><code>## AT2G18150 done</code></pre>
 <pre><code>##           geneID    mod     alpha_WT    alpha_sov    alpha_vcs
-## mod1   AT2G18150   mod1 0.0001000000 0.0005096309 0.0008160446
-## mod2   AT2G18150   mod2 0.0001000004 0.0001000005 0.0008160467
-## mod16  AT2G18150  mod16 0.0001000001 0.0001000001 0.0006962391
+## mod1   AT2G18150   mod1 0.0001000000 0.0005096314 0.0008160446
+## mod2   AT2G18150   mod2 0.0001000007 0.0001000009 0.0008160514
+## mod16  AT2G18150  mod16 0.0001000003 0.0001000002 0.0006962869
 ## mod239 AT2G18150 mod239 0.0009407433 0.0009407433 0.0009407433
 ## mod240 AT2G18150 mod240 0.0001403765 0.0001403765 0.0001403765
 ##        alpha_vcs.sov    beta_WT    beta_sov    beta_vcs beta_vcs.sov
-## mod1    0.0019003662 0.07500000 0.074999999 0.001000000  0.001000000
-## mod2    0.0019003678 0.07499995 0.001000003 0.001000003  0.001000003
-## mod16   0.0016237714 0.00000000 0.000000000 0.000000000  0.000000000
+## mod1    0.0019003661 0.07500000 0.075000000 0.001000000  0.001000000
+## mod2    0.0019003680 0.07499942 0.001000004 0.001000004  0.001000004
+## mod16   0.0016237620 0.00000000 0.000000000 0.000000000  0.000000000
 ## mod239  0.0009407433 0.01558834 0.015588337 0.015588337  0.015588337
 ## mod240  0.0001403765 0.00000000 0.000000000 0.000000000  0.000000000
 ##           sigma2    logLik nPar nStarts  J     range.LL nUnique.LL
-## mod1   0.1155597 -43.51417    9      50 50 1.395798e-07          1
-## mod2   0.1162461 -43.89319    7      50 49 1.299387e-04          2
-## mod16  0.1178604 -44.77586    5      50 45 1.503381e-02          6
+## mod1   0.1155597 -43.51417    9      50 50 2.963922e-08          1
+## mod2   0.1162461 -43.89319    7      50 48 1.735464e-04          3
+## mod16  0.1178604 -44.77586    5      50 44 1.495362e-02          7
 ## mod239 0.1314419 -51.75597    3      50 50 0.000000e+00          1
-## mod240 0.1321416 -52.09573    2      49 49 3.765876e-13          1
+## mod240 0.1321416 -52.09573    2      50 50 3.765876e-13          1
 ##             C.alpha       C.beta        C.tot     AICc AICc_est
-## mod1   1.002421e-05 3.195232e-07 1.034373e-05 106.5538 106.5538
-## mod2   3.570865e-05 5.841542e-05 9.412407e-05 102.7197 102.7197
-## mod16  4.913026e-04 0.000000e+00 4.913026e-04 100.0435 100.0435
-## mod239 3.321722e-07 3.020418e-07 6.342140e-07 109.7055 109.7055
-## mod240 1.428318e-07 0.000000e+00 1.428318e-07 108.2875 108.2875</code></pre>
+## mod1   8.110746e-06 2.700518e-07 8.380797e-06 106.5538 106.5538
+## mod2   7.607641e-05 9.623695e-05 1.723134e-04 102.7197 102.7197
+## mod16  5.558231e-04 0.000000e+00 5.558231e-04 100.0435 100.0435
+## mod239 2.505552e-07 2.796234e-07 5.301786e-07 109.7055 109.7055
+## mod240 8.776488e-08 0.000000e+00 8.776488e-08 108.2875 108.2875</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">modOptimization</span>(<span class="st">&quot;AT4G09680&quot;</span>, decaydata, <span class="dt">group =</span> groups, <span class="dt">mod =</span> mods, a.bounds, b.bounds, <span class="kw">c</span>(<span class="st">&quot;mod1&quot;</span>, <span class="st">&quot;mod2&quot;</span>, <span class="st">&quot;mod16&quot;</span>, <span class="st">&quot;mod239&quot;</span>, <span class="st">&quot;mod240&quot;</span>), <span class="dt">file.only =</span> <span class="ot">FALSE</span>) </code></pre></div>
 <pre><code>## AT4G09680 done</code></pre>
 <pre><code>##           geneID    mod    alpha_WT   alpha_sov   alpha_vcs alpha_vcs.sov
@@ -196,17 +302,17 @@ src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw"
 ## mod239 0.004544744 0.004544744 0.004544744  0.004544744 0.008177741
 ## mod240 0.000000000 0.000000000 0.000000000  0.000000000 0.012303559
 ##           logLik nPar nStarts  J     range.LL nUnique.LL      C.alpha
-## mod1   175.33971    9      50 50 8.327561e-12          1 8.397136e-08
-## mod2   173.98757    7      50 50 2.188472e-12          1 6.550050e-08
-## mod16  134.39147    5      50 50 1.875833e-12          1 6.450925e-08
-## mod239 125.98159    3      50 50 0.000000e+00          1 2.249301e-08
-## mod240  99.83933    2      50 50 0.000000e+00          1 6.357051e-09
+## mod1   175.33971    9      50 50 2.899014e-12          1 5.730605e-08
+## mod2   173.98757    7      50 50 2.188472e-12          1 5.150165e-08
+## mod16  134.39147    5      50 50 2.444267e-12          1 6.779840e-08
+## mod239 125.98159    3      50 50 0.000000e+00          1 1.326783e-08
+## mod240  99.83933    2      50 50 0.000000e+00          1 7.626828e-09
 ##              C.beta        C.tot      AICc  AICc_est
-## mod1   1.821221e-07 2.660935e-07 -331.1540 -331.1540
-## mod2   1.103249e-07 1.758254e-07 -333.0418 -333.0418
-## mod16  0.000000e+00 6.450925e-08 -258.2911 -258.2911
-## mod239 4.924834e-08 7.174135e-08 -245.7696 -245.7696
-## mod240 0.000000e+00 6.357051e-09 -195.5827 -195.5827</code></pre>
+## mod1   1.093319e-07 1.666379e-07 -331.1540 -331.1540
+## mod2   9.449203e-08 1.459937e-07 -333.0418 -333.0418
+## mod16  0.000000e+00 6.779840e-08 -258.2911 -258.2911
+## mod239 2.842431e-08 4.169214e-08 -245.7696 -245.7696
+## mod240 0.000000e+00 7.626828e-09 -195.5827 -195.5827</code></pre>
 <p>Next, run all the models on each and every gene. This requires significant computational resources depending on data set size, number of models, and computing speed. The sample data set has 8 time points x 4 replicates each x 4 treatments (= 128 samples) for 118 genes and requires about 10 h processor time. 20000 genes at ~5 min each is ~70 d processor time, so be sure to test a few different models on a few handfuls of genes to feel comfortable running all the modeling. We recommend parallel processing (on multiple processor cores) using <code>parallel::mclapply</code> to cut overall time. If this function is unavailable on your machine (e.g., on <em>Windows</em>) you can use lapply, but it will take much longer. <code>modOptimization()</code> writes results to file in tab-delimited form and, optionally, can also return them as a data.frame object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">####### To run all genes in parallel use:
 <span class="co"># parallel::mclapply(ids, FUN = modOptimization, </span>
@@ -220,10 +326,10 @@ src_files =<span class="st"> </span><span class="kw">dir</span>(<span class="kw"
 <span class="co">#   mc.silent = FALSE,</span>
 <span class="co">#   mc.cleanup = TRUE,</span>
 <span class="co">#   mc.allow.recursive = TRUE)</span></code></pre></div>
-<p>The entire example data set takes ~ 10 h processor time with lapply so for this example we will randomly select two gene ID’s to run here.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test.ids =<span class="st"> </span><span class="kw">sample</span>(ids, <span class="dv">3</span>) <span class="co"># </span><span class="al">NOTE</span><span class="co">: that everytime this line is run it generates a different random sampling, therefore the genes modeled below will be different each time this code is run. To test the exact set of genes shown in the vignette make a new character vector of the gene ids reported below and pass it to the gene argument using lapply instead of passing 'test.ids' as we do here.  </span>
+<p>The entire example data set takes ~ 10 h processor time with lapply so for this example we will randomly select one gene ID to run here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test.ids =<span class="st"> </span><span class="kw">sample</span>(ids, <span class="dv">1</span>) <span class="co"># </span><span class="al">NOTE</span><span class="co">: that everytime this line is run it generates a different random sampling, therefore the gene modeled below will be different each time this code is run. To test the exact gene shown in the vignette make a new character vector of the gene id reported below and pass it to the gene argument of modOptimization using lapply instead of passing 'test.ids' as we do here.  </span>
 test.ids</code></pre></div>
-<pre><code>## [1] &quot;AT3G61210&quot; &quot;AT3G46090&quot; &quot;AT4G00975&quot;</code></pre>
+<pre><code>## [1] &quot;AT5G20830&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a =<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
 models =<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> test.ids, <span class="co"># alternatively use `ids` here to complete the entire sample data set, but be prepared to wait 10 h. These gene IDs will get passed one at time to the &quot;gene&quot; argument of modOptimization() and return a list of the results data.frame.</span>
                 <span class="dt">FUN =</span> modOptimization,
@@ -235,12 +341,12 @@ models =<span class="st"> </span><span class="kw">lapply</span>(<span class="dt"
                 <span class="dt">models =</span> <span class="kw">rownames</span>(mods), 
                 <span class="dt">path =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/modeling_results&quot;</span>),
                 <span class="dt">file.only =</span> <span class="ot">FALSE</span>) </code></pre></div>
-<pre><code>## AT3G61210 done     AT3G46090 done     AT4G00975 done</code></pre>
+<pre><code>## AT5G20830 done</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(models) =<span class="st"> </span>test.ids
 b =<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
 (b<span class="op">-</span>a)<span class="op">/</span><span class="dv">60</span><span class="op">/</span><span class="kw">length</span>(test.ids) <span class="co"># gives you average min per gene </span></code></pre></div>
-<pre><code>## elapsed 
-##   3.227</code></pre>
+<pre><code>##  elapsed 
+## 4.990833</code></pre>
 <p>For each gene, read in the results data frame written by <code>modOptimization()</code> as an element of a single list object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models =<span class="st"> </span><span class="kw">lapply</span>( <span class="kw">paste0</span>( wrdir, <span class="st">&quot;/modeling_results/&quot;</span>, test.ids, <span class="st">&quot;_results.txt&quot;</span>), read.delim, <span class="dt">header =</span> <span class="ot">TRUE</span> )   
 <span class="kw">names</span>(models) =<span class="st"> </span>test.ids</code></pre></div>

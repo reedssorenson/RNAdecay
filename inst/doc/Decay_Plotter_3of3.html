@@ -115,12 +115,15 @@ results[<span class="dv">1</span><span class="op">:</span><span class="dv">3</sp
 ## AT1G09660      13      4
 ## AT1G13360       4      2</code></pre>
 <p>Optionally, for printing gene descriptions directly on the plot, load a gene description file and then generate a character vector of descriptions with elements named with geneIDs (e.g. for <em>Arabidopsis thaliana</em>, download and unzip <a href="https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/gene_description_20131231.txt.gz" class="uri">https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/gene_description_20131231.txt.gz</a>, and place it in your working directory).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gene_desc =<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;~/gene_description_20140101.txt&quot;</span>, <span class="dt">quote =</span> <span class="ot">NULL</span>, <span class="dt">comment =</span> <span class="st">''</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>)
-gene_desc[, <span class="dv">1</span>] =<span class="st"> </span><span class="kw">substr</span>(gene_desc[, <span class="dv">1</span>], <span class="dv">1</span>, <span class="dv">9</span>)
-gene_desc =<span class="st"> </span><span class="kw">data.frame</span>(gene_desc[<span class="op">!</span><span class="kw">duplicated</span>(gene_desc[, <span class="dv">1</span>]), ], <span class="dt">row.names =</span> <span class="dv">1</span>)
-<span class="kw">colnames</span>(gene_desc) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;type&quot;</span>, <span class="st">&quot;short description&quot;</span>, <span class="st">&quot;long description&quot;</span>, <span class="st">&quot;computational description&quot;</span>)
-descriptions =<span class="st"> </span>gene_desc[, <span class="st">&quot;long description&quot;</span>]
-<span class="kw">names</span>(descriptions) =<span class="st"> </span><span class="kw">rownames</span>(gene_desc)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># gene_desc = read.delim(&quot;~/gene_description_20140101.txt&quot;, quote = NULL, comment = '', header = FALSE)</span>
+<span class="co"># gene_desc[, 1] = substr(gene_desc[, 1], 1, 9)</span>
+<span class="co"># gene_desc = data.frame(gene_desc[!duplicated(gene_desc[, 1]), ], row.names = 1)</span>
+<span class="co"># colnames(gene_desc) = c(&quot;type&quot;, &quot;short description&quot;, &quot;long description&quot;, &quot;computational description&quot;)</span>
+<span class="co"># descriptions = gene_desc[, &quot;long description&quot;]</span>
+<span class="co"># names(descriptions) = rownames(gene_desc)</span>
+
+descriptions=<span class="kw">c</span>(<span class="st">&quot;Encodes a ubiquitin E3 ligase with RING and SPX domains that is involved in mediating immune responses and mediates degradation of PHT1s at plasma membranes.  Targeted by MIR827. Ubiquitinates PHT1;3, PHT1;2, PHT1;1/AtPT1 and PHT1;4/AtPT2.&quot;</span>,<span class="st">&quot;&quot;</span>,<span class="st">&quot;Related to Cys2/His2-type zinc-finger proteins found in higher plants. Compensated for a subset of calcineurin deficiency in yeast. Salt tolerance produced by ZAT10 appeared to be partially dependent on ENA1/PMR2, a P-type ATPase required for Li+ and Na+ efflux in yeast. The protein is localized to the nucleus, acts as a transcriptional repressor and is responsive to chitin oligomers. Also involved in response to photooxidative stress.&quot;</span>,<span class="st">&quot;Encodes a stress enhanced protein that localizes to the thylakoid membrane and whose mRNA is upregulated in response to high light intensity.  It may be involved in chlorophyll binding.&quot;</span>)
+<span class="kw">names</span>(descriptions) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AT1G02860&quot;</span>,<span class="st">&quot;AT5G54730&quot;</span>, <span class="st">&quot;AT1G27730&quot;</span>, <span class="st">&quot;AT4G34190&quot;</span>)</code></pre></div>
 </div>
 <div id="print-decay-plots-to-pdf" class="section level2">
 <h2>8. PRINT DECAY PLOTS TO PDF</h2>

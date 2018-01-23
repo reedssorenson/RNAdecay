@@ -132,9 +132,9 @@ Next, run all the models on each and every gene. This requires significant compu
 #   mc.allow.recursive = TRUE)
 ```
 
-The entire example data set takes ~ 10 h processor time with lapply so for this example we will randomly select two gene ID's to run here. 
+The entire example data set takes ~ 10 h processor time with lapply so for this example we will randomly select one gene ID to run here. 
 ```{r}
-test.ids = sample(ids, 3) # NOTE: that everytime this line is run it generates a different random sampling, therefore the genes modeled below will be different each time this code is run. To test the exact set of genes shown in the vignette make a new character vector of the gene ids reported below and pass it to the gene argument using lapply instead of passing 'test.ids' as we do here.  
+test.ids = sample(ids, 1) # NOTE: that everytime this line is run it generates a different random sampling, therefore the gene modeled below will be different each time this code is run. To test the exact gene shown in the vignette make a new character vector of the gene id reported below and pass it to the gene argument of modOptimization using lapply instead of passing 'test.ids' as we do here.  
 test.ids
 
 a = proc.time()[3]

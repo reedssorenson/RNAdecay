@@ -72,7 +72,7 @@ modOptimization("AT4G09680", decaydata, group = groups, mod = mods, a.bounds, b.
 #   mc.allow.recursive = TRUE)
 
 ## ------------------------------------------------------------------------
-test.ids = sample(ids, 3) # NOTE: that everytime this line is run it generates a different random sampling, therefore the genes modeled below will be different each time this code is run. To test the exact set of genes shown in the vignette make a new character vector of the gene ids reported below and pass it to the gene argument using lapply instead of passing 'test.ids' as we do here.  
+test.ids = sample(ids, 1) # NOTE: that everytime this line is run it generates a different random sampling, therefore the gene modeled below will be different each time this code is run. To test the exact gene shown in the vignette make a new character vector of the gene id reported below and pass it to the gene argument of modOptimization using lapply instead of passing 'test.ids' as we do here.  
 test.ids
 
 a = proc.time()[3]

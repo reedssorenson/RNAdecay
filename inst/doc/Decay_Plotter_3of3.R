@@ -13,12 +13,15 @@ results=RNAdecay::results # built-in package example data; comment this line out
 results[1:3, ]
 
 ## ------------------------------------------------------------------------
-gene_desc = read.delim("~/gene_description_20140101.txt", quote = NULL, comment = '', header = FALSE)
-gene_desc[, 1] = substr(gene_desc[, 1], 1, 9)
-gene_desc = data.frame(gene_desc[!duplicated(gene_desc[, 1]), ], row.names = 1)
-colnames(gene_desc) = c("type", "short description", "long description", "computational description")
-descriptions = gene_desc[, "long description"]
-names(descriptions) = rownames(gene_desc)
+# gene_desc = read.delim("~/gene_description_20140101.txt", quote = NULL, comment = '', header = FALSE)
+# gene_desc[, 1] = substr(gene_desc[, 1], 1, 9)
+# gene_desc = data.frame(gene_desc[!duplicated(gene_desc[, 1]), ], row.names = 1)
+# colnames(gene_desc) = c("type", "short description", "long description", "computational description")
+# descriptions = gene_desc[, "long description"]
+# names(descriptions) = rownames(gene_desc)
+
+descriptions=c("Encodes a ubiquitin E3 ligase with RING and SPX domains that is involved in mediating immune responses and mediates degradation of PHT1s at plasma membranes.  Targeted by MIR827. Ubiquitinates PHT1;3, PHT1;2, PHT1;1/AtPT1 and PHT1;4/AtPT2.","","Related to Cys2/His2-type zinc-finger proteins found in higher plants. Compensated for a subset of calcineurin deficiency in yeast. Salt tolerance produced by ZAT10 appeared to be partially dependent on ENA1/PMR2, a P-type ATPase required for Li+ and Na+ efflux in yeast. The protein is localized to the nucleus, acts as a transcriptional repressor and is responsive to chitin oligomers. Also involved in response to photooxidative stress.","Encodes a stress enhanced protein that localizes to the thylakoid membrane and whose mRNA is upregulated in response to high light intensity.  It may be involved in chlorophyll binding.")
+names(descriptions) = c("AT1G02860","AT5G54730", "AT1G27730", "AT4G34190")
 
 ## ---- fig.show = 'hold'--------------------------------------------------
 p = DecayPlot(geneID = "AT1G02860", 

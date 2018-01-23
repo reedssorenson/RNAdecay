@@ -34,10 +34,15 @@
 #' optimizations that converged on the highest maximum likelihood of all starting parameter value sets.)
 #'
 #' @examples
+#' if(file.exists(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))) {
+#' unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))}
+#' if(file.exists(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))) {
+#' unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))}
 #' TMB::compile(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse.cpp"))
 #' TMB::compile(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse.cpp"))
 #' dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))
 #' dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))
+
 #' modOptimization(gene = "Gene_BooFu",
 #'                 data = data.frame(geneID=rep("Gene_BooFu",30),
 #'                             treatment=c(rep("WT",15),rep("mut",15)),
@@ -58,8 +63,6 @@
 #'                         dimnames=list(c("a","b"),paste0("mod",1:6))))))
 #' # to delete compiled dynamic libraries (i.e., you will need to recompile them to use them
 #' # if you do this):
-#' unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))
-#' unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))
 #'
 
 

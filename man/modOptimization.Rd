@@ -49,6 +49,10 @@ The function does the following for each gene:
 (6) returns the optimized parameter estimates, with model selection statistics.
 }
 \examples{
+if(file.exists(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))) {
+unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))}
+if(file.exists(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))) {
+unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))}
 TMB::compile(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse.cpp"))
 TMB::compile(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse.cpp"))
 dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))
@@ -73,7 +77,5 @@ modOptimization(gene = "Gene_BooFu",
                         dimnames=list(c("a","b"),paste0("mod",1:6))))))
 # to delete compiled dynamic libraries (i.e., you will need to recompile them to use them
 # if you do this):
-unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))
-unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))
 
 }

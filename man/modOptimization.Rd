@@ -50,9 +50,11 @@ The function does the following for each gene:
 }
 \examples{
 if(file.exists(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))) {
-unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))}
+unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))
+unlink(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse.o"))}
 if(file.exists(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))) {
-unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))}
+unlink(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))
+unlink(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse.o"))}
 TMB::compile(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse.cpp"))
 TMB::compile(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse.cpp"))
 dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))

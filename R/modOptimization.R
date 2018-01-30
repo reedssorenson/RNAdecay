@@ -44,7 +44,7 @@
 #' TMB::compile(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse.cpp"))
 #' dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_Exp_2sse")))
 #' dyn.load(TMB::dynlib(paste0(find.package("RNAdecay"), "/src/general_dExp_2sse")))
-
+#'
 #' modOptimization(gene = "Gene_BooFu",
 #'                 data = data.frame(geneID=rep("Gene_BooFu",30),
 #'                             treatment=c(rep("WT",15),rep("mut",15)),
@@ -62,7 +62,8 @@
 #'                 group = t(matrix(c(1,2,1,1,NA,NA),nrow=2,
 #'                           dimnames=list(c("treat1","treat2"),c("mod1","mod2","mod3")))),
 #'                 mod = as.data.frame(t(matrix(c(1,1,1,2,1,3,2,1,2,2,2,3),nrow=2,
-#'                         dimnames=list(c("a","b"),paste0("mod",1:6))))))
+#'                         dimnames=list(c("a","b"),paste0("mod",1:6))))),
+#'                 file.only = FALSE)
 #'
 
 
@@ -223,7 +224,7 @@ modOptimization = function(gene, data, alpha.bounds, beta.bounds, models, group,
   results=results[order(as.numeric(gsub("mod","",results$mod))),]
 
   utils::write.table(results, paste0(path,"/",gene,"_results.txt"),sep="\t")
-  cat(gene,"done     ")#; utils::timestamp()
+  cat(gene,"done     \n")#; utils::timestamp()
 
 return( if(file.only) invisible(NULL) else results)
 

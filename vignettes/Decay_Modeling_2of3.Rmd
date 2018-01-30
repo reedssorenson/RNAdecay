@@ -96,7 +96,7 @@ Modeling is accomplished using the `modOptimization()` function. The function ta
 
 Efficient model parameter optimization is accomplished using objective functions coded as binary dynamically linked libraries. These libraries are compiled from functions coded in the C++ language on each machine using functionality of the `TMB` package.
 
-First, compile the C++ source code into dynamically linked library (\*.dll, for Windows) or shared object (\*.so, linux and Mac) files for each of the objective functions. This only needs to be done once on your machine after installation of the package. Compiling C++ code requires a compiler be installed separatedly on your system (e.g., Rtools34 or later for Windows,  https://cran.r-project.org/bin/windows/Rtools/; Xcode comand line tools for Mac, http://railsapps.github.io/xcode-command-line-tools.html; R development package for Linux, r-base-dev). If you don't already have one of these installed, stop and install one and restart R. C++ source files are located in the installed 'RNAdecay/src' folder. The compiled files should also be written to this same folder.
+First, compile the C++ source code into dynamically linked library (\*.dll, for Windows) or shared object (\*.so, linux and Mac) files for each of the objective functions. This only needs to be done once on your machine after installation of the package. Compiling C++ code requires a compiler be installed separatedly on your system (e.g., Rtools34 or later for Windows,  https://cran.r-project.org/bin/windows/Rtools/; Xcode comand line tools for Mac, http://railsapps.github.io/xcode-command-line-tools.html; R development package for Linux, r-base-dev). If you don't already have one of these installed, stop and install one and restart R. C++ source files are located in the installed 'RNAdecay/src' folder. The compiled (shared library) files should also be written to this same folder.
 
 ```{r}
 # only run once after installing RNAdecay pacakage
@@ -179,14 +179,14 @@ library(ggplot2)
 pdf(paste0(wrdir,"/distributions of stats.pdf"))
 p = ggplot(results)
 print(p+geom_histogram(aes(x = sigma2), bins = 300)+
-        xlim(0,0.5)+
-        geom_vline(xintercept = 0.0625)+
+        coord_cartesian(xlim=c(0,0.5))+
+        geom_vline(xintercept = 0.0625,color="red2")+
         myTheme())
-print(p+stat_bin(aes(x = sigma2), breaks = c(seq(0,0.25,0.25/50),Inf), geom = "bar"))
+print(p+stat_bin(aes(x = sigma2), breaks = c(seq(0,0.25,0.25/50),1), geom = "bar")+coord_cartesian(xlim = c(0,0.25)))
 print(p+stat_ecdf(aes(sigma2), geom = "line")+
-        xlim(c(0,sqrt(0.5))))
+        coord_cartesian(xlim=c(0,0.5)))
 print(p+stat_ecdf(aes(sqrt(sigma2)), geom = "line")+
-        xlim(c(0,0.5)))
+        coord_cartesian(xlim=c(0,sqrt(0.5))))
 print(p+geom_histogram(aes(x = range.LL), bins = 60))
 print(p+geom_histogram(aes(x = nUnique.LL), bins = 60))
 dev.off()

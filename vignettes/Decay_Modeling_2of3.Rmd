@@ -100,8 +100,12 @@ First, compile the C++ source code into dynamically linked library (\*.dll, for 
 
 ```{r}
 # only run once after installing RNAdecay pacakage
-src_files = dir(paste0(find.package("RNAdecay"), "/src"), full.names = TRUE)
+src_path = paste0(find.package("RNAdecay"), "/src")
+src_files = dir(src_path)
+wd = getwd()
+setwd(src_path) # this step is necessary to avoid passing file paths with spaces to the 'make' file (e.g., "Program Files".
 for (i in src_files) {TMB::compile(i)}
+setwd(wd); rm(wd)
 ```
 
 Load the compiled dynamically linked libraries. 

@@ -3,6 +3,8 @@
 
 \section{CHANGES IN VERSION 1.0.0}{\itemize{RNAdecay is released on Bioconductor.}}
 
+\section{CHANGES IN VERSION 0.99.9}{\itemize{7th set of changes made to be compatible with Bioconductor requirements.}}
+
 \section{CHANGES IN VERSION 0.99.8}{\itemize{7th set of changes made to be compatible with Bioconductor requirements.}}
 
 \section{CHANGES IN VERSION 0.99.7}{\itemize{7th set of changes made to be compatible with Bioconductor requirements.}}

@@ -11,7 +11,7 @@
 #' (6) returns the optimized parameter estimates, with model selection statistics.
 #'
 #' @param gene geneID from \code{data} to be modeled
-#' @param data decay data data.frame with columns including
+#' @param data decay data data.frame with columns named "geneID", "treatment", "t.decay", "rep", "value."
 #' @param models vector spceifying which models to run optimization on (e.g., c("mod1", "mod239"))
 #' @param alpha.bounds vector of length 2 with lower and upper bounds for alpha
 #' @param beta.bounds vector of length 2 with lower and upper bounds for beta

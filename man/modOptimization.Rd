@@ -10,7 +10,7 @@ modOptimization(gene, data, alpha.bounds, beta.bounds, models, group, mod,
 \arguments{
 \item{gene}{geneID from \code{data} to be modeled}
 
-\item{data}{decay data data.frame with columns including}
+\item{data}{decay data data.frame with columns named "geneID", "treatment", "t.decay", "rep", "value."}
 
 \item{alpha.bounds}{vector of length 2 with lower and upper bounds for alpha}
 

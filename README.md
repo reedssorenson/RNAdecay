@@ -6,6 +6,6 @@ C++ compilation is required by the user. Modeling makes use of the functionality
 To install and use the development version of `RNAdecay` use the following commands on the R console: 
 ```{r}
 install.packages("devtools")
-devtools::install_github("reedssorenson/RNAdecay")
+devtools::install_github("reedssorenson/RNAdecay@R-v4.2")
 library(RNAdecay)
 ```

@@ -14,6 +14,7 @@
 #' @examples
 #' LL.fun(1,1/128,128)
 
-LL.fun <- function(x,y,n){
-  -(n/2)*log(2*pi*y) - (1/(2*y))*x
+
+LL.fun <- function(x, y, n) {
+  -(n / 2) * log(2 * pi * y) - (1 / (2 * y)) * x
 }

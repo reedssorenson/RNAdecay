@@ -43,6 +43,7 @@
 #' print(p)
 #'
 
+
 DecayPlot = function(geneID,
                      xlim = c(0, 500),
                      ylim = c(0, 1.25),
@@ -85,7 +86,7 @@ DecayPlot = function(geneID,
     xticks = c(0, 1:5 * diff(xlim) / 5 + xlim[1])
   names(colors) = Geno
   p = ggplot2::ggplot(data = DATA[DATA$geneID == geneID &
-                                    DATA$treatment %in% Geno, ])
+                                    DATA$treatment %in% Geno,])
   if (any(what %in% "Desc")) {
     p = p +
       ggplot2::annotate(
@@ -102,7 +103,7 @@ DecayPlot = function(geneID,
         vjust = 1,
         hjust = 0.5,
         color = grDevices::gray(0.4),
-        size = alphaSZ*0.3,
+        size = alphaSZ * 0.3,
         family = c("mono"),
         fontface = "plain",
         angle = 0
@@ -144,7 +145,7 @@ DecayPlot = function(geneID,
           color = "black",
           vjust = -0.5,
           hjust = 1,
-          size = (alphaSZ/1.3)*1.5,
+          size = (alphaSZ / 1.3) * 1.5,
           alpha = 0.5
         )
     }
@@ -166,7 +167,7 @@ DecayPlot = function(geneID,
       ) +
       ggplot2::stat_summary(
         ggplot2::aes(x = t.decay, y = value, color = treatment),
-        #                   fun.data=mean_cl_normal,mult = 1,geom = "errorbar", size=0.35,alpha=0.6) # 95 % confidence interval error bars
+        #fun.data=mean_cl_normal,mult = 1,geom = "errorbar", size=0.35,alpha=0.6) # 95 % confidence interval error bars
         fun.data = ggplot2::mean_se,
         geom = "errorbar",
         size = 0.35,
@@ -194,7 +195,8 @@ DecayPlot = function(geneID,
           ggplot2::geom_line(
             data = data.frame(
               x = xlim[1]:xlim[2],
-              y = fun_exp(xlim[1]:xlim[2], a = unlist(mod.results[geneID, paste0("alpha_", gsub(" ", ".", g))]))
+              y = fun_exp(xlim[1]:xlim[2],
+                          a = unlist(mod.results[geneID, paste0("alpha_", gsub(" ", ".", g))]))
             ),
             ggplot2::aes(x = x, y = y),
             color = colors[g],
@@ -208,7 +210,9 @@ DecayPlot = function(geneID,
           ggplot2::geom_line(
             data = data.frame(
               x = xlim[1]:xlim[2],
-              y = dExp(xlim[1]:xlim[2], par = unlist(mod.results[geneID, paste0(c("alpha_", "beta_"), gsub(" ", ".", g))]))
+              y = dExp(xlim[1]:xlim[2],
+                       par = unlist(mod.results[geneID, paste0(c("alpha_", "beta_"),
+                                                               gsub(" ", ".", g))]))
             ),
             ggplot2::aes(x = x, y = y),
             color = colors[g],
@@ -233,4 +237,3 @@ DecayPlot = function(geneID,
     ggplot2::scale_shape(guide = 'none')
   return(p)
 }
-

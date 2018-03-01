@@ -20,14 +20,15 @@
 #'            m = c(1,1,1,0.99,0.5,0.5,0.5,0.49,0.25,0.25,0.25,0.24,0.12,0.125,0.125,0.126),
 #'            t = rep(c(0,10,20,30),each = 4))
 
-sse.nulldExp.fun <- function(a,b,m,t){
-  sum((m-exp(-(a/b)*(1-exp(-b*t))))^2)
+
+sse.nulldExp.fun <- function(a, b, m, t) {
+  sum((m - exp(-(a / b) * (1 - exp(
+    -b * t
+  )))) ^ 2)
 }
 
 #' @rdname sse.nulldExp.fun
 #' @export
-sse.nullExp.fun <- function(a,m,t){
-  sum((m-exp(-a*t))^2)
+sse.nullExp.fun <- function(a, m, t) {
+  sum((m - exp(-a * t)) ^ 2)
 }
-
-

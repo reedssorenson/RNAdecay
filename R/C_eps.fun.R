@@ -13,10 +13,11 @@
 #' @examples
 #' C_eps.fun(data.frame(test1=rep(0,5),test2=c(0.2,0.3,0.35,0.27,0.21)))
 
-C_eps.fun <- function(X,eps=1e-4){
+
+C_eps.fun <- function(X, eps = 1e-04) {
   Y <- as.matrix(X)
-  sd.Y <- apply(Y,2,stats::sd)
-  mean.Y <- apply(Y,2,mean)
-  return(sum(sd.Y/(mean.Y+eps)))
+  sd.Y <- apply(Y, 2, stats::sd)
+  mean.Y <- apply(Y, 2, mean)
+  return(sum(sd.Y / (mean.Y + eps)))
 }
 

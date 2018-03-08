@@ -29,7 +29,7 @@ constraint_fun_list_maker = function(mods, groups) {
     function(body.subset,
              args,
              body,
-             last.line = nrow(groups),
+             last.line,
              env = parent.frame()) {
       f <- function() {
 
@@ -76,31 +76,21 @@ constraint_fun_list_maker = function(mods, groups) {
             g <-
               numeric(),
             g[length(g) + 1] <- pars[1] - pars[2],
-            g[length(g) +
-                1] <-
-              pars[1] - pars[3],
+            g[length(g) + 1] <- pars[1] - pars[3],
             g[length(g) + 1] <- pars[1] - pars[4],
-            g[length(g) +
-                1] <-
-              pars[2] - pars[3],
+            g[length(g) + 1] <- pars[2] - pars[3],
             g[length(g) + 1] <- pars[2] - pars[4],
-            g[length(g) +
-                1] <-
-              pars[3] - pars[4],
+            g[length(g) + 1] <- pars[3] - pars[4],
             g[length(g) + 1] <- pars[5] - pars[6],
-            g[length(g) +
-                1] <-
-              pars[5] - pars[7],
+            g[length(g) + 1] <- pars[5] - pars[7],
             g[length(g) + 1] <- pars[5] - pars[8],
-            g[length(g) +
-                1] <-
-              pars[6] - pars[7],
+            g[length(g) + 1] <- pars[6] - pars[7],
             g[length(g) + 1] <- pars[6] - pars[8],
-            g[length(g) +
-                1] <- pars[7] - pars[8],
+            g[length(g) + 1] <- pars[7] - pars[8],
             return(g)
           )
-        ))
+        )),
+        last.line = 16
       )
     })
   }
@@ -120,23 +110,17 @@ constraint_fun_list_maker = function(mods, groups) {
         args = alist(pars =),
         body = as.call(c(
           as.name("{"),
-          expression(
-            g <-
-              numeric(),
+          expression(g <- numeric(),
             g[length(g) + 1] <- pars[1] - pars[2],
-            g[length(g) +
-                1] <-
-              pars[1] - pars[3],
+            g[length(g) + 1] <- pars[1] - pars[3],
             g[length(g) + 1] <- pars[2] - pars[3],
-            g[length(g) +
-                1] <-
-              pars[4] - pars[5],
+            g[length(g) + 1] <- pars[4] - pars[5],
             g[length(g) + 1] <- pars[4] - pars[6],
-            g[length(g) +
-                1] <- pars[5] - pars[6],
+            g[length(g) + 1] <- pars[5] - pars[6],
             return(g)
           )
-        ))
+        )),
+        last.line = 10
       )
     })
   }
@@ -156,10 +140,13 @@ constraint_fun_list_maker = function(mods, groups) {
         args = alist(pars =),
         body = as.call(c(
           as.name("{"),
-          expression(g <-
-                       numeric(), g[length(g) + 1] <- pars[1] - pars[2], g[length(g) +
-                                                                             1] <- pars[3] - pars[4], return(g))
-        ))
+          expression(g <- numeric(),
+                     g[length(g) + 1] <- pars[1] - pars[2],
+                     g[length(g) + 1] <- pars[3] - pars[4],
+                     return(g)
+                     )
+        )),
+        last.line = 6
       )
     })
 
@@ -183,8 +170,11 @@ constraint_fun_list_maker = function(mods, groups) {
         args = alist(pars =),
         body = as.call(c(
           as.name("{"),
-          expression(g <- numeric(), return(g))
-        ))
+          expression(g <- numeric(),
+                     return(g)
+                     )
+        )),
+        last.line = 4
       )
     })
   }

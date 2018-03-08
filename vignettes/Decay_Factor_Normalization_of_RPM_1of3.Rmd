@@ -26,7 +26,7 @@ RPM_geneX_T0norm
 colMeans(RPM_geneX_T0norm)
 ```
 
-The following workflow simplifies this process on an example data set included in this package (from Sorenson et al., 2017) which we will use throughout the vignettes. It has 4 genotypes, 8 time points, and 4 biological replicates for 128 samples (columns) and 118 genes (rows). This script demends on column names consisting of unique, non-nested variable tags separated by underscores ('_'), rownames are gene ID's. 
+The following workflow simplifies this process on an example data set included in this package (from Sorenson et al., 2017) which we will use throughout the vignettes. It has 4 genotypes, 8 time points, and 4 biological replicates for 128 samples (columns) and 118 genes (rows). _This workflow depends on begining with a data.frame of RPM values with column names consisting of unique, non-nested variable tags separated by underscores ('\_'), with rownames as unique gene identifiers._ 
 ```{r}
 library(RNAdecay)
 RPMs[1:2, c(1:11, 128)] # built-in example data

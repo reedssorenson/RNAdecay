@@ -45,19 +45,6 @@ a.bounds;b.bounds
 groupMap(decaydata = decaydata, path = paste0(wrdir, "/Model grouping colormap.pdf"), nEquivGrp = nEquivGrp, groups = groups, mods = mods)
 
 ## ------------------------------------------------------------------------
-# only run once after installing RNAdecay pacakage
-src_path = paste0(find.package("RNAdecay"), "/src")
-src_files = dir(src_path)
-wd = getwd()
-setwd(src_path) # this step is necessary to avoid passing file paths with spaces to the 'make' file (e.g., "Program Files".
-for (i in src_files) {TMB::compile(i)}
-setwd(wd); rm(wd)
-
-## ------------------------------------------------------------------------
-libs = gsub(".cpp", "", dir(paste0(find.package("RNAdecay"), "/src"), pattern = ".cpp", full.names = TRUE))
-for (i in libs) {dyn.load(TMB::dynlib(i))}
-
-## ------------------------------------------------------------------------
 modOptimization("AT2G18150", decaydata, group = groups, mod = mods, a.bounds, b.bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file.only = FALSE) 
 modOptimization("AT4G09680", decaydata, group = groups, mod = mods, a.bounds, b.bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file.only = FALSE) 
 
@@ -75,7 +62,7 @@ modOptimization("AT4G09680", decaydata, group = groups, mod = mods, a.bounds, b.
 #   mc.cleanup = TRUE,
 #   mc.allow.recursive = TRUE)
 
-## ------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
 test.ids = sample(ids, 1) # NOTE: that everytime this line is run it generates a different random sampling, therefore the gene modeled below will be different each time this code is run. To test the exact gene shown in the vignette make a new character vector of the gene id reported below and pass it to the gene argument of modOptimization using lapply instead of passing 'test.ids' as we do here.  
 test.ids
 
@@ -94,11 +81,11 @@ names(models) = test.ids
 b = proc.time()[3]
 (b-a)/60/length(test.ids) # gives you average min per gene 
 
-## ------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
 models = lapply( paste0( wrdir, "/modeling_results/", test.ids, "_results.txt"), read.delim, header = TRUE )   
 names(models) = test.ids
 
-## ------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
 models = RNAdecay::models # built-in data, comment this line out to continue with your own modelling output
 results = t(sapply(models, function(x) x[x[, "AICc"]==min(x[, "AICc"]), ]))
 results = as.data.frame(results)
@@ -107,7 +94,7 @@ results[, -c(1,2)] = sapply(results[, -c(1,2)], unlist)
 write.table(results, file = paste0(wrdir,"/best model results.txt"), sep = "\t")
 results = read.delim(paste0(wrdir,"/best model results.txt"))
 
-## ------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
 library(ggplot2)
 pdf(paste0(wrdir,"/distributions of stats.pdf"))
 p = ggplot(results)
@@ -134,7 +121,7 @@ p = ggplot(data = data.frame(
 print(p+myTheme(25))
 dev.off()
 
-## ------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
 minMods = sapply(models, function(x) which (x[, "AICc"] < (2+min(x[, "AICc"])))) 
 minAMods = lapply(minMods, function(x) unique(mods[x, "a"]))
 
@@ -145,7 +132,7 @@ barplot(height = table(sapply(minAMods, length)), xlab = "No. alpha groups in th
         ylab = "No. genes")
 dev.off()
 
-## ------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
 results = read.delim(paste0(wrdir,"/best model results.txt"))
 results$alpha_grp = mods[as.character(results$mod), "a"]
 results$beta_grp = mods[as.character(results$mod), "b"]

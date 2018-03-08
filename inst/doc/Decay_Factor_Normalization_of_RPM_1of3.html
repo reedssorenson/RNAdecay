@@ -12,7 +12,7 @@
 
 <meta name="author" content="Reed Sorenson | reed.sorenson@utah.edu | Department of Biology | University of Utah" />
 
-<meta name="date" content="2018-01-31" />
+<meta name="date" content="2018-03-16" />
 
 <title>RNAdecay Vignette 1: Decay Factor Normalization of RNA-seq RPM data for Decay Modeling</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore"><em>RNAdecay</em> Vignette 1: Decay Factor Normalization of RNA-seq RPM data for Decay Modeling</h1>
 <h4 class="author"><em>Reed Sorenson | <a href="mailto:reed.sorenson@utah.edu">reed.sorenson@utah.edu</a> | Department of Biology | University of Utah</em></h4>
-<h4 class="date"><em>2018-01-31</em></h4>
+<h4 class="date"><em>2018-03-16</em></h4>
 
 
 
@@ -96,7 +96,7 @@ RPM_geneX_T0norm</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colMeans</span>(RPM_geneX_T0norm)</code></pre></div>
 <pre><code>##        T0       T30       T60 
 ## 1.0000000 0.5011547 0.2309469</code></pre>
-<p>The following workflow simplifies this process on an example data set included in this package (from Sorenson et al., 2017) which we will use throughout the vignettes. It has 4 genotypes, 8 time points, and 4 biological replicates for 128 samples (columns) and 118 genes (rows). This script demends on column names consisting of unique, non-nested variable tags separated by underscores (’_’), rownames are gene ID’s.</p>
+<p>The following workflow simplifies this process on an example data set included in this package (from Sorenson et al., 2017) which we will use throughout the vignettes. It has 4 genotypes, 8 time points, and 4 biological replicates for 128 samples (columns) and 118 genes (rows). <em>This workflow depends on begining with a data.frame of RPM values with column names consisting of unique, non-nested variable tags separated by underscores (‘_’), with rownames as unique gene identifiers.</em></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(RNAdecay)
 RPMs[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>, <span class="dv">128</span>)] <span class="co"># built-in example data</span></code></pre></div>
 <pre><code>##           WT_00_r1  WT_07_r1  WT_15_r1  WT_30_r1  WT_60_r1 WT_120_r1

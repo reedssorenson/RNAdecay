@@ -12,14 +12,20 @@ constraint_fun_list_maker(mods, groups)
 \item{groups}{grouping matrix for alphas or betas}
 }
 \value{
-Returns a list of constraint functions to be passed to the optimization function.
+Returns a list of constraint functions to be passed to the
+optimization function.
 }
 \description{
-Individual double exponential models are all nested within model number 1 in which alpha and beta parameters vary independently for each treatment. Models that assume no difference in parameters between specific treatments manifest as constraints in the modeling. These constraints are coded as functions that are passed to the optimization process. Each model has a distinct constraint function.
+Individual double exponential models are all nested within model number 1 in
+which alpha and beta parameters vary independently for each treatment. Models
+that assume no difference in parameters between specific treatments manifest
+as constraints in the modeling. These constraints are coded as functions
+that are passed to the optimization process. Each model has a distinct
+constraint function.
 }
 \examples{
 constraint_fun_list_maker(mods=data.frame(a=c(1,1,1,2,2,2),b=c(1,2,3,1,2,3),
-                          row.names=paste0("mod",1:6)),
+                          row.names=paste0('mod',1:6)),
                           groups= data.frame(treat1=c(1,1,NA),treat2=c(2,1,NA)))
 
 }

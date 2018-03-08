@@ -20,6 +20,15 @@
 #' @param file.only logical; should output only be written to file (TRUE) or also return a data.frame of the results (FALSE)
 #' @param path specify folder for output to be written
 #'
+#' @useDynLib general_dExp_4sse
+#' @useDynLib general_Exp_4sse
+#' @useDynLib general_dExp_3sse
+#' @useDynLib general_Exp_3sse
+#' @useDynLib general_dExp_2sse
+#' @useDynLib general_Exp_2sse
+#' @useDynLib general_dExp_1sse
+#' @useDynLib general_Exp_1sse
+#'
 #' @export
 #'
 #' @return returns (if \code{file.only = FALSE}) and writes to \code{path} a data frame of model optimization results for \code{models} one row for each for
@@ -34,17 +43,6 @@
 #' optimizations that converged on the highest maximum likelihood of all starting parameter value sets.)
 #'
 #' @examples
-#' wd = getwd()
-#' setwd(paste0(find.package("RNAdecay"), "/src"))
-#' if(file.exists(TMB::dynlib("general_Exp_2sse"))) {
-#' unlink(c(TMB::dynlib("general_Exp_2sse"),"general_Exp_2sse.o"))}
-#' if(file.exists(TMB::dynlib("general_dExp_2sse"))) {
-#' unlink(c(TMB::dynlib("general_dExp_2sse"),"general_dExp_2sse.o"))}
-#' TMB::compile("general_Exp_2sse.cpp")
-#' TMB::compile("general_dExp_2sse.cpp")
-#' dyn.load(TMB::dynlib("general_Exp_2sse"))
-#' dyn.load(TMB::dynlib("general_dExp_2sse"))
-#' setwd(wd); rm(wd)
 #'
 #' modOptimization(gene = "Gene_BooFu",
 #'                 data = data.frame(geneID=rep("Gene_BooFu",30),

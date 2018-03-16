@@ -13,6 +13,7 @@
 #' @examples
 #' sig.fun(1,128)
 
-sig.fun <- function(x,n){
-  x/n
+
+sig.fun <- function(x, n) {
+  x / n
 }

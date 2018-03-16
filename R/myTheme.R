@@ -14,6 +14,7 @@
 #'
 #' @examples myTheme(10)
 
+
 myTheme = function(bigFont = 30,
                    smFont = 0.85,
                    x.ang = 0,

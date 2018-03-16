@@ -14,10 +14,13 @@
 #' @examples
 #' fun_aicc(100,5,15)
 
-fun_aic = function(maxlLik,p) {2 * p - 2 * maxlLik}
+
+fun_aic = function(maxlLik, p) {
+  2 * p - 2 * maxlLik
+}
 
 #' @rdname fun_aic
 #' @export
 fun_aicc = function(maxlLik, p, n) {
-  2 * p - 2 * maxlLik   +   ((2 * p * (1 + p)) / (n - p - 1))
+  2 * p - 2 * maxlLik + ((2 * p * (1 + p)) / (n - p - 1))
 }

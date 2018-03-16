@@ -18,25 +18,25 @@
 #' a.low(480)
 #' b.low(480)
 
-a.high <- function(t_min){
-  signif(-(1/t_min)*log(0.005)	,2)
+
+a.high <- function(t_min) {
+  signif(-(1 / t_min) * log(0.005), 2)
 }
 
 #' @rdname a.high
 #' @export
 
-a.low <- function(t_max){
-  10^(floor(log(-(1/t_max)*log(0.95),base=10)))
+a.low <- function(t_max) {
+  10 ^ (floor(log(-(1 / t_max) * log(0.95), base = 10)))
 }
 
 
 #' @rdname a.high
 #' @export
 
-b.low <- function(t_max){
-  10^(floor(log((1/t_max),base=10)))
+b.low <- function(t_max) {
+  10 ^ (floor(log((1 / t_max), base = 10)))
 }
-
 
 
 

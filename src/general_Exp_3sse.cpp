@@ -1,3 +1,4 @@
+#define TMB_LIB_INIT R_init_general_Exp_3sse
 #include<TMB.hpp>
 #include<math.h>
 //C++ file defining the sum of squared errors.

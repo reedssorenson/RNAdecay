@@ -94,27 +94,9 @@ This file (Model grouping colormap.pdf) should now be in your working directory.
 
 Modeling is accomplished using the `modOptimization()` function. The function takes as arguments, the gene identifier, $\alpha$ and $\beta$ bounds, the `decaydata` data.frame, a vector of model names (e.g., as `c("mod1", "mod239", ... )`, the equivalence constraint matrix (defined as `groups` above), and a matrix to specify which contstraint groupings to use for $\alpha$ and $\beta$ parameters (defined as `mods` above), respectively, for each model, and a results folder (which will be made if it doesn't already exist) to which the results are written. A number of other arguments are available as well, see help file for details using `?modOptimization`.  
 
-Efficient model parameter optimization is accomplished using objective functions coded as binary dynamically linked libraries. These libraries are compiled from functions coded in the C++ language on each machine using functionality of the `TMB` package.
+Efficient model parameter optimization is accomplished using objective functions coded as binary dynamically linked shared libraries. These libraries are compiled from functions coded in the C++ language on each machine using functionality of the `TMB` package. Upon  installation of `RNAdecay`, the C++ source code files are compiled into dynamically linked library (\*.dll, for Windows) or shared object (\*.so, linux and Mac) files for each of the objective functions. This only needs to be done once on your machine. Compiling C++ code requires a compiler be installed separatedly on your system (e.g., Rtools34 or later for Windows,  https://cran.r-project.org/bin/windows/Rtools/; Xcode comand line tools for Mac, http://railsapps.github.io/xcode-command-line-tools.html; R development package for Linux, r-base-dev). If you don't already have one of these installed, install one and restart R. C++ source files are located in the installed 'RNAdecay/src' folder. The compiled (shared library) files should also be written to this same folder.
 
-First, compile the C++ source code into dynamically linked library (\*.dll, for Windows) or shared object (\*.so, linux and Mac) files for each of the objective functions. This only needs to be done once on your machine after installation of the package. Compiling C++ code requires a compiler be installed separatedly on your system (e.g., Rtools34 or later for Windows,  https://cran.r-project.org/bin/windows/Rtools/; Xcode comand line tools for Mac, http://railsapps.github.io/xcode-command-line-tools.html; R development package for Linux, r-base-dev). If you don't already have one of these installed, stop and install one and restart R. C++ source files are located in the installed 'RNAdecay/src' folder. The compiled (shared library) files should also be written to this same folder.
-
-```{r}
-# only run once after installing RNAdecay pacakage
-src_path = paste0(find.package("RNAdecay"), "/src")
-src_files = dir(src_path)
-wd = getwd()
-setwd(src_path) # this step is necessary to avoid passing file paths with spaces to the 'make' file (e.g., "Program Files".
-for (i in src_files) {TMB::compile(i)}
-setwd(wd); rm(wd)
-```
-
-Load the compiled dynamically linked libraries. 
-```{r}
-libs = gsub(".cpp", "", dir(paste0(find.package("RNAdecay"), "/src"), pattern = ".cpp", full.names = TRUE))
-for (i in libs) {dyn.load(TMB::dynlib(i))}
-```
-
-Next, test the modeling on a couple of genes on a handful of models. 
+Test the modeling on a couple of genes on a handful of models. 
 ```{r}
 modOptimization("AT2G18150", decaydata, group = groups, mod = mods, a.bounds, b.bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file.only = FALSE) 
 modOptimization("AT4G09680", decaydata, group = groups, mod = mods, a.bounds, b.bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file.only = FALSE) 

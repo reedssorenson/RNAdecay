@@ -49,17 +49,6 @@ The function does the following for each gene:
 (6) returns the optimized parameter estimates, with model selection statistics.
 }
 \examples{
-wd = getwd()
-setwd(paste0(find.package('RNAdecay'), '/src'))
-if(file.exists(TMB::dynlib('general_Exp_2sse'))) {
-unlink(c(TMB::dynlib('general_Exp_2sse'),'general_Exp_2sse.o'))}
-if(file.exists(TMB::dynlib('general_dExp_2sse'))) {
-unlink(c(TMB::dynlib('general_dExp_2sse'),'general_dExp_2sse.o'))}
-TMB::compile('general_Exp_2sse.cpp')
-TMB::compile('general_dExp_2sse.cpp')
-dyn.load(TMB::dynlib('general_Exp_2sse'))
-dyn.load(TMB::dynlib('general_dExp_2sse'))
-setwd(wd); rm(wd)
 
 modOptimization(gene = 'Gene_BooFu',
                 data = data.frame(geneID=rep('Gene_BooFu',30),

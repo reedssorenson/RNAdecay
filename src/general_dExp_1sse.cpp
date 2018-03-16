@@ -1,3 +1,4 @@
+#define TMB_LIB_INIT R_init_general_dExp_1sse
 #include<TMB.hpp>
 #include<math.h>
 //C++ file defining the sum of squared errors.
@@ -9,13 +10,12 @@ Type objective_function<Type>::operator() ()
 	DATA_VECTOR(t);
 	DATA_VECTOR(m);
 	PARAMETER(a1);
-	PARAMETER(a2);
+	PARAMETER(b1);
 
-	int n = t.size();
-	int set = n/2;
+	int set = t.size();
 	Type obj = 0.0;
 	for (int i=0; i<set; i++){
-	   obj += pow(m[i] - exp(-a1*t[i]),2) + pow(m[set+i] - exp(-a2*t[i]),2);
+	   obj += pow(m[i] - exp(-(a1/b1)*(1-exp(-b1*t[i]))),2);
 	}
 
 	return obj;

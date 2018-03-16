@@ -180,4 +180,3 @@ constraint_fun_list_maker = function(mods, groups) {
   }
   return(constraint_fun_list)
 }
-

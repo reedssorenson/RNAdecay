@@ -1,10 +1,12 @@
 
 #' number of Parameters function
 #'
-#' Calculates number of parameters for a specified model given the model parameter constraints.
+#' Calculates number of parameters for a specified model given the model
+#'     parameter constraints.
 #'
 #' @param model model name (e.g. 'mod1')
-#' @param mod two column data.frame with combination of alpha and beta grouping numbers in each model with rownames 'modX'
+#' @param mod two column data.frame with combination of alpha and beta grouping
+#'     numbers in each model with rownames 'modX'
 #' @param group matrix of all treatment alpha or beta equivalence groups
 #'
 #' @export
@@ -17,7 +19,9 @@
 
 
 fun_nPar = function(model, mod, group) {
-  length(unique(group[mod[model, "a"],])) + 1 + if (any(is.na(group[mod[model, "b"],]))) {
+  length(unique(group[mod[model, "a"],])) + 1 + if (
+    any(is.na(group[mod[model, "b"],]))
+    ) {
     0
   } else {
     length(unique(unlist(group[mod[model, "b"],])))

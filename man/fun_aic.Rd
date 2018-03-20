@@ -14,7 +14,8 @@ fun_aicc(maxlLik, p, n)
 
 \item{p}{number of parameters in the model}
 
-\item{n}{is the total number of observations of a single gene (e.g., 8 time points X 4 replicates X 4 treatments/genotypes = 128)}
+\item{n}{is the total number of observations of a single gene (e.g., 8 time
+points X 4 replicates X 4 treatments/genotypes = 128)}
 }
 \value{
 returns the AIC or AICc values

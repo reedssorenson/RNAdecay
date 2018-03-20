@@ -5,7 +5,8 @@
 #'
 #' @param maxlLik maximum log likelihood value identified upon model convergence
 #' @param p number of parameters in the model
-#' @param n is the total number of observations of a single gene (e.g., 8 time points X 4 replicates X 4 treatments/genotypes = 128)
+#' @param n is the total number of observations of a single gene (e.g., 8 time
+#'     points X 4 replicates X 4 treatments/genotypes = 128)
 #'
 #' @export
 #'

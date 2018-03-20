@@ -9,7 +9,8 @@ fun_nPar(model, mod, group)
 \arguments{
 \item{model}{model name (e.g. 'mod1')}
 
-\item{mod}{two column data.frame with combination of alpha and beta grouping numbers in each model with rownames 'modX'}
+\item{mod}{two column data.frame with combination of alpha and beta grouping
+numbers in each model with rownames 'modX'}
 
 \item{group}{matrix of all treatment alpha or beta equivalence groups}
 }
@@ -17,7 +18,8 @@ fun_nPar(model, mod, group)
 returns the integer value of number of parameters in \code{model}
 }
 \description{
-Calculates number of parameters for a specified model given the model parameter constraints.
+Calculates number of parameters for a specified model given the model
+    parameter constraints.
 }
 \examples{
 fun_nPar('mod1',data.frame('a'=1:5,'b'=rep(2,5),row.names=paste0('mod',1:5)),

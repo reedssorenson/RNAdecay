@@ -4,7 +4,7 @@ general_dExp_1sse.so: general_dExp_1sse.cpp
 	Rscript --vanilla -e "TMB::compile('general_dExp_1sse.cpp',safebounds=FALSE,safeunload=FALSE)"
 
 general_Exp_1sse.so: general_Exp_1sse.cpp
-	Rscript --vanilla -e "TMB::compile('general_Exp_1sse.cpp,safebounds=FALSE,safeunload=FALSE')"
+	Rscript --vanilla -e "TMB::compile('general_Exp_1sse.cpp',safebounds=FALSE,safeunload=FALSE)"
 
 general_dExp_2sse.so: general_dExp_2sse.cpp
 	Rscript --vanilla -e "TMB::compile('general_dExp_2sse.cpp',safebounds=FALSE,safeunload=FALSE)"

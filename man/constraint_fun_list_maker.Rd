@@ -25,7 +25,8 @@ constraint function.
 }
 \examples{
 constraint_fun_list_maker(mods=data.frame(a=c(1,1,1,2,2,2),b=c(1,2,3,1,2,3),
-                          row.names=paste0('mod',1:6)),
-                          groups= data.frame(treat1=c(1,1,NA),treat2=c(2,1,NA)))
+                          row.names=paste0('mod',seq_len(6))),
+                          groups= data.frame(treat1=c(1,1,NA),
+                          treat2=c(2,1,NA)))
 
 }

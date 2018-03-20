@@ -8,7 +8,8 @@ groupMap(decaydata, path, nEquivGrp = nEquivGrp, groups = groups,
   mods = mods)
 }
 \arguments{
-\item{decaydata}{5 column data.frame with colnames "geneID","treatment","t.decay","rep","value"}
+\item{decaydata}{5 column data.frame with colnames "geneID","treatment",
+"t.decay","rep","value"}
 
 \item{path}{write path and file name, must end in ".pdf"}
 
@@ -22,18 +23,22 @@ groupMap(decaydata, path, nEquivGrp = nEquivGrp, groups = groups,
 creates a model colormap and writes it to a pdf file named \code{path}
 }
 \description{
-GroupMap makes a color map of alpha and beta equivalence groups by model. Similar colors in a row indicate constrained parameter equivalence between treatements. Gray indicates values of 0.
+GroupMap makes a color map of alpha and beta equivalence groups by model.
+    Similar colors in a row indicate constrained parameter equivalence
+    between treatements. Gray indicates values of 0.
 }
 \examples{
-groupMap(decaydata=data.frame(geneID=paste0("gene",1:4),
-                    treatment=as.factor(rep(paste0("treat",1:2),2)),
+groupMap(decaydata=data.frame(geneID=paste0("gene",seq_len(4)),
+                    treatment=as.factor(rep(paste0("treat",seq_len(2)),2)),
                     t.decay=0:3,
                     rep=rep("rep1"),
                     value=c(1,0.5,0.25,0.12)),
          path=paste0(getwd(),"/parameter equivalence colormap.pdf"),
          nEquivGrp = 2,
          groups = t(matrix(c(1,2,1,1,NA,NA),nrow=2,
-                    dimnames=list(c("treat1","treat2"),c("grp1","grp2","grp3")))),
+                    dimnames=list(c("treat1","treat2"),
+                    c("grp1","grp2","grp3")))),
          mods = t(matrix(c(1,1,1,2,1,3,2,1,2,2,2,3),nrow=2,
-                         dimnames=list(c("a","b"),paste0("mod",1:6)))))
+                         dimnames=list(c("a","b"),
+                         paste0("mod",seq_len(6))))))
 }

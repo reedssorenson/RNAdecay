@@ -3,6 +3,8 @@
 
 \section{CHANGES IN VERSION 1.0.0}{\itemize{RNAdecay is accepted to Bioconductor.}}
 
+\section{CHANGES IN VERSION 0.99.13}{\itemize{addressed more notes from the checks}}
+
 \section{CHANGES IN VERSION 0.99.11}{\itemize{Added a Makefile so compilation occurs on install using TMB::compile, and fixed a major error in the constraint_fun_list_maker for two and three treatment analysis.}}
 
 \section{CHANGES IN VERSION 0.99.10}{\itemize{10th set of changes made to be compatible with Bioconductor requirements.}}

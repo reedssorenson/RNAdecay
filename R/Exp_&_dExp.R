@@ -1,13 +1,18 @@
 
 #' exponential decay functions
 #'
-#' Constant decay rate function (Exp(), case when betas=0) e^-a*t; decaying decay rate function (dExp())  e^(-(a/b)*(1-e^(-b*t))). Functions are normalized so at t=0 the function is 1.
+#' Constant decay rate function (Exp(), case when betas=0) e^-a\*t; decaying
+#' decay rate function (dExp())  e^(-(a/b)\*(1-e^(-b\*t))). Functions are
+#' normalized so at t=0 the function is 1.
 #'
 #' @param t time (in minutes)
 #' @param a alpha (in per time, thus in per minute when time is in minutes)
-#' @param par vector of length 2 containing alpha (par[1]) and beta (par[2]) values; alpha=initial decay rate, beta=decay of decay rate (both in per time, thus in per minute when time is in minutes)
+#' @param par vector of length 2 containing alpha (par[1]) and beta (par[2])
+#'     values; alpha=initial decay rate, beta=decay of decay rate (both in per
+#'     time, thus in per minute when time is in minutes)
 #'
-#' @return returns abundance after time \code{t}  at alpha initial decay rate and beta decay of decay rate relative to an initial abundance of 1
+#' @return returns abundance after time \code{t}  at alpha initial decay rate
+#'     and beta decay of decay rate relative to an initial abundance of 1
 #'
 #' @export
 #'

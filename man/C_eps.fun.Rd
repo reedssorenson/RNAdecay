@@ -9,13 +9,16 @@ C_eps.fun(X, eps = 1e-04)
 \arguments{
 \item{X}{data.frame or matrix of numeric data}
 
-\item{eps}{small value to add to the mean to avoid dividing by 0; defaults to 1e-4}
+\item{eps}{small value to add to the mean to avoid dividing by 0; defaults
+to 1e-4}
 }
 \value{
-returns the sum of the coefficients of variation for all columns of \code{X}
+returns the sum of the coefficients of variation for all columns of
+     \code{X}
 }
 \description{
-Calculates the sum of the column standard devation divided by the sum of the column mean and a small value to avoid dividing by 0 (\code{eps})
+Calculates the sum of the column standard devation divided by the sum of
+    the column mean and a small value to avoid dividing by 0 (\code{eps})
 }
 \examples{
 C_eps.fun(data.frame(test1=rep(0,5),test2=c(0.2,0.3,0.35,0.27,0.21)))

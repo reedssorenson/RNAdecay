@@ -13,19 +13,28 @@ a.low(t_max)
 b.low(t_max)
 }
 \arguments{
-\item{t_min}{time of first experiemtal time point after inhibition of transcription (not T0)}
+\item{t_min}{time of first experiemtal time point after inhibition of
+transcription (not T0)}
 
 \item{t_max}{time of last experimental time point}
 }
 \value{
-returns the lowest/highest parameter values to be used as bounds on modeled parameters
+returns the lowest/highest parameter values to be used as bounds
+    on modeled parameters
 }
 \description{
-Calculates maximum and minimum bounds for parameter alpha based on experimental time points (t_0, t_1, t_2, t_3, ..., t_max). If RNA level is too low at t_1, then the decay has happened before our observations began - there is an upper bound to the decay rate we can detect (a.high).
-If RNA level is too high at t_max, then relatively little decay has happened and we can not distinguish the decay rate and the decay of the decay rate  - there is a lower bound to the base decay rate of the decaying decay model (a.low).
-}
-\details{
-Similarly, limits on beta are required to prevent precude ranges in which the decay rate and decaing decay are indistinguishable. See vignette 2: _RNA Decay Modeling_ for more information.
+Calculates maximum and minimum bounds for parameter alpha based on
+    experimental time points (t_0, t_1, t_2, t_3, ..., t_max). If
+    RNA level is too low at t_1, then the decay has happened before
+    our observations began - there is an upper bound to the decay
+    rate we can detect (a.high).
+If RNA level is too high at t_max, then relatively little decay has
+    happened and we can not distinguish the decay rate and the decay
+    of the decay rate  - there is a lower bound to the base decay rate
+    of the decaying decay model (a.low).
+Similarly, limits on beta are required to prevent precude ranges in which the
+    decay rate and decaing decay are indistinguishable. See vignette 2:
+    _RNA Decay Modeling_ for more information.
 }
 \examples{
 a.high(7.5)

@@ -1,12 +1,15 @@
 
 #' a custom ggplot2 theme
 #'
-#' A custom ggplot2 theme generating function for ggplot2 plots; can be further manipulated using standard ggplot2 syntax.
+#' A custom ggplot2 theme generating function for ggplot2 plots; can be further
+#'     manipulated using standard ggplot2 syntax.
 #'
-#' @param bigFont larger font size of axis labels in points (used for plot title, axis titles, facet titles)
+#' @param bigFont larger font size of axis labels in points (used for plot
+#'     title, axis titles, facet titles)
 #' @param smFont fractional mulitiplier of \code{bigFont} (used for axis text)
 #' @param x.ang x-axis label angle
-#' @param leg.pos legend position on plot as relative coordinates c(x,y) (i.e., range is [0,1]) or 'right', 'left', 'above', 'below'
+#' @param leg.pos legend position on plot as relative coordinates c(x,y) (i.e.,
+#'     range is [0,1]) or 'right', 'left', 'above', 'below'
 #'
 #' @return returns a ggplot2 theme of class "theme" "gg"
 #'

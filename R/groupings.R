@@ -1,20 +1,27 @@
 
 #' Combinatorial groups matrix generator
 #'
-#' Generates a combinatorial grouping matrix based on the \code{decaydata} data.frame.
+#' Generates a combinatorial grouping matrix based on the \code{decaydata}
+#'     data.frame.
 #'
-#' The resulting matrix of indices is used to constrain treatment alphas or treatment betas in combination. For example, in one model, treatment alphas might be allowed to vary independently (gp1), but the beta models might be constrained to be equal for some treatments indicated by haveing the same index number (other gp).
+#' The resulting matrix of indices is used to constrain treatment alphas or
+#'     treatment betas in combination. For example, in one model, treatment
+#'    alphas might be allowed to vary independently (gp1), but the beta models
+#'    might be constrained to be equal for some treatments indicated by haveing the same index number (other gp).
 #'
 #' @param decaydata a data.frame with column names:
 #'     'geneID','treatment','t.decay','rep','value' with classes
-#'     \code{factor}, \code{factor}, \code{numeric}, \code{factor}, \code{numeric}
+#'     \code{factor}, \code{factor}, \code{numeric}, \code{factor},
+#'     \code{numeric}
 #'
-#' @return returns a matrix of equivalence group indicies based on the number of levels in the 'treatment' column (max of 4).
+#' @return returns a matrix of equivalence group indicies based on the number of
+#'     levels in the 'treatment' column (max of 4).
 #'
 #' @export
 #'
 #' @examples
-#' groupings(data.frame(geneID=paste0('gene',1:4),treatment=as.factor(paste0('treat',1:4)),
+#' groupings(data.frame(geneID=paste0('gene',seq_len(4)),
+#'                      treatment=as.factor(paste0('treat',seq_len(4))),
 #'                      t.decay=0:3,rep=rep('rep1'),value=c(1,0.5,0.25,0.12)))
 #'
 groupings = function(decaydata) {
@@ -27,7 +34,7 @@ groupings = function(decaydata) {
     15
   groupings = matrix(nrow = nEquivGrp + 1, ncol = nTreat)
   colnames(groupings) = as.character(unique(decaydata$treatment))
-  rownames(groupings) = paste0("gp", 1:(nEquivGrp + 1))
+  rownames(groupings) = paste0("gp", seq_len((nEquivGrp + 1)))
   if (nTreat == 2) {
     groupings[1,] = c(1, 2)
     groupings[2,] = c(1, 1)

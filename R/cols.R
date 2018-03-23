@@ -19,7 +19,7 @@
 #'
 #' @examples
 #' cols(data.frame(xyz=1:5,zay=6:10,ybz=11:15,tuv=16:20),'y','z') ##
-#'     returns 1 2 3
+#' # returns 1 2 3
 
 cols = function(df,
                 w,

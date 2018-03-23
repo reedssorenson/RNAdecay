@@ -26,6 +26,5 @@ Be aware that column data labels that are part of another data label are
      indices for both 'mut1' and 'mut1.mut2' labeled columns
 }
 \examples{
-cols(data.frame(xyz=1:5,zay=6:10,ybz=11:15,tuv=16:20),'y','z') ##
-    returns 1 2 3
+cols(data.frame(xyz=1:5,zay=6:10,ybz=11:15,tuv=16:20),'y','z') ## returns 1 2 3
 }

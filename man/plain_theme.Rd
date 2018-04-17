@@ -8,22 +8,19 @@ plain_theme(bigFont = 30, smFont = 0.85, x.ang = 0, leg.pos = c(0.85,
   0.85))
 }
 \arguments{
-\item{bigFont}{larger font size of axis labels in points (used for plot
-title, axis titles, facet titles)}
+\item{bigFont}{larger font size of axis labels in points (used for plot title, axis titles, facet titles)}
 
 \item{smFont}{fractional mulitiplier of \code{bigFont} (used for axis text)}
 
 \item{x.ang}{x-axis label angle}
 
-\item{leg.pos}{legend position on plot as relative coordinates c(x,y) (i.e.,
-range is [0,1]) or 'right', 'left', 'above', 'below'}
+\item{leg.pos}{legend position on plot as relative coordinates c(x,y) (i.e., range is [0,1]) or 'right', 'left', 'above', 'below'}
 }
 \value{
 returns a ggplot2 theme of class "theme" "gg"
 }
 \description{
-A custom ggplot2 theme generating function for ggplot2 plots; can be further
-    manipulated using standard ggplot2 syntax.
+A custom ggplot2 theme generating function for ggplot2 plots; can be further manipulated using standard ggplot2 syntax.
 }
 \examples{
 plain_theme(10)

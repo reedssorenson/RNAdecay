@@ -6,13 +6,9 @@
 #' @param maxlLik maximum log likelihood value identified upon model convergence
 #' @param p number of parameters in the model
 #' @param n is the total number of observations of a single gene (e.g., 8 time
-<<<<<<< HEAD:R/aic.R
 #'   points X 4 replicates X 4 treatments/genotypes = 128)
 #'
 #' @return returns the AIC or AICc values
-=======
-#'     points X 4 replicates X 4 treatments/genotypes = 128)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/fun_aic.R
 #'
 #' @export
 #'

@@ -1,7 +1,6 @@
 ################################################################################
 #' model optimization for fitting exponential decay models to normalized data
 #'
-<<<<<<< HEAD:R/mod_optimization.R
 #' The mod_optimization function finds the estimates of model parameters by
 #'   maximum likelihood, for a single gene on a specified list of models, and
 #'   saves a tab delimited text file of the results named,'
@@ -39,44 +38,6 @@
 #' @param mod data.frame specifying alpha and beta group pairs for each model
 #' @param file_only logical; should output only be written to file (TRUE) or
 #'   also return a data.frame of the results (FALSE)
-=======
-#' The modOptimization function finds the estimates of model parameters by
-#'     maximum likelihood, for a single gene on a specified list of models, and
-#'     saves a tab delimited text file of the results named,
-#'     '[geneID]_results.txt'.
-#' The function does the following for each gene:
-#' (1) it calculates log likelihood for each point in a 2 dimensional grid of
-#'     evenly spaced alpha and beta values within the alpha and beta bounds
-#'     specified using the null model (in which all treatment alphas are
-#'     equivalent and all betas are equivalent).
-#' (2) it calculates log likelihood for each point in a 1 dimensional range of
-#'     evenly spaced alpha values within the alpha bounds using the single
-#'     exponential null model (in which all treatment alphas are equivalent).
-#' (3) For each of the grid points with the highest log likelihood from steps
-#'     (1) and (2) 25 starting parameter value sets that are normally
-#'     distributed around these points are generated.
-#' (4) Parameter values are optimized for maximum likelihood using each of
-#'     these 50 starting parameter sets using pre-compiled C++ functions
-#'     loaded from dynamically linked libraries stored in the package on all
-#'     models specified in the models argument.
-#' (5) evaluates parameter estimates of all 50 optimizations based on the
-#'     reported maximum liklihood upon convergence. Only parameter estimates
-#'     that converged on the same and highest maximum likelihood are returned.
-#' (6) returns the optimized parameter estimates, with model selection
-#'     statistics.
-#'
-#' @param gene geneID from \code{data} to be modeled
-#' @param data decay data data.frame with columns named 'geneID', 'treatment',
-#'     't.decay', 'rep', 'value.'
-#' @param models vector spceifying which models to run optimization on (e.g.,
-#'     c('mod1', 'mod239'))
-#' @param alpha.bounds vector of length 2 with lower and upper bounds for alpha
-#' @param beta.bounds vector of length 2 with lower and upper bounds for beta
-#' @param group grouping matrix for alphas or betas
-#' @param mod data.frame specifying alpha and beta group pairs for each model
-#' @param file.only logical; should output only be written to file (TRUE) or
-#'     also return a data.frame of the results (FALSE)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
 #' @param path specify folder for output to be written
 #'
 #' @useDynLib general_dExp_4sse
@@ -90,7 +51,6 @@
 #'
 #' @export
 #'
-<<<<<<< HEAD:R/mod_optimization.R
 #' @return returns (if \code{file_only = FALSE}) and writes to \code{path} a
 #'   data frame of model optimization results for \code{models} one row for
 #'   each for \code{gene} using values for it found in \code{data}, the columns
@@ -112,30 +72,6 @@
 #'  (calculated from the log likelihood value computed by using the mean of
 #'  each parameter from all optimizations that converged on the highest
 #'  maximum likelihood of all starting parameter value sets.)
-=======
-#' @return returns (if \code{file.only = FALSE}) and writes to \code{path} a
-#'     data frame of model optimization results for \code{models} one row for
-#'     each for
-#' \code{gene} using values for it found in \code{data}, the columns of the
-#'     data frame are:  geneID, mod (model), model estimates [alpha_treatment1,
-#'     ..., alpha_treatmentn, beta_treatment1, ..., beta_treatmentn, sigma2],
-#'     logLik (maximum log likelihood), nPar (number of parameters in the
-#'     model), nStarts (number of parameter starting value sets (of 50) that
-#'     converged on a maximum likelihood peak), J (number of parameter starting
-#'     value sets that converged on the highest - within 1e-4 - maximum
-#'     likelihood of all parameter starting value sets), range.LL (range of
-#'     maximum likelihoods values reached by algorithm convergence from all
-#'     parameter starting value sets), nUnique.LL (number of unique maximum
-#'     likelihoods values reached by algorithm convergence from all parameter
-#'     starting value sets), C.alpha (sum of all coefficients of variation for
-#'     each column of alpha estimates), C.beta (sum of all coefficients of
-#'     variation for each column of beta estimates), C.tot (C.alpha+C.beta),
-#'     AICc (calculated from the single highest maximum likelihood of all
-#'     parameter starting value sets), AICc_est (calculated from the log
-#'     likelihood value computed by using the mean of each parameter from all
-#'     optimizations that converged on the highest maximum likelihood of all
-#'     starting parameter value sets.)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
 #'
 #' @examples
 #'
@@ -143,7 +79,6 @@
 #'                 data = data.frame(geneID=rep('Gene_BooFu',30),
 #'                             treatment=c(rep('WT',15),rep('mut',15)),
 #'                             t.decay=rep(c(0,7.5,15,30,60),6),
-<<<<<<< HEAD:R/mod_optimization.R
 #'                             rep=rep(paste0('rep',c(rep(1,5),rep(2,5),rep(3,5))),2),
 #'                             value= c(0.9173587, 0.4798672, 0.3327807, 0.1990708, 0.1656554,
 #'                                      0.9407511, 0.7062988, 0.3450886, 0.3176824, 0.2749946,
@@ -159,29 +94,6 @@
 #'                 mod = as.data.frame(t(matrix(c(1,1,1,2,1,3,2,1,2,2,2,3),nrow=2,
 #'                         dimnames=list(c('a','b'),paste0('mod',1:6))))),
 #'                 file_only = FALSE)
-=======
-#'                             rep=rep(paste0('rep',
-#'                             c(rep(1,5), rep(2,5), rep(3,5))),2),
-#'                             value= c(0.9173587, 0.4798672, 0.3327807,
-#'                             0.1990708, 0.1656554, 0.9407511, 0.7062988,
-#'                             0.3450886, 0.3176824, 0.2749946, 1.1026497,
-#'                             0.6156978, 0.4563346, 0.2865779, 0.1680075,
-#'                             0.8679866, 0.6798788, 0.2683555, 0.5120951,
-#'                             0.2593122, 1.1348219, 0.8535835, 0.6423996,
-#'                             0.5308946, 0.4592902, 1.1104068, 0.5966838,
-#'                             0.3949790, 0.3742632, 0.2613560)),
-#'                 alpha.bounds = c(1e-4,0.75),
-#'                 beta.bounds = c(1e-3,0.075),
-#'                 models = 'mod1',
-#'                 group = t(matrix(c(1,2,1,1,NA,NA),nrow=2,
-#'                           dimnames=list(c('treat1','treat2'),
-#'                           c('mod1','mod2','mod3')))),
-#'                 mod = as.data.frame(
-#'                 t(matrix(c(1,1,1,2,1,3,2,1,2,2,2,3), nrow=2,
-#'                         dimnames=
-#'                         list(c('a','b'),paste0('mod',seq_len(6)))))),
-#'                 file.only = FALSE)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
 #'
 
 
@@ -199,22 +111,9 @@ mod_optimization <- function(gene,
     dir.create(path)
   }
 
-<<<<<<< HEAD:R/mod_optimization.R
   genoSet <- 1:(length(unique(data$rep)) * length(unique(data$t.decay)))
   nTreat <- length(unique(data$treatment))
   nSet <- length(genoSet) * nTreat
-=======
-  genoSet = seq_len(length(unique(data$rep)) * length(unique(data$t.decay)))
-  nTreat = length(unique(data$treatment))
-  try(if (sum(grepl(paste0("_", nTreat, "sse"), names(getLoadedDLLs()))) != 2)
-    stop(
-      "high performance objective functions need to be loaded as compilied
-      dynamically linked libraries (.dll or .so) before modeling. You can
-      check which are loaded using 'getLoadedDLLs()'",
-      call. = FALSE
-    ))
-  nSet = length(genoSet) * nTreat
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
 
   if (nTreat > 4) stop("mod_optimization can only handle up to 4 treatments.")
 
@@ -235,8 +134,8 @@ mod_optimization <- function(gene,
   a <- seq(alpha_bounds[1], alpha_bounds[2], by = 0.001)
   b <- seq(beta_bounds[1], beta_bounds[2], by = 0.001)
 
-  ### Pick 25 points near the 'peak' of null double exponential model.
-  ### Find the SSE surface for the double exponential model...
+  ### Pick 25 points near the 'peak' of Model null double exponential model.  Find the
+  ### SSE surface for the double exponential model...
   sse.nulldExp <- sapply(b, function(x) {
     sapply(
       a,
@@ -251,15 +150,9 @@ mod_optimization <- function(gene,
   loc239 <-
     which(sse.nulldExp == min(sse.nulldExp), arr.ind = TRUE)
 
-<<<<<<< HEAD:R/mod_optimization.R
   ### Pick 25 points near the 'peak' of Model 240. Find the SSE surface for model
   ### 240...
   sse.nullExp <- sapply(A, FUN = sse_null_const_decay, m = m, t = t)
-=======
-  ### Pick 25 points near the 'peak' of Model 240. Find the SSE surface for
-  ### model 240...
-  sse.nullExp <- sapply(A, FUN = sse.nullExp.fun, m = m, t = t)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
   ### Find the location of the minimum.
   loc240 <- which(sse.nullExp == min(sse.nullExp))
 
@@ -286,24 +179,18 @@ mod_optimization <- function(gene,
   ### Combine alpha and beta values into one matrix.
   X0 <- cbind(aX0, bX0)
   colnames(X0) <-
-    c(paste0("alpha.int", seq_len(nTreat)), paste0("beta.int", seq_len(nTreat)))
+    c(paste0("alpha.int", 1:nTreat), paste0("beta.int", 1:nTreat))
 
   # set default parameters
   par.default <- c(rep(0, nTreat), rep(1, nTreat))
   names(par.default) <-
-    c(paste0("a", seq_len(nTreat)), paste0("b", seq_len(nTreat)))
+    c(paste0("a", 1:nTreat), paste0("b", 1:nTreat))
 
 
   # OPTIMIZATION OF THE DOUBLE EXPONENTIAL MODELS
 
-<<<<<<< HEAD:R/mod_optimization.R
   #### Create the objective function in R. ### This has to be done for each gene! ####
   obj.dExp <- TMB::MakeADFun(
-=======
-  #### Create the objective function in R. ### This has to be done for each
-  #### gene!
-  obj.dExp = TMB::MakeADFun(
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
     data = list(t = t, m = m),
     parameters = par.default,
     silent = TRUE,
@@ -311,7 +198,6 @@ mod_optimization <- function(gene,
   )
 
   results4ab <-
-<<<<<<< HEAD:R/mod_optimization.R
     sapply(models[models %in% rownames(mod)[mod$b != max(mod$b)]], function(x,
                                                                             eps,
                                                                             nSet,
@@ -320,20 +206,9 @@ mod_optimization <- function(gene,
                                                                             alpha_bounds,
                                                                             beta_bounds) {
       fits <- apply(X0, 1, function(starts, y) {
-=======
-    sapply(models[models %in% rownames(mod)[mod$b != max(mod$b)]],
-           function(x,
-                    eps,
-                    nSet,
-                    md,
-                    grp,
-                    alpha.bounds,
-                    beta.bounds) {
-             fits <- apply(X0, 1, function(starts, y) {
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
         fit <-
           nloptr::slsqp(
-            x0 = as.numeric(starts[seq_len(ncol(X0))]),
+            x0 = as.numeric(starts[1:ncol(X0)]),
             fn = obj.dExp$fn,
             gr = obj.dExp$gr,
             heq = const[[x]],
@@ -351,13 +226,8 @@ mod_optimization <- function(gene,
         ))
       }, y = x)
 
-<<<<<<< HEAD:R/mod_optimization.R
       fits <- data.frame(t(fits))
       fits[,-c(1:2)] <- sapply(fits[,-c(1, 2)], function(x)
-=======
-      fits = data.frame(t(fits))
-      fits[,-c(1,2)] = sapply(fits[,-c(1, 2)], function(x)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
         as.numeric(as.character(x)))
       fits <- as.data.frame(fits)
       colnames(fits) <- c("geneID", "mod", c(
@@ -382,20 +252,11 @@ mod_optimization <- function(gene,
       C.alpha <- comb_cv(tmp[, grep("alpha", colnames(fits))])
       C.beta <- comb_cv(tmp[, grep("beta", colnames(fits))])
       C.tot <- C.alpha + C.beta
-<<<<<<< HEAD:R/mod_optimization.R
       par.est <- colMeans(tmp[, c(grep("alpha", colnames(fits)), grep("beta", colnames(fits)))])
       sigma2 <- mean(tmp$sigma2)
       nPar <- n_par(x, mod = md, group = grp)
       AICc <- aicc(max.LL, nPar, nSet)
       AICc_est <- aicc(log_lik(
-=======
-      par.est = colMeans(tmp[, c(grep("alpha", colnames(fits)),
-                                 grep("beta", colnames(fits)))])
-      sigma2 = mean(tmp$sigma2)
-      nPar = fun_nPar(x, mod = md, group = grp)
-      AICc = fun_aicc(max.LL, nPar, nSet)
-      AICc_est = fun_aicc(LL.fun(
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
         x = obj.dExp$fn(par.est),
         y = fit_var(sse = obj.dExp$fn(par.est),
                     n = nSet),
@@ -445,46 +306,31 @@ mod_optimization <- function(gene,
         "AICc_est"
       )
       return(fit)
-<<<<<<< HEAD:R/mod_optimization.R
     }, eps = eps, nSet = nSet, grp = group, md = mod, alpha_bounds = alpha_bounds,
     beta_bounds = beta_bounds)
   results4ab <- as.data.frame(t(results4ab))
   results4ab[,-c(1, 2)] <- sapply(results4ab[,-c(1, 2)], function(x)
-=======
-    }, eps = eps, nSet = nSet, grp = group, md = mod,
-    alpha.bounds = alpha.bounds,
-    beta.bounds = beta.bounds)
-  results4ab = as.data.frame(t(results4ab))
-  results4ab[,-c(1, 2)] = sapply(results4ab[,-c(1, 2)], function(x)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
     as.numeric(as.character(x)))
 
   # OPTIMIZATION OF THE SINGLE EXPONENTIAL MODELS
 
   X0 <- aX0
-  colnames(X0) <- c(paste0("alpha.int", seq_len(nTreat)))
+  colnames(X0) <- c(paste0("alpha.int", 1:nTreat))
 
   obj.Exp <- TMB::MakeADFun(
     data = list(t = t, m = m),
-    parameters = par.default[seq_len(nTreat)],
+    parameters = par.default[1:nTreat],
     silent = TRUE,
     DLL = paste0("general_Exp_", nTreat, "sse")
   )
 
   results4a <-
-<<<<<<< HEAD:R/mod_optimization.R
     sapply(models[models %in% rownames(mod)[mod$b == max(mod$b)]], function(x,
                                                                             eps, nSet, md, grp, alpha_bounds) {
       fits <- apply(X0, 1, function(starts, y) {
-=======
-    sapply(models[models %in% rownames(mod)[mod$b == max(mod$b)]],
-           function(x,
-                    eps, nSet, md, grp, alpha.bounds) {
-             fits <- apply(X0, 1, function(starts, y) {
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
         fit <-
           nloptr::slsqp(
-            x0 = as.numeric(starts[seq_len(ncol(X0))]),
+            x0 = as.numeric(starts[1:ncol(X0)]),
             fn = obj.Exp$fn,
             gr = obj.Exp$gr,
             heq = const[[x]],
@@ -501,13 +347,8 @@ mod_optimization <- function(gene,
         ))
       }, y = x)
 
-<<<<<<< HEAD:R/mod_optimization.R
       fits <- data.frame(t(fits))
       fits[,-c(1:2)] <- sapply(fits[,-c(1, 2)], function(x)
-=======
-      fits = data.frame(t(fits))
-      fits[,-c(1,2)] = sapply(fits[,-c(1, 2)], function(x)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
         as.numeric(as.character(x)))
       fits <- as.data.frame(fits)
       colnames(fits) <- c("geneID", "mod", c(
@@ -534,21 +375,12 @@ mod_optimization <- function(gene,
       C.tot <- C.alpha + C.beta
       par.est <- colMeans(tmp[, c(grep("alpha", colnames(fits)),
                                  grep("beta", colnames(fits)))])
-<<<<<<< HEAD:R/mod_optimization.R
       sigma2 <- mean(tmp$sigma2)
       nPar <- n_par(x, mod = md, group = grp)
       AICc <- aicc(max.LL, nPar, nSet)
       AICc_est <- aicc(log_lik(
         x = obj.Exp$fn(par.est[1:nTreat]),
         y = fit_var(sse = obj.Exp$fn(par.est[1:nTreat]),
-=======
-      sigma2 = mean(tmp$sigma2)
-      nPar = fun_nPar(x, mod = md, group = grp)
-      AICc = fun_aicc(max.LL, nPar, nSet)
-      AICc_est = fun_aicc(LL.fun(
-        x = obj.Exp$fn(par.est[seq_len(nTreat)]),
-        y = sig.fun(x = obj.Exp$fn(par.est[seq_len(nTreat)]),
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
                     n = nSet),
         n = nSet
       ),
@@ -596,23 +428,15 @@ mod_optimization <- function(gene,
         "AICc_est"
       )
       return(fit)
-<<<<<<< HEAD:R/mod_optimization.R
     }, eps = eps, nSet = nSet, grp = group, md = mod, alpha_bounds = alpha_bounds)
   results4a <- as.data.frame(t(results4a))
   results4a[,-c(1, 2)] <- sapply(results4a[,-c(1, 2)], function(x)
-=======
-    }, eps = eps, nSet = nSet, grp = group, md = mod,
-    alpha.bounds = alpha.bounds)
-  results4a = as.data.frame(t(results4a))
-  results4a[,-c(1, 2)] = sapply(results4a[,-c(1, 2)], function(x)
->>>>>>> 6348625a4176d22804ebafedf857ed5938765d20:R/modOptimization.R
     as.numeric(as.character(x)))
 
   results <- rbind(results4a, results4ab)
   results <- results[order(as.numeric(gsub("mod", "", results$mod))),]
 
-  utils::write.table(results, paste0(path, "/", gene, "_results.txt"),
-                     sep = "\t")
+  utils::write.table(results, paste0(path, "/", gene, "_results.txt"), sep = "\t")
   cat(gene, "done     \n")  #; utils::timestamp()
 
   return(if (file_only)

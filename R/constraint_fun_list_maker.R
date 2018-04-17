@@ -16,7 +16,19 @@
 #'
 #' @export
 #'
+#' @keywords internal
+#'
 #' @examples
+<<<<<<< HEAD
+#' constraint_fun_list_maker(mods = data.frame(a = c(1,1,1,2,2,2), b = c(1,2,3,1,2,3),
+#'                           row.names = paste0('mod',1:6)),
+#'                           groups = data.frame(treat1 = c(1,1,NA), treat2 = c(2,1,NA)))
+#'
+
+constraint_fun_list_maker <- function(mods, groups) {
+  # function to make a function with an extra argument 'body.subset' to select lines
+  # of the function body by numerical index
+=======
 #' constraint_fun_list_maker(mods=data.frame(a=c(1,1,1,2,2,2),b=c(1,2,3,1,2,3),
 #'                           row.names=paste0('mod',seq_len(6))),
 #'                           groups= data.frame(treat1=c(1,1,NA),
@@ -26,6 +38,7 @@
 constraint_fun_list_maker = function(mods, groups) {
   # function to make a function with an extra argument 'body.subset' so select
   # lines of the function body by numerical index
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
   make_function <-
     function(body.subset,
              args,
@@ -60,14 +73,24 @@ constraint_fun_list_maker = function(mods, groups) {
       c(1, 2, 3),
       NULL
     )
+<<<<<<< HEAD
+    names(const_Ind) <- paste0("gp", 1:16)
+    const_Ind <- unlist(lapply(const_Ind[1:15], function(x)
+=======
     names(const_Ind) = paste0("gp", seq_len(16))
     const_Ind = unlist(lapply(const_Ind[seq_len(15)], function(x)
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
       lapply(lapply(const_Ind,
                     function(y)
                       y + 6), function(z)
                         c(x, z))), recursive = FALSE)
+<<<<<<< HEAD
+    names(const_Ind) <- paste0("mod", 1:240)
+    constraint_fun_list <- lapply(const_Ind, function(x) {
+=======
     names(const_Ind) = paste0("mod", seq_len(240))
     constraint_fun_list = lapply(const_Ind, function(x) {
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
       make_function(
         body.subset = x,
         args = alist(pars =),
@@ -97,15 +120,26 @@ constraint_fun_list_maker = function(mods, groups) {
   }
 
   if (ncol(groups) == 3) {
+<<<<<<< HEAD
+    const_Ind <- list(c(NULL), 3, 2, 1, 1:2, NULL)
+    names(const_Ind) <- paste0("gp", 1:6)
+    const_Ind <- unlist(lapply(const_Ind[1:5], function(x)
+=======
     const_Ind = list(c(NULL), 3, 2, 1, seq_len(2), NULL)
     names(const_Ind) = paste0("gp", seq_len(6))
     const_Ind = unlist(lapply(const_Ind[seq_len(5)], function(x)
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
       lapply(lapply(const_Ind,
                     function(y)
                       y + 3), function(z)
                         c(x, z))), recursive = FALSE)
+<<<<<<< HEAD
+    names(const_Ind) <- paste0("mod", 1:30)
+    constraint_fun_list <- lapply(const_Ind, function(x) {
+=======
     names(const_Ind) = paste0("mod", seq_len(30))
     constraint_fun_list = lapply(const_Ind, function(x) {
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
       make_function(
         body.subset = x,
         args = alist(pars =),
@@ -127,15 +161,26 @@ constraint_fun_list_maker = function(mods, groups) {
   }
 
   if (ncol(groups) == 2) {
+<<<<<<< HEAD
+    const_Ind <- list(c(NULL), 1, NULL)
+    names(const_Ind) <- paste0("gp", 1:3)
+    const_Ind <- unlist(lapply(const_Ind[1:2], function(x)
+=======
     const_Ind = list(c(NULL), 1, NULL)
     names(const_Ind) = paste0("gp", seq_len(3))
     const_Ind = unlist(lapply(const_Ind[seq_len(2)], function(x)
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
       lapply(lapply(const_Ind,
                     function(y)
                       y + 1), function(z)
                         c(x, z))), recursive = FALSE)
+<<<<<<< HEAD
+    names(const_Ind) <- paste0("mod", 1:6)
+    constraint_fun_list <- lapply(const_Ind, function(x) {
+=======
     names(const_Ind) = paste0("mod", seq_len(6))
     constraint_fun_list = lapply(const_Ind, function(x) {
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
       make_function(
         body.subset = x,
         args = alist(pars =),
@@ -155,17 +200,22 @@ constraint_fun_list_maker = function(mods, groups) {
   }
 
   if (ncol(groups) == 1) {
-    const_Ind = list(NULL)
-    names(const_Ind) = paste0("gp", 1)
-    const_Ind = list(c(NULL), NULL)
-    names(const_Ind) = paste0("gp", 1)
-    const_Ind = unlist(lapply(const_Ind[1], function(x)
+    const_Ind <- list(NULL)
+    names(const_Ind) <- paste0("gp", 1)
+    const_Ind <- list(c(NULL), NULL)
+    names(const_Ind) <- paste0("gp", 1)
+    const_Ind <- unlist(lapply(const_Ind[1], function(x)
       lapply(lapply(const_Ind,
                     function(y)
                       y), function(z)
                         c(x, z))), recursive = FALSE)
+<<<<<<< HEAD
+    names(const_Ind) <- paste0("mod", 1:2)
+    constraint_fun_list <- lapply(const_Ind, function(x) {
+=======
     names(const_Ind) = paste0("mod", seq_len(2))
     constraint_fun_list = lapply(const_Ind, function(x) {
+>>>>>>> dc1765d3bcd0efd62ae2886244fbbd464064a245
       make_function(
         body.subset = x,
         args = alist(pars =),

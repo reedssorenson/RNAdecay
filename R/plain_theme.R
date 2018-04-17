@@ -12,10 +12,10 @@
 #'
 #' @export
 #'
-#' @examples myTheme(10)
+#' @examples plain_theme(10)
 
 
-myTheme = function(bigFont = 30,
+plain_theme <- function(bigFont = 30,
                    smFont = 0.85,
                    x.ang = 0,
                    leg.pos = c(0.85, 0.85)) {

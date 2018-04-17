@@ -14,4 +14,4 @@
 #'
 #' @source Sorenson et al. (2017) Submitted; \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86361}
 #'
-"decaydata"
+"decay_data"

@@ -1,5 +1,5 @@
 
-#' DecayPlot() function
+#' decay_plot() function
 #'
 #' Plots RNA decay data and/or decay models using the ggplot2 package.
 #'
@@ -24,7 +24,7 @@
 #' @export
 #'
 #' @examples
-#' p=DecayPlot("Gene_BooFu",
+#' p<-decay_plot("Gene_BooFu",
 #'           mod.results = data.frame(alpha_WT = 0.0830195, beta_WT = 0.04998945,
 #'                                    model = 1, alpha_grp = 1, beta_grp = 1, alpha_subgroup = 1.1,
 #'                                    row.names = "Gene_BooFu"),
@@ -44,7 +44,7 @@
 #'
 
 
-DecayPlot = function(geneID,
+decay_plot <- function(geneID,
                      xlim = c(0, 500),
                      ylim = c(0, 1.25),
                      xticks = NA,
@@ -56,9 +56,9 @@ DecayPlot = function(geneID,
                      colors = NA,
                      mod.results = NA,
                      gdesc = NA) {
-  dExp = function(t, par) {
-    a = par[1]
-    b = par[2]
+  dExp <- function(t, par) {
+    a <- par[1]
+    b <- par[2]
     exp(-(a / b) * (1 - exp(-b * t)))
   }
   fun_exp <- function(t, a) {
@@ -69,26 +69,26 @@ DecayPlot = function(geneID,
       paste(strwrap(x, ...), collapse = "\n")
     }
   if (any(what %in% "models"))
-    mod = mod.results[geneID, "mod"]
+    mod <- mod.results[geneID, "mod"]
   else
-    mod = NA
+    mod <- NA
   if (any(what %in% "models"))
-    A_grp = mod.results[geneID, "alpha_subgroup"]
+    A_grp <- mod.results[geneID, "alpha_subgroup"]
   else
-    A_grp = NA
+    A_grp <- NA
   if (is.na(treatments[1]))
-    Geno = levels(DATA$treatment)
+    Geno <- levels(DATA$treatment)
   else
-    Geno = treatments[treatments %in% levels(DATA$treatment)]
+    Geno <- treatments[treatments %in% levels(DATA$treatment)]
   if (is.na(colors[1]))
-    colors = grDevices::rainbow(length(Geno))
+    colors <- grDevices::rainbow(length(Geno))
   if (any(is.na(xticks)))
-    xticks = c(0, 1:5 * diff(xlim) / 5 + xlim[1])
-  names(colors) = Geno
-  p = ggplot2::ggplot(data = DATA[DATA$geneID == geneID &
+    xticks <- c(0, 1:5 * diff(xlim) / 5 + xlim[1])
+  names(colors) <- Geno
+  p <- ggplot2::ggplot(data = DATA[DATA$geneID == geneID &
                                     DATA$treatment %in% Geno,])
   if (any(what %in% "Desc")) {
-    p = p +
+    p <- p +
       ggplot2::annotate(
         geom = "text",
         x = 250,
@@ -109,7 +109,7 @@ DecayPlot = function(geneID,
         angle = 0
       )
   } else {
-    p = p +
+    p <- p +
       ggplot2::ggtitle(if (any(what %in% "models"))
         paste0(geneID, " - alpha Grouping ", A_grp, " - Model ", mod)
         else
@@ -117,7 +117,7 @@ DecayPlot = function(geneID,
   }
   if (any(what %in% "alphas&betas")) {
     for (g in Geno) {
-      p = p +
+      p <- p +
         ggplot2::geom_text(
           parse = TRUE,
           data = data.frame(
@@ -151,7 +151,7 @@ DecayPlot = function(geneID,
     }
   }
   if (any(what %in% "meanSE"))  {
-    p = p +
+    p <- p +
       ggplot2::stat_summary(
         ggplot2::aes(x = t.decay, y = value, color = treatment),
         fun.y = mean,
@@ -175,7 +175,7 @@ DecayPlot = function(geneID,
       )
   }
   if (any(what %in% "reps")) {
-    p = p +
+    p <- p +
       ggplot2::geom_point(
         ggplot2::aes(
           x = t.decay,
@@ -191,7 +191,7 @@ DecayPlot = function(geneID,
     if (any(mod.results[geneID, (length(levels(DATA$treatment)) + 1):(length(levels(DATA$treatment)) *
                                                                       2)] == 0)) {
       for (g in Geno) {
-        p = p +
+        p <- p +
           ggplot2::geom_line(
             data = data.frame(
               x = xlim[1]:xlim[2],
@@ -206,7 +206,7 @@ DecayPlot = function(geneID,
       }
     } else {
       for (g in Geno) {
-        p = p +
+        p <- p +
           ggplot2::geom_line(
             data = data.frame(
               x = xlim[1]:xlim[2],
@@ -222,7 +222,7 @@ DecayPlot = function(geneID,
       }
     }
   }
-  p = p +
+  p <- p +
     ggplot2::scale_color_manual(
       "",
       breaks = names(colors),

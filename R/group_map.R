@@ -1,7 +1,7 @@
 
 #' model color map
 #'
-#' GroupMap makes a color map of alpha and beta equivalence groups by model. Similar colors in a row indicate constrained parameter equivalence between treatements. Gray indicates values of 0.
+#' group_map makes a color map of alpha and beta equivalence groups by model. Similar colors in a row indicate constrained parameter equivalence between treatements. Gray indicates values of 0.
 #'
 #' @param decaydata 5 column data.frame with colnames "geneID","treatment","t.decay","rep","value"
 #' @param path write path and file name, must end in ".pdf"
@@ -13,7 +13,7 @@
 #'
 #' @export
 #' @examples
-#' groupMap(decaydata=data.frame(geneID=paste0("gene",1:4),
+#' group_map(decaydata=data.frame(geneID=paste0("gene",1:4),
 #'                     treatment=as.factor(rep(paste0("treat",1:2),2)),
 #'                     t.decay=0:3,
 #'                     rep=rep("rep1"),
@@ -26,28 +26,28 @@
 #'                          dimnames=list(c("a","b"),paste0("mod",1:6)))))
 
 
-groupMap = function(decaydata,
+group_map <- function(decaydata,
                     path,
                     nEquivGrp = nEquivGrp,
                     groups = groups,
                     mods = mods) {
-  nTreat = length(unique(decaydata$treatment))
-  groupingsA = t(matrix(rep(groups[1,], nEquivGrp + 1), nrow = nTreat))
+  nTreat <- length(unique(decaydata$treatment))
+  groupingsA <- t(matrix(rep(groups[1,], nEquivGrp + 1), nrow = nTreat))
   for (i in 2:nEquivGrp) {
-    groupingsA = rbind(groupingsA, t(matrix(rep(
+    groupingsA <- rbind(groupingsA, t(matrix(rep(
       groups[i,], nEquivGrp + 1
     ), nrow = nTreat)))
   }
-  colnames(groupingsA) = paste0("alpha_", unique(decaydata$treatment))
-  groupingsB = rbind(groups[1:nEquivGrp,] + nTreat, rep(NA, nTreat))
-  rownames(groupingsB)[nEquivGrp + 1] = paste0("grp", nEquivGrp + 1)
-  groupingsB = t(matrix(rep(t(groupingsB), nEquivGrp), nrow = nTreat))
-  colnames(groupingsB) = paste0("beta_", unique(decaydata$treatment))
-  groupings = cbind(groupingsA, groupingsB)
+  colnames(groupingsA) <- paste0("alpha_", unique(decaydata$treatment))
+  groupingsB <- rbind(groups[1:nEquivGrp,] + nTreat, rep(NA, nTreat))
+  rownames(groupingsB)[nEquivGrp + 1] <- paste0("grp", nEquivGrp + 1)
+  groupingsB <- t(matrix(rep(t(groupingsB), nEquivGrp), nrow = nTreat))
+  colnames(groupingsB) <- paste0("beta_", unique(decaydata$treatment))
+  groupings <- cbind(groupingsA, groupingsB)
   rm(groupingsA, groupingsB)
-  rownames(groupings) = rownames(mods)
+  rownames(groupings) <- rownames(mods)
   grDevices::pdf(path, width = 8, height = 10)
-  heats = c("darkblue",
+  heats <- c("darkblue",
             "green",
             "orange",
             "yellow",

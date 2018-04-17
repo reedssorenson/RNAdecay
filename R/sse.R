@@ -12,23 +12,25 @@
 #'
 #' @export
 #'
+#' @keywords internal
+#'
 #' @examples
-#' sse.nulldExp.fun(a=0.05, b = 0.001,
+#' sse_null_decaying_decay(a=0.05, b = 0.001,
 #'            m = c(1,1,1,0.99,0.5,0.5,0.5,0.49,0.25,0.25,0.25,0.24,0.12,0.125,0.125,0.126),
 #'            t = rep(c(0,10,20,30),each = 4))
-#' sse.nullExp.fun(a=0.05,
+#' sse_null_const_decay(a=0.05,
 #'            m = c(1,1,1,0.99,0.5,0.5,0.5,0.49,0.25,0.25,0.25,0.24,0.12,0.125,0.125,0.126),
 #'            t = rep(c(0,10,20,30),each = 4))
 
 
-sse.nulldExp.fun <- function(a, b, m, t) {
+sse_null_decaying_decay <- function(a, b, m, t) {
   sum((m - exp(-(a / b) * (1 - exp(
     -b * t
   )))) ^ 2)
 }
 
-#' @rdname sse.nulldExp.fun
+#' @rdname sse_null_decaying_decay
 #' @export
-sse.nullExp.fun <- function(a, m, t) {
+sse_null_const_decay <- function(a, m, t) {
   sum((m - exp(-a * t)) ^ 2)
 }

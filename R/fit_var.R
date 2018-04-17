@@ -13,7 +13,7 @@
 #' @keywords internal
 #'
 #' @examples
-#' sig.fun(1,128)
+#' fit_var(1,128)
 
 
 fit_var <- function(sse, n) {

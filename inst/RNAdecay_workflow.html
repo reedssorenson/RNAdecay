@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Reed Sorenson | reed.sorenson@utah.edu | Department of Biology | University of Utah" />
+
+<meta name="date" content="2018-04-17" />
+
+<title>RNAdecay Vignette: Normalization, Modeling, and Visualization of RNA Decay Data</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore"><em>RNAdecay</em> Vignette: Normalization, Modeling, and Visualization of RNA Decay Data</h1>
+<h4 class="author"><em>Reed Sorenson | <a href="mailto:reed.sorenson@utah.edu">reed.sorenson@utah.edu</a> | Department of Biology | University of Utah</em></h4>
+<h4 class="date"><em>2018-04-17</em></h4>
+
+
+
+<div id="i.-data-normalization-and-correction" class="section level1">
+<h1>I. DATA NORMALIZATION AND CORRECTION</h1>
+<p>The functions and code of the <code>RNAdecay</code> package were written for the purpose of analyzing decreasing levels of RNA abundance as measured by RNA short read sequencing (RNA-seq) after inhibition of transcription. Tissue is treated to block transcription (e.g., using a chemical such as cordycepin or ActinomycinD) and collected at regular intervals (referred to as the RNA decay time course, e.g., T0, T30, T60 refer to 0, 30, and 60 min of blocked transcription). Total RNA is extracted from the tissue and measured by RNA-seq. Although we wrote this package to analyze RNA-seq data, it could also be adapted to analyze individual gene data from quantitative reverse transcription polymerase chain reaction (qRT-PCR) measures, however, normalization (as herein described) is best performed using a number of stable reference genes.</p>
+<p>Raw (Illumina) RNA-seq data are typically libraries made of up 10M-250M short (50 nt) sequences. These sequences are aligned to the genome and counted based on the location of their alignment in annotated genomic ranges (e.g., genes, exons, etc). Read counts for each gene are normalized to the size of their respective RNA-seq library for comparison to libraries generated from other biological material, therefore, read counts are expressed as reads per million (RPM). We begin RNA decay analysis in this package with RPM RNA abundance data.</p>
+<div id="t0-normalization" class="section level2">
+<h2>1. T0 NORMALIZATION</h2>
+<p>Prior to modeling RNA decay, we normalize the read counts to the initial (T0) RNA abundance, the transcript level just prior to blocking transcription. This is unique for each gene, and, in an experiment with multiple replicates (reps), we use the mean value for all T0 reps. All RPM values in the time course are divided by the mean T0 value. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># you can see that in this fabricated data the RNAs have a half-life of ~30 min</span>
+RPM_geneX &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">T0 =</span> <span class="kw">c</span>(<span class="dv">150</span>, <span class="dv">135</span>, <span class="dv">148</span>), <span class="dt">T30 =</span> <span class="kw">c</span>(<span class="dv">72</span>, <span class="dv">76</span>, <span class="dv">69</span>), <span class="dt">T60 =</span> <span class="kw">c</span>(<span class="dv">35</span>, <span class="dv">35</span>, <span class="dv">30</span>), 
+                     <span class="dt">row.names =</span> <span class="kw">paste0</span>(<span class="st">&quot;rep&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>))
+RPM_geneX</code></pre></div>
+<pre><code>##       T0 T30 T60
+## rep1 150  72  35
+## rep2 135  76  35
+## rep3 148  69  30</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RPM_geneX_T0norm &lt;-<span class="st"> </span>RPM_geneX<span class="op">/</span><span class="kw">mean</span>(RPM_geneX<span class="op">$</span>T0)
+RPM_geneX_T0norm</code></pre></div>
+<pre><code>##             T0       T30       T60
+## rep1 1.0392610 0.4988453 0.2424942
+## rep2 0.9353349 0.5265589 0.2424942
+## rep3 1.0254042 0.4780600 0.2078522</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colMeans</span>(RPM_geneX_T0norm)</code></pre></div>
+<pre><code>##        T0       T30       T60 
+## 1.0000000 0.5011547 0.2309469</code></pre>
+<p><em>The following workflow depends on beginning with a data frame of RPM values with column names consisting of unique, non-nested variable tags separated by underscores (‘_’), with rownames as unique gene identifiers.</em> Here, we use with built-in example data (from <a href="http://www.pnas.org/content/early/2018/01/30/1712312115.short">Sorenson et al., 2018</a>) which we will use throughout this workflow. It has 4 genotypes, 8 time points, and 4 biological replicates for 128 samples (columns) and 118 genes (rows).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(RNAdecay)
+RPMs &lt;-<span class="st"> </span>RNAdecay<span class="op">::</span>RPMs <span class="co"># built-in example data</span>
+RPMs[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>, <span class="dv">128</span>)] <span class="co"># </span><span class="al">NOTE</span><span class="co">: not showing all columns here</span></code></pre></div>
+<pre><code>##           WT_00_r1  WT_07_r1  WT_15_r1  WT_30_r1  WT_60_r1 WT_120_r1
+## AT1G02860 10.35838  9.772902  9.682167  9.298616  8.478808  7.007951
+## AT1G09660 19.77509 17.684298 19.717329 15.455808 15.164023 13.912843
+##           WT_240_r1 WT_480_r1 sov_00_r1 sov_07_r1 sov_15_r1 vs_480_r4
+## AT1G02860  5.482903  6.523851  11.78139  11.85849  9.238458  25.50327
+## AT1G09660 10.342748 11.261410  21.48637  19.33097 18.476917  17.56892</code></pre>
+<p>Biological replicate data columns are indexed using the <code>cols()</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cols</span>(RPMs, <span class="st">&quot;WT&quot;</span>, <span class="st">&quot;00&quot;</span>) <span class="co">#gives the column indices that contain both tags in the column names</span></code></pre></div>
+<pre><code>## [1]  1 33 65 97</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(RPMs)[<span class="kw">cols</span>(RPMs, <span class="st">&quot;WT&quot;</span>, <span class="st">&quot;00&quot;</span>)]</code></pre></div>
+<pre><code>## [1] &quot;WT_00_r1&quot; &quot;WT_00_r2&quot; &quot;WT_00_r3&quot; &quot;WT_00_r4&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># </span><span class="al">NOTE</span><span class="co">: this is based on grep pattern matching so tags MUST be unique and non-nested (i.e. one entire label should not be part of another).</span></code></pre></div>
+<p>The mean and standard error (SE) RPM values are calculated by looping over label combinations and binding the values together in a new data frame.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a directory for results output</span>
+wrdir &lt;-<span class="st"> &quot;~/DecayAnalysis/Example analysis results 1&quot;</span>
+<span class="cf">if</span>(<span class="op">!</span><span class="kw">file.exists</span>(wrdir)) <span class="kw">dir.create</span>(wrdir, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)
+
+<span class="co"># specify sample tags from colnames of RPMs</span>
+treatment &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;sov&quot;</span>, <span class="st">&quot;vcs&quot;</span>, <span class="st">&quot;vs&quot;</span>) <span class="co"># </span><span class="al">NOTE</span><span class="co">: I did not use 'vcs sov' for the name of the double mutant, or cols(RPMs, &quot;vcs&quot;, &quot;00&quot;) would have indexed all T0 samples of both &quot;vcs&quot; and &quot;vcs&quot; sov&quot;; instead, I used 'vs'.</span>
+reps &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;r1&quot;</span>, <span class="st">&quot;r2&quot;</span>, <span class="st">&quot;r3&quot;</span>, <span class="st">&quot;r4&quot;</span>)
+tdecay &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;00&quot;</span>, <span class="st">&quot;07&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;30&quot;</span>, <span class="st">&quot;60&quot;</span>, <span class="st">&quot;120&quot;</span>, <span class="st">&quot;240&quot;</span>, <span class="st">&quot;480&quot;</span>) <span class="co">#again NO nesting of one label in another hence &quot;00&quot; instead of &quot;0&quot;.</span></code></pre></div>
+<p>Loop over the treatments and timepoints to subset the appropriate columns, and calculate mean and SE of replicates.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_RPM &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;geneID&quot;</span> =<span class="st"> </span><span class="kw">rownames</span>(RPMs))
+SE_RPM &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;geneID&quot;</span> =<span class="st"> </span><span class="kw">rownames</span>(RPMs))
+<span class="cf">for</span>(g <span class="cf">in</span> treatment){
+  <span class="cf">for</span>(t <span class="cf">in</span> tdecay){
+    mean_RPM &lt;-<span class="st"> </span><span class="kw">cbind</span>(mean_RPM, <span class="kw">rowMeans</span>(RPMs[, <span class="kw">cols</span>(RPMs, g, t)]))
+    <span class="kw">names</span>(mean_RPM)[<span class="kw">length</span>(mean_RPM)] &lt;-<span class="st"> </span><span class="kw">paste0</span>(g, <span class="st">&quot;_&quot;</span>, t)
+    SE_RPM &lt;-<span class="st"> </span><span class="kw">cbind</span>(SE_RPM, <span class="kw">apply</span>(<span class="dt">X =</span> RPMs[, <span class="kw">cols</span>(RPMs, g, t)], <span class="dt">MARGIN =</span> <span class="dv">1</span>, <span class="dt">FUN =</span> stats<span class="op">::</span>sd)<span class="op">/</span><span class="kw">sqrt</span>(<span class="kw">length</span>(reps)))
+    <span class="kw">names</span>(SE_RPM)[<span class="kw">length</span>(SE_RPM)] &lt;-<span class="st"> </span><span class="kw">paste0</span>(g, <span class="st">&quot;_&quot;</span>, t)
+  }}
+mean_RPM[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, ]</code></pre></div>
+<pre><code>##              geneID    WT_00    WT_07    WT_15    WT_30     WT_60
+## AT1G02860 AT1G02860 10.30576 10.92457 12.07227 10.18583  7.951206
+## AT1G09660 AT1G09660 17.67649 17.60419 17.01889 15.56747 15.591995
+##              WT_120    WT_240    WT_480  sov_00  sov_07   sov_15   sov_30
+## AT1G02860  5.978875  4.907999  5.427231 10.4751 11.5972 10.76603 10.01565
+## AT1G09660 13.271012 10.672795 10.035496 19.6877 19.3090 19.11892 18.04514
+##              sov_60   sov_120   sov_240   sov_480   vcs_00   vcs_07
+## AT1G02860  7.483476  5.882106  4.932124  5.242097 15.21011 16.66707
+## AT1G09660 16.465382 13.815930 10.919155 11.141820 30.52888 28.87662
+##             vcs_15   vcs_30   vcs_60   vcs_120   vcs_240   vcs_480
+## AT1G02860 16.86892 14.45997 12.41270  9.471179  7.028314  6.223005
+## AT1G09660 29.98092 26.93621 26.31798 24.230218 23.312002 22.954986
+##              vs_00    vs_07    vs_15    vs_30    vs_60   vs_120   vs_240
+## AT1G02860 23.98874 25.13802 24.56582 25.85643 23.09965 21.47141 20.11297
+## AT1G09660 24.06467 23.25254 24.05339 21.89650 20.80315 22.72681 20.65078
+##             vs_480
+## AT1G02860 19.47309
+## AT1G09660 20.31687</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SE_RPM[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, ]</code></pre></div>
+<pre><code>##              geneID     WT_00     WT_07     WT_15     WT_30     WT_60
+## AT1G02860 AT1G02860 0.4482383 0.5495215 0.8677714 0.6957607 0.1826975
+## AT1G09660 AT1G09660 1.0154376 0.9293058 0.9753225 0.9843020 1.3145629
+##              WT_120    WT_240    WT_480    sov_00    sov_07    sov_15
+## AT1G02860 0.4938045 0.2494622 0.5508578 0.4671639 0.5698232 0.6208221
+## AT1G09660 0.7515276 0.6203130 0.8833117 0.7574344 0.4105105 0.5440400
+##              sov_30    sov_60   sov_120   sov_240   sov_480   vcs_00
+## AT1G02860 0.4900057 0.2521764 0.4775238 0.6288319 0.2047149 1.065802
+## AT1G09660 0.9838571 0.8045619 0.7516455 0.4322530 0.7700577 1.149763
+##              vcs_07    vcs_15    vcs_30    vcs_60   vcs_120   vcs_240
+## AT1G02860 0.5303556 0.5052474 0.8726631 0.5491621 0.7702577 0.2626263
+## AT1G09660 1.9180603 0.9563549 0.5693349 0.9244970 1.2275583 1.2626453
+##             vcs_480    vs_00    vs_07    vs_15    vs_30    vs_60    vs_120
+## AT1G02860 0.4689800 1.547137 1.006693 1.481889 2.374982 2.469157 2.7944529
+## AT1G09660 0.9924902 2.215020 2.072957 1.388435 1.515420 1.204576 0.7517306
+##              vs_240   vs_480
+## AT1G02860 1.5576869 2.059173
+## AT1G09660 0.4056269 1.758722</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># write output to file</span>
+<span class="kw">write.table</span>(<span class="dt">x =</span> mean_RPM, <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/RPM_mean.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+<span class="kw">write.table</span>(<span class="dt">x =</span> SE_RPM,   <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/RPM_SE.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre></div>
+<p>Optionally, an RPM-based filtering step could be applied at this point to remove lowly expressed genes, for example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filt1 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="ot">TRUE</span>, <span class="dv">118</span>) <span class="co"># we will not filter in this example, so the filter value for each gene is set to TRUE.</span></code></pre></div>
+<p>Replicate mean T0 RPM values are then used to normalize gene level data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mT0norm &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">row.names =</span> <span class="kw">rownames</span>(RPMs)[filt1])
+<span class="cf">for</span>(g <span class="cf">in</span> treatment){
+  mean_T0reps &lt;-<span class="st"> </span><span class="kw">rowMeans</span>(RPMs[filt1, <span class="kw">cols</span>(RPMs, g, <span class="st">&quot;00&quot;</span>)])
+  <span class="cf">for</span>(r <span class="cf">in</span> reps){
+    df &lt;-<span class="st"> </span>RPMs[filt1, <span class="kw">colnames</span>(RPMs)[<span class="kw">cols</span>(RPMs, g, r)]]
+    df &lt;-<span class="st"> </span>df[, <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(tdecay)]<span class="op">/</span>mean_T0reps
+    mT0norm &lt;-<span class="st"> </span><span class="kw">cbind</span>(mT0norm, df)
+  }}
+<span class="kw">write.table</span>(<span class="dt">x =</span> mT0norm, <span class="dt">file =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/T0 normalized.txt&quot;</span>),  <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre></div>
+<p>The mean and standard error of the T0 normalized data are then calculated for replicate samples.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_mT0norm &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">row.names =</span> <span class="kw">rownames</span>(mT0norm))
+<span class="cf">for</span>(g <span class="cf">in</span> treatment){
+  <span class="cf">for</span>(t <span class="cf">in</span> tdecay){
+    mean_mT0norm &lt;-<span class="st"> </span><span class="kw">cbind</span>(mean_mT0norm, <span class="kw">rowMeans</span>(mT0norm[, <span class="kw">cols</span>(mT0norm, g, t)]))
+    <span class="kw">names</span>(mean_mT0norm)[<span class="kw">length</span>(<span class="kw">names</span>(mean_mT0norm))] &lt;-<span class="st"> </span><span class="kw">paste0</span>(g, <span class="st">&quot;_&quot;</span>, t)
+  }}
+
+SE_mT0norm &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">row.names =</span> <span class="kw">rownames</span>(mT0norm))
+<span class="cf">for</span>(g <span class="cf">in</span> treatment){
+  <span class="cf">for</span>(t <span class="cf">in</span> tdecay){
+    SE_mT0norm &lt;-<span class="st"> </span><span class="kw">cbind</span>(SE_mT0norm, <span class="kw">apply</span>(<span class="dt">X =</span> mT0norm[, <span class="kw">cols</span>(mT0norm, g, t)], <span class="dt">MARGIN =</span> <span class="dv">1</span>, <span class="dt">FUN =</span> <span class="cf">function</span>(x) stats<span class="op">::</span><span class="kw">sd</span>(x)<span class="op">/</span><span class="kw">sqrt</span>(<span class="kw">length</span>(reps))))
+    <span class="kw">names</span>(SE_mT0norm)[<span class="kw">length</span>(<span class="kw">names</span>(SE_mT0norm))] &lt;-<span class="st"> </span><span class="kw">paste0</span>(g, <span class="st">&quot;_&quot;</span>, t)
+  }}
+
+<span class="co"># write output to file</span>
+<span class="kw">write.table</span>(<span class="dt">x =</span> mean_mT0norm, <span class="dt">file =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/T0 normalized_Mean.txt&quot;</span>),  <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+<span class="kw">write.table</span>(<span class="dt">x =</span> SE_mT0norm, <span class="dt">file =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/T0 normalized_SE.txt&quot;</span>),  <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre></div>
+</div>
+<div id="decay-factor-correction" class="section level2">
+<h2>2. DECAY FACTOR CORRECTION</h2>
+<p>After inhibition of RNA synthesis, RNA degradation continues causing the total pool of RNA in cells to decrease. As this occurs, very stable RNAs become a much larger proportion of the total RNA pool even though their concentration in the cell remains nearly constant. RNA-seq RPM data is scaled to a normalized library size (i.e. to the total RNA pool), and, because of this, abundance of stable RNAs appears to increase. The apparent increase in abundance of stable genes is proportional to the reduction in the total pool of RNA, therefore, we can use it to apply a correction to the data. We call this decay factor correction. The decay factor is estimated based on the RPM increase (relative to the T0 samples) of a set of stable and abundant reference genes.</p>
+<p>We selected 30 genes with high abundance on which to calculate the decay factors for each sample. These were then used to correct abundance in each of the respective samples. A unique decay factor is calculated for each treatment at each time point.</p>
+<p>First, make a vector of ’geneID’s of abundant and stable reference genes present in the data set.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stablegenes &lt;-<span class="st"> </span><span class="kw">c</span>( <span class="st">&quot;ATCG00490&quot;</span>, <span class="st">&quot;ATCG00680&quot;</span>, <span class="st">&quot;ATMG00280&quot;</span>, <span class="st">&quot;ATCG00580&quot;</span>, <span class="st">&quot;ATCG00140&quot;</span>, <span class="st">&quot;AT4G38970&quot;</span>, <span class="st">&quot;AT2G07671&quot;</span>, <span class="st">&quot;ATCG00570&quot;</span>, <span class="st">&quot;ATMG00730&quot;</span>, <span class="st">&quot;AT2G07727&quot;</span>, <span class="st">&quot;AT2G07687&quot;</span>, <span class="st">&quot;ATMG00160&quot;</span> ,<span class="st">&quot;AT3G11630&quot;</span>, <span class="st">&quot;ATMG00060&quot;</span>, <span class="st">&quot;ATCG00600&quot;</span>, <span class="st">&quot;ATMG00220&quot;</span>, <span class="st">&quot;ATMG01170&quot;</span>, <span class="st">&quot;ATMG00410&quot;</span>, <span class="st">&quot;AT1G78900&quot;</span>, <span class="st">&quot;AT3G55440&quot;</span>, <span class="st">&quot;ATMG01320&quot;</span>, <span class="st">&quot;AT2G21170&quot;</span> ,<span class="st">&quot;AT5G08670&quot;</span>, <span class="st">&quot;AT5G53300&quot;</span>, <span class="st">&quot;ATMG00070&quot;</span>, <span class="st">&quot;AT1G26630&quot;</span>, <span class="st">&quot;AT5G48300&quot;</span>, <span class="st">&quot;AT2G33040&quot;</span>, <span class="st">&quot;AT5G08690&quot;</span>, <span class="st">&quot;AT1G57720&quot;</span>)</code></pre></div>
+<p>Mean T0 normalized values of stable genes are then pulled out of the <code>mean_mT0norm</code> data frame and used to calculate the decay factor for each set of replicate samples.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stabletable &lt;-<span class="st"> </span>mean_mT0norm[stablegenes, ]
+normFactors &lt;-<span class="st"> </span><span class="kw">colMeans</span>(stabletable)
+<span class="kw">write.table</span>(x &lt;-<span class="st"> </span>normFactors, <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/Normalziation Decay Factors.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+normFactors_mean &lt;-<span class="st"> </span><span class="kw">matrix</span>(normFactors, <span class="dt">nrow =</span> <span class="kw">length</span>(tdecay))
+normFactors_SE &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">apply</span>(<span class="dt">X =</span> stabletable, <span class="dt">MARGIN =</span> <span class="dv">2</span>, <span class="cf">function</span>(x) stats<span class="op">::</span><span class="kw">sd</span>(x)<span class="op">/</span><span class="kw">sqrt</span>(<span class="kw">length</span>(stablegenes))), <span class="dt">nrow =</span> <span class="kw">length</span>(tdecay))
+t.decay &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">7.5</span>, <span class="dv">15</span>, <span class="dv">30</span>, <span class="dv">60</span>, <span class="dv">120</span>, <span class="dv">240</span>, <span class="dv">480</span>)
+<span class="kw">rownames</span>(normFactors_mean) &lt;-<span class="st"> </span>t.decay
+<span class="kw">rownames</span>(normFactors_SE) &lt;-<span class="st"> </span>t.decay
+<span class="kw">colnames</span>(normFactors_mean) &lt;-<span class="st"> </span>treatment
+<span class="kw">colnames</span>(normFactors_SE) &lt;-<span class="st"> </span>treatment
+<span class="kw">list</span>(<span class="dt">normalizationFactors =</span> normFactors_mean, <span class="dt">SE =</span> normFactors_SE)</code></pre></div>
+<pre><code>## $normalizationFactors
+##           WT      sov      vcs       vs
+## 0   1.000000 1.000000 1.000000 1.000000
+## 7.5 1.036541 1.018474 1.019401 1.006349
+## 15  1.039264 1.049762 1.030781 1.016110
+## 30  1.093192 1.089058 1.068392 1.057446
+## 60  1.159184 1.150108 1.143107 1.127042
+## 120 1.244396 1.254913 1.238043 1.211260
+## 240 1.360045 1.361653 1.355177 1.331136
+## 480 1.518916 1.524910 1.508710 1.490484
+## 
+## $SE
+##               WT          sov          vcs           vs
+## 0   3.764009e-18 9.219900e-18 8.416579e-18 5.323112e-18
+## 7.5 7.187629e-03 6.156141e-03 6.354406e-03 3.671789e-03
+## 15  8.350257e-03 8.745853e-03 4.268441e-03 7.639774e-03
+## 30  1.018092e-02 9.213515e-03 8.169738e-03 9.683929e-03
+## 60  8.408549e-03 9.406738e-03 7.099825e-03 1.257889e-02
+## 120 1.081113e-02 1.397098e-02 1.073154e-02 1.346151e-02
+## 240 1.827014e-02 1.776487e-02 1.474298e-02 1.564277e-02
+## 480 3.641681e-02 4.239630e-02 3.448004e-02 3.649816e-02</code></pre>
+<p>Generate a matrix of the same dimensions as <code>mT0norm</code> with the appropriate decay factors in the same respective positions.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nF &lt;-<span class="st"> </span><span class="kw">vector</span>()
+ind &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">names</span>(normFactors), <span class="cf">function</span>(x) <span class="kw">grep</span>(x, <span class="kw">colnames</span>(mT0norm)))
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(ind)){
+nF[ind[, i]] &lt;-<span class="st"> </span><span class="kw">colnames</span>(ind)[i]
+}
+normFactorsM &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">matrix</span>(<span class="kw">rep</span>(normFactors[nF], <span class="kw">nrow</span>(mT0norm)), <span class="dt">ncol =</span> <span class="kw">nrow</span>(mT0norm)))
+<span class="kw">rm</span>(nF, ind)</code></pre></div>
+<p>Apply the decay factor corrections.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mT0norm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">data.frame</span>(mT0norm<span class="op">/</span>normFactorsM, 
+                     <span class="dt">row.names =</span> <span class="kw">rownames</span>(mT0norm))
+
+<span class="kw">write.table</span>(mT0norm_<span class="dv">2</span>, <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/T0 normalized and decay factor corrected.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre></div>
+<p>Rearrange the RNA decay data into a long form data frame for modeling and visualization.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mT0norm_<span class="fl">2.1</span> &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw">melt</span>(<span class="kw">as.matrix</span>(mT0norm_<span class="dv">2</span>), <span class="dt">varnames =</span> <span class="kw">c</span>(<span class="st">&quot;geneID&quot;</span>, <span class="st">&quot;variable&quot;</span>))
+mT0norm_<span class="fl">2.1</span> &lt;-<span class="st"> </span><span class="kw">cbind</span>(mT0norm_<span class="fl">2.1</span>, reshape2<span class="op">::</span><span class="kw">colsplit</span>(mT0norm_<span class="fl">2.1</span><span class="op">$</span>variable, <span class="st">&quot;_&quot;</span>, <span class="dt">names =</span> <span class="kw">c</span>(<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;t.decay&quot;</span>, <span class="st">&quot;rep&quot;</span>)))
+
+mT0norm_<span class="fl">2.1</span> &lt;-<span class="st"> </span>mT0norm_<span class="fl">2.1</span>[, <span class="kw">colnames</span>(mT0norm_<span class="fl">2.1</span>) <span class="op">!=</span><span class="st">  &quot;variable&quot;</span>]
+mT0norm_<span class="fl">2.1</span> &lt;-<span class="st"> </span>mT0norm_<span class="fl">2.1</span>[, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>)]
+<span class="kw">colnames</span>(mT0norm_<span class="fl">2.1</span>) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;geneID&quot;</span>, <span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;t.decay&quot;</span>, <span class="st">&quot;rep&quot;</span>, <span class="st">&quot;value&quot;</span>)
+mT0norm_<span class="fl">2.1</span><span class="op">$</span>rep &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;rep&quot;</span>, mT0norm_<span class="fl">2.1</span><span class="op">$</span>rep)
+mT0norm_<span class="fl">2.1</span><span class="op">$</span>t.decay &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">gsub</span>(<span class="st">&quot;7&quot;</span>, <span class="st">&quot;7.5&quot;</span>, <span class="kw">as.numeric</span>(mT0norm_<span class="fl">2.1</span><span class="op">$</span>t.decay)))
+mT0norm_<span class="fl">2.1</span><span class="op">$</span>treatment &lt;-<span class="st"> </span><span class="kw">factor</span>(mT0norm_<span class="fl">2.1</span><span class="op">$</span>treatment,<span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>,<span class="st">&quot;sov&quot;</span>,<span class="st">&quot;vcs&quot;</span>,<span class="st">&quot;vs&quot;</span>))
+mT0norm_<span class="fl">2.1</span><span class="op">$</span>rep &lt;-<span class="st"> </span><span class="kw">factor</span>(mT0norm_<span class="fl">2.1</span><span class="op">$</span>rep, <span class="dt">levels =</span> <span class="kw">paste0</span>(<span class="st">&quot;rep&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>))
+<span class="kw">write.table</span>(<span class="dt">x =</span> mT0norm_<span class="fl">2.1</span>,  <span class="dt">file =</span> <span class="kw">paste0</span>(wrdir, 
+<span class="st">&quot;/ExampleDecayData+stableGenes.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre></div>
+<p>Following the steps in this vignette, the resulting normalized data frame should be identical to the one supplied in this package called decay_data. To check:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(RNAdecay<span class="op">::</span>decay_data[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="op">==</span><span class="st"> </span>mT0norm_<span class="fl">2.1</span>[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]) <span class="co"># should be all TRUE no FALSE</span></code></pre></div>
+<pre><code>## 
+##  TRUE 
+## 60416</code></pre>
+<p>The normalized data is now ready to be used for modeling decay rates.</p>
+</div>
+</div>
+<div id="ii.-modeling-decay-rates" class="section level1">
+<h1>II. MODELING DECAY RATES</h1>
+<p>RNA degradation is typically modeled with a constant exponential decay model. This model assumes a constant decay rate throughout the decay time course. However, a number of issues might violate this assumption. For example, decay might depend on continuous transcription of rapidly turned over components of decay machinery; inhibition of this transcription would cause slowed decay due to lost supply of decay components. Alternatively, decay rate might be regulated (e.g., diurnally) leading to a slow change in decay rate over a long decay time course. Feedback due to slowed transcription could also lead to slowed RNA decay. We, therefore, apply both a constant exponential decay model and a time-dependent exponential decay model. However, besides these possibilies, other distinct mechanisms could lead to an apparent slowing of RNA decay. For example, because RNA-seq reads are pooled from multiple cell types and mapped to genes, distinct gene mRNA subpopulations might have different decay rates (i.e., different splice isoforms, or the same mRNA in different cell types of a multicellular organism) that are are averaged when these are pooled together. We believe that for these the time-dependent exponential decay model will also better capture this average than a constant exponential decay model.</p>
+<p>The dynamic nature of RNA decay can be a point of gene regulation. To identify treatments that might affect decay rate, we model all possibilities of treatment effect on both [initital] decay rates (<span class="math inline">\(\alpha\)</span>) and decay of decay rates (<span class="math inline">\(\beta\)</span>) using maximum likelihood modeling. This is done by running the modeling with constraints on treatment decay rates (i.e., constraining decay rates of treatments to be equal or allowing them to combinatorially vary in independent groups). This can be done with up to four treatments in this package. Modeling is performed one gene at a time with each set of constraints, and then each set of parameter estimates (from each set of contraints) are compared using the AICc statistic. In this package, we refer to these as equivalence constraint groupings.</p>
+<p>For the detailed mathematical framework of the decaying decay model see <a href="http://www.pnas.org/content/early/2018/01/30/1712312115.short">Sorenson et. al. (2018)</a>. Below we describe the steps of the algorithmic implementation and walk though an example data set.</p>
+<div id="load-normalized-and-corrected-data-and-check-the-format" class="section level2">
+<h2>3. LOAD NORMALIZED AND CORRECTED DATA AND CHECK THE FORMAT</h2>
+<p>Load normalized and corrected data and check the format: the following script requires a data frame with five columns with the following column names exactly: “geneID”, “treatment”, “t.decay”, “rep”, “value”:</p>
+<pre><code>* geneID    = gene identifiers (`factor`)
+* treatment = experimental treatment or genotype (`factor`)
+* t.decay   = time after transcriptional inhibition (`numeric`)
+* rep       = biological replicate number (`factor`)
+* value     = RNA abundance normalized to library size, decay factor and mean T0 values (`numeric`)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(RNAdecay)
+decay_data &lt;-<span class="st"> </span>RNAdecay<span class="op">::</span>decay_data <span class="co"># built-in example data</span>
+
+<span class="co"># make new directory for results</span>
+wrdir &lt;-<span class="st"> &quot;~/DecayAnalysis/Example analysis results 2&quot;</span>
+<span class="cf">if</span>(<span class="op">!</span><span class="kw">file.exists</span>(wrdir)) <span class="kw">dir.create</span>(wrdir, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>Rename factor levels and specify level order of <code>decay_data$treatment</code> for sorting and making figures. The example data set is already ordered, but when data is read from a text file (e.g., .csv) factor levels are ordered automatically and should be reordered according to user preference now to avoid later headaches.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">levels</span>(decay_data<span class="op">$</span>treatment) <span class="co"># This can not be longer than 4 elements for modeling.</span></code></pre></div>
+<pre><code>## [1] &quot;WT&quot;  &quot;sov&quot; &quot;vcs&quot; &quot;vs&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># reorder factor levels if necessary (skipped here):</span>
+<span class="co"># decay_data$treatment &lt;- factor(decay_data$treatment, levels = levels(decay_data$treatment)[c(4, 1, 2, 3)]) # numbers here refer to the current order position in the factor levels() - the order of the numbers designates the new position</span>
+
+<span class="kw">levels</span>(decay_data<span class="op">$</span>treatment)[<span class="dv">4</span>] &lt;-<span class="st"> &quot;vcs.sov&quot;</span>
+<span class="kw">levels</span>(decay_data<span class="op">$</span>treatment)</code></pre></div>
+<pre><code>## [1] &quot;WT&quot;      &quot;sov&quot;     &quot;vcs&quot;     &quot;vcs.sov&quot;</code></pre>
+<p>Sort the <code>decay_data</code> data frame as follows (<em>NOTE: REQUIRED step for proper indexing below</em>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">decay_data &lt;-<span class="st"> </span>decay_data[<span class="kw">order</span>(decay_data<span class="op">$</span>t.decay), ]
+decay_data &lt;-<span class="st"> </span>decay_data[<span class="kw">order</span>(decay_data<span class="op">$</span>rep), ]
+decay_data &lt;-<span class="st"> </span>decay_data[<span class="kw">order</span>(<span class="kw">as.numeric</span>(decay_data<span class="op">$</span>treatment)), ] 
+decay_data &lt;-<span class="st"> </span>decay_data[<span class="kw">order</span>(decay_data<span class="op">$</span>geneID), ]
+ids &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>geneID)) <span class="co"># 118 in example set</span>
+decay_data[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ]</code></pre></div>
+<pre><code>##         geneID treatment t.decay  rep     value
+## 1    AT1G02860        WT     0.0 rep1 1.0051056
+## 119  AT1G02860        WT     7.5 rep1 0.9148649
+## 237  AT1G02860        WT    15.0 rep1 0.9039961
+## 355  AT1G02860        WT    30.0 rep1 0.8253565
+## 473  AT1G02860        WT    60.0 rep1 0.7097449
+## 591  AT1G02860        WT   120.0 rep1 0.5464521
+## 709  AT1G02860        WT   240.0 rep1 0.3911804
+## 827  AT1G02860        WT   480.0 rep1 0.4167638
+## 945  AT1G02860        WT     0.0 rep2 1.1086173
+## 1063 AT1G02860        WT     7.5 rep2 1.1531651</code></pre>
+</div>
+<div id="generate-matrices-of-alpha-and-beta-equivalence-constraint-groups" class="section level2">
+<h2>4. GENERATE MATRICES OF <span class="math inline">\(\alpha\)</span> AND <span class="math inline">\(\beta\)</span> EQUIVALENCE CONSTRAINT GROUPS</h2>
+<p>Create objects and set varables used in the modeling based on <code>decay_data</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># (no changes needed here - just execute the code)</span>
+nEquivGrp &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) {<span class="dv">2</span>} <span class="cf">else</span>
+  <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) {<span class="dv">5</span>} <span class="cf">else</span> 
+    <span class="cf">if</span> (<span class="kw">length</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>treatment)) <span class="op">==</span><span class="st"> </span><span class="dv">4</span>) {<span class="dv">15</span>}
+genoSet &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span>(<span class="kw">length</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>rep)) <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>t.decay)))
+nTreat &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>treatment))
+nSet &lt;-<span class="st"> </span><span class="kw">length</span>(genoSet)<span class="op">*</span>nTreat
+groups &lt;-<span class="st"> </span><span class="kw">groupings</span>(decay_data)
+mods &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="st">&quot;a&quot;</span> =<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>nEquivGrp, <span class="cf">function</span>(x) {<span class="kw">rep</span>(x, nEquivGrp <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)})),
+  <span class="st">&quot;b&quot;</span> =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>(nEquivGrp <span class="op">+</span><span class="st"> </span><span class="dv">1</span>), nEquivGrp),
+  <span class="dt">row.names =</span> <span class="kw">paste0</span>(<span class="st">&quot;mod&quot;</span>, <span class="dv">1</span><span class="op">:</span>(nEquivGrp<span class="op">*</span>(nEquivGrp<span class="op">+</span><span class="dv">1</span>)))
+)</code></pre></div>
+<p>Create a colormap of model groups.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">group_map</span>(<span class="dt">decaydata =</span> decay_data, <span class="dt">path =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/Model grouping colormap.pdf&quot;</span>), <span class="dt">nEquivGrp =</span> nEquivGrp, <span class="dt">groups =</span> groups, <span class="dt">mods =</span> mods)</code></pre></div>
+<pre><code>## png 
+##   2</code></pre>
+<p>This file (“Model grouping colormap.pdf”) should now be in your working directory. It is a color map reference for understanding model constraints. For example, model 1 has all different colored boxes representing unconstrained <span class="math inline">\(\alpha\)</span>s and unconstrained betas, whereas, the second to last model has only two box colors - one for all <span class="math inline">\(\alpha\)</span>s indicating that they all have constrained equivalence and the other indicating that all <span class="math inline">\(\beta\)</span>s also have constrained equivalence. Constant decay models (i.e., <span class="math inline">\(\beta\)</span>s = 0) are indicated with gray color in the <span class="math inline">\(\beta\)</span> columns.</p>
+</div>
+<div id="model-optimization" class="section level2">
+<h2>5. MODEL OPTIMIZATION</h2>
+<p>Determine the bounds for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters. The bounds on <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are related to distinguishing constant decay, and decaying decay as described in the modeling supplement of <a href="http://www.pnas.org/content/early/2018/01/30/1712312115.short">Sorenson et al., 2018</a>.</p>
+<p><em>Care should be taken in determining these bounds given each experimental design.</em> We have provided functions to aid in selection of the lower bounds of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> (<code>a_low</code> and <code>b_low</code>, respectively), and upper bound for <span class="math inline">\(\alpha\)</span> (<code>a_high</code>). These functions calculate limits based on the time points data were collected. For example, if abundance for an unstable mRNA is measured at the first time point to be 0.02% of the initial (T0) abundance, the information needed to estimate this decay rate was not collected. So, <code>a_high</code> caluclates the maximum estimatable decay rate based on the time at which the first decay data point was collected. Similarly, the lower bound for <span class="math inline">\(\beta\)</span> is required to distinguish the constant decay model (<code>const_decay</code>) from the decaying decay model (<code>decaying_decay</code>). The upper bound for <span class="math inline">\(\beta\)</span> is required to distinguish the no decay model (<code>const_decay(0,t)</code>) from decaying decay model. If <span class="math inline">\(\beta\)</span> is too small 1-exp(-<span class="math inline">\(\beta\)</span>*t) ~ -<span class="math inline">\(\beta\)</span>*t and c(t) ~ exp(-<span class="math inline">\(\alpha\)</span>*t); therefore, we can’t distinguish between constant decay and decaying decay models. If <span class="math inline">\(\beta\)</span> is too big 1-exp(-<span class="math inline">\(\beta\)</span>*t) ~ 1 and c(t) ~ exp(-<span class="math inline">\(\alpha\)</span>/<span class="math inline">\(\beta\)</span>), a constant, we can’t distinguish between no decay and decaying decay models. Refer to <a href="http://www.pnas.org/content/early/2018/01/30/1712312115.short">Sorenson et al. (2018)</a> supplemental material for more detail about how we calculated the bounds for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_bounds &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">a_low</span>(<span class="kw">max</span>(decay_data<span class="op">$</span>t.decay)),
+             <span class="kw">a_high</span>(<span class="kw">min</span>(<span class="kw">unique</span>(decay_data<span class="op">$</span>t.decay)[<span class="kw">unique</span>(decay_data<span class="op">$</span>t.decay)<span class="op">&gt;</span><span class="dv">0</span>])))
+b_bounds &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">b_low</span>(<span class="kw">max</span>(decay_data<span class="op">$</span>t.decay)), <span class="fl">0.075</span>)
+a_bounds;b_bounds</code></pre></div>
+<pre><code>## [1] 0.0001 0.7100</code></pre>
+<pre><code>## [1] 0.001 0.075</code></pre>
+<p>Modeling is accomplished using the <code>mod_optimization</code> function. The function takes as arguments, the gene identifier, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> bounds, the <code>decay_data</code> data frame, a vector of model names to run optimization for (e.g., as <code>c(&quot;mod1&quot;, &quot;mod239&quot;, ... )</code>, the equivalence constraint matrix (defined as <code>groups</code> above), and a matrix to specify which contstraint groupings to use for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters (defined as <code>mods</code> above), respectively, for each model, and a results folder (which will be made if it doesn’t already exist) to which the results are written. A number of other arguments are available as well, see help file for details using <code>?mod_optimization</code>.</p>
+<p>Efficient model parameter optimization is accomplished using objective functions coded as binary dynamically linked shared libraries. These libraries are compiled from functions coded in the C++ language using functionality of the <code>TMB</code> package. The compiled files are dynamically linked library (*.dll, for Windows) or shared object (*.so, linux and Mac) files for each of the objective functions. If RNAdecay is installed from source, compiling C++ code will require a compiler be installed separatedly on your system (e.g., Rtools34 or later for Windows, <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a>; Xcode comand line tools for Mac, <a href="http://railsapps.github.io/xcode-command-line-tools.html" class="uri">http://railsapps.github.io/xcode-command-line-tools.html</a>; R development package for Linux, r-base-dev). If you don’t already have one of these installed, install one and restart R. C++ source files are located in the installed ‘RNAdecay/src’ folder. The compiled (shared library) files should also be written to this same folder upon installation.</p>
+<p>Test the modeling on a couple of genes on a handful of models.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mod_optimization</span>(<span class="st">&quot;AT2G18150&quot;</span>, decay_data, <span class="dt">group =</span> groups, <span class="dt">mod =</span> mods, a_bounds, b_bounds, <span class="kw">c</span>(<span class="st">&quot;mod1&quot;</span>, <span class="st">&quot;mod2&quot;</span>, <span class="st">&quot;mod16&quot;</span>, <span class="st">&quot;mod239&quot;</span>, <span class="st">&quot;mod240&quot;</span>), <span class="dt">file_only =</span> <span class="ot">FALSE</span>) </code></pre></div>
+<pre><code>## Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
+## TMB was built with Matrix version 1.2.14
+## Current Matrix version is 1.2.12
+## Please re-install 'TMB' from source using install.packages('TMB', type = 'source') or ask CRAN for a binary version of 'TMB' matching CRAN's 'Matrix' package</code></pre>
+<pre><code>## AT2G18150 done</code></pre>
+<pre><code>##           geneID    mod     alpha_WT    alpha_sov    alpha_vcs
+## mod1   AT2G18150   mod1 0.0001000000 0.0005096308 0.0008160445
+## mod2   AT2G18150   mod2 0.0001000011 0.0001000001 0.0008160473
+## mod16  AT2G18150  mod16 0.0001000002 0.0001000001 0.0006962100
+## mod239 AT2G18150 mod239 0.0009407433 0.0009407433 0.0009407433
+## mod240 AT2G18150 mod240 0.0001403765 0.0001403765 0.0001403765
+##        alpha_vcs.sov    beta_WT   beta_sov   beta_vcs beta_vcs.sov
+## mod1    0.0019003662 0.07500000 0.07500000 0.00100000   0.00100000
+## mod2    0.0019003651 0.07499902 0.00100000 0.00100000   0.00100000
+## mod16   0.0016239100 0.00000000 0.00000000 0.00000000   0.00000000
+## mod239  0.0009407433 0.01558834 0.01558834 0.01558834   0.01558834
+## mod240  0.0001403765 0.00000000 0.00000000 0.00000000   0.00000000
+##           sigma2    logLik nPar nStarts  J     range.LL nUnique.LL
+## mod1   0.1155597 -43.51417    9      50 50 1.138169e-07          1
+## mod2   0.1162461 -43.89319    7      50 44 2.597335e-04          3
+## mod16  0.1178604 -44.77586    5      50 40 1.351617e-02         10
+## mod239 0.1314419 -51.75597    3      50 50 0.000000e+00          1
+## mod240 0.1321416 -52.09573    2      50 50 3.765876e-13          1
+##             C.alpha       C.beta        C.tot     AICc AICc_est
+## mod1   7.319466e-06 2.347384e-07 7.554204e-06 106.5538 106.5538
+## mod2   4.696901e-05 7.083335e-05 1.178024e-04 102.7197 102.7197
+## mod16  5.980683e-04 0.000000e+00 5.980683e-04 100.0435 100.0435
+## mod239 3.445908e-07 3.756653e-07 7.202561e-07 109.7055 109.7055
+## mod240 9.831028e-08 0.000000e+00 9.831028e-08 108.2875 108.2875</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mod_optimization</span>(<span class="st">&quot;AT4G09680&quot;</span>, decay_data, <span class="dt">group =</span> groups, <span class="dt">mod =</span> mods, a_bounds, b_bounds, <span class="kw">c</span>(<span class="st">&quot;mod1&quot;</span>, <span class="st">&quot;mod2&quot;</span>, <span class="st">&quot;mod16&quot;</span>, <span class="st">&quot;mod239&quot;</span>, <span class="st">&quot;mod240&quot;</span>), <span class="dt">file_only =</span> <span class="ot">FALSE</span>) </code></pre></div>
+<pre><code>## AT4G09680 done</code></pre>
+<pre><code>##           geneID    mod    alpha_WT   alpha_sov   alpha_vcs alpha_vcs.sov
+## mod1   AT4G09680   mod1 0.006151427 0.008553631 0.008342841   0.004383190
+## mod2   AT4G09680   mod2 0.006151427 0.007880245 0.009021612   0.004316542
+## mod16  AT4G09680  mod16 0.004257736 0.005375819 0.006498702   0.002395319
+## mod239 AT4G09680 mod239 0.006823760 0.006823760 0.006823760   0.006823760
+## mod240 AT4G09680 mod240 0.004351118 0.004351118 0.004351118   0.004351118
+##            beta_WT    beta_sov    beta_vcs beta_vcs.sov      sigma2
+## mod1   0.003531260 0.005527378 0.003470373  0.004653506 0.003781782
+## mod2   0.003531260 0.004501911 0.004501911  0.004501911 0.003862530
+## mod16  0.000000000 0.000000000 0.000000000  0.000000000 0.007170759
+## mod239 0.004544744 0.004544744 0.004544744  0.004544744 0.008177741
+## mod240 0.000000000 0.000000000 0.000000000  0.000000000 0.012303559
+##           logLik nPar nStarts  J     range.LL nUnique.LL      C.alpha
+## mod1   175.33971    9      50 50 3.950618e-12          1 5.856055e-08
+## mod2   173.98757    7      50 50 6.224354e-12          1 7.539108e-08
+## mod16  134.39147    5      50 50 1.733724e-12          1 1.000775e-07
+## mod239 125.98159    3      50 50 0.000000e+00          1 1.655412e-08
+## mod240  99.83933    2      50 50 0.000000e+00          1 1.265030e-08
+##              C.beta        C.tot      AICc  AICc_est
+## mod1   8.234271e-08 1.409033e-07 -331.1540 -331.1540
+## mod2   1.034297e-07 1.788208e-07 -333.0418 -333.0418
+## mod16  0.000000e+00 1.000775e-07 -258.2911 -258.2911
+## mod239 3.490618e-08 5.146030e-08 -245.7696 -245.7696
+## mod240 0.000000e+00 1.265030e-08 -195.5827 -195.5827</code></pre>
+<p>Next, run all the models on each and every gene. This requires significant computational resources depending on data set size, number of models, and computing speed. The sample data set has 8 time points x 4 replicates each x 4 treatments (= 128 samples) for 118 genes and requires about 10 h processor time. 20000 genes at ~5 min each is ~70 d processor time, so be sure to test a few different models on a few handfuls of genes to feel comfortable running all the modeling. We recommend parallel processing (on multiple processor cores) using <code>parallel::mclapply</code> to cut overall time. If this function is unavailable on your machine (e.g., on <em>Windows</em>) you can use lapply, but it will take much longer. <code>mod_optimization()</code> writes results to file in tab-delimited form, and, optionally, can also return them as a data frame object.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">####### To run all genes in parallel use:
+<span class="co"># parallel::mclapply(ids, FUN = mod_optimization, </span>
+<span class="co">#                    data = decay_data, group = groups, mod = mods, </span>
+<span class="co">#                    alpha_bounds = a_bounds, beta_bounds = b_bounds,</span>
+<span class="co">#                    models = paste0(&quot;mod&quot;, 1:240), </span>
+<span class="co">#                    path = paste0(wrdir, &quot;/modeling_results&quot;),</span>
+<span class="co">#   mc.cores = getOption(&quot;mc.cores&quot;,  15L), # set the number of compute cores to use here (e.g., 9L = 9 cores, 11L = 11 cores)</span>
+<span class="co">#   mc.preschedule = TRUE,</span>
+<span class="co">#   mc.set.seed = TRUE,</span>
+<span class="co">#   mc.silent = FALSE,</span>
+<span class="co">#   mc.cleanup = TRUE,</span>
+<span class="co">#   mc.allow.recursive = TRUE)</span></code></pre></div>
+<p>The entire example data set takes ~ 10 h processor time with lapply so for this example we will randomly select one gene ID to run here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_ids &lt;-<span class="st"> </span><span class="kw">sample</span>(ids, <span class="dv">1</span>) <span class="co"># </span><span class="al">NOTE</span><span class="co">: that everytime this line is run it generates a different random sampling, therefore the gene modeled below will be different each time this code is run. To test the exact gene shown in the vignette make a new character vector of the gene id reported below and pass it to the gene argument of mod_optimization using lapply instead of passing 'test_ids' as we do here.  </span>
+test_ids</code></pre></div>
+<pre><code>## [1] &quot;AT1G28610&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
+models &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> test_ids, <span class="co"># alternatively use `ids` here to complete the entire sample data set, but be prepared to wait ~ 10 h. These gene IDs will get passed one at time to the &quot;gene&quot; argument of mod_optimization() and return a list of the results data frame.</span>
+                <span class="dt">FUN =</span> mod_optimization,
+                <span class="dt">data =</span> decay_data, 
+                <span class="dt">group =</span> groups, 
+                <span class="dt">mod =</span> mods,
+                <span class="dt">alpha_bounds =</span> a_bounds, 
+                <span class="dt">beta_bounds =</span> b_bounds,
+                <span class="dt">models =</span> <span class="kw">rownames</span>(mods), 
+                <span class="dt">path =</span> <span class="kw">paste0</span>(wrdir, <span class="st">&quot;/modeling_results&quot;</span>),
+                <span class="dt">file_only =</span> <span class="ot">FALSE</span>) </code></pre></div>
+<pre><code>## AT1G28610 done</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(models) &lt;-<span class="st"> </span>test_ids
+b &lt;-<span class="st"> </span><span class="kw">proc.time</span>()[<span class="dv">3</span>]
+(b<span class="op">-</span>a)<span class="op">/</span><span class="dv">60</span><span class="op">/</span><span class="kw">length</span>(test_ids) <span class="co"># gives you average min per gene </span></code></pre></div>
+<pre><code>##  elapsed 
+## 4.480833</code></pre>
+<p>For each gene, read in the results data frame written by <code>mod_optimization</code> as an element of a single list object.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models &lt;-<span class="st"> </span><span class="kw">lapply</span>( <span class="kw">paste0</span>( wrdir, <span class="st">&quot;/modeling_results/&quot;</span>, test_ids, <span class="st">&quot;_results.txt&quot;</span>), read.delim, <span class="dt">header =</span> <span class="ot">TRUE</span> )   
+<span class="kw">names</span>(models) &lt;-<span class="st"> </span>test_ids</code></pre></div>
+</div>
+<div id="model-selection" class="section level2">
+<h2>6. MODEL SELECTION</h2>
+<p>The AICc statistic is used to compare model performance. Better models have lower AICc values. Select a single model for each gene based on the lowest AICc statistic. We will continue here with the <code>RNAdecay::models</code> data included in the package which uses all 118 genes from the sample data set <code>RNAdecay::decay_data</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models &lt;-<span class="st"> </span>RNAdecay<span class="op">::</span>models <span class="co"># built-in example data, comment this line out to continue with your own modelling output</span>
+results &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">sapply</span>(models, <span class="cf">function</span>(x) x[x[, <span class="st">&quot;AICc&quot;</span>] <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(x[, <span class="st">&quot;AICc&quot;</span>]), ]))
+results &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(results)
+results[, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">as.data.frame</span>(results[, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]), <span class="cf">function</span>(x) <span class="kw">as.character</span>(<span class="kw">unlist</span>(x)))
+results[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)] &lt;-<span class="st"> </span><span class="kw">sapply</span>(results[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], unlist)
+<span class="kw">write.table</span>(results, <span class="dt">file =</span> <span class="kw">paste0</span>(wrdir,<span class="st">&quot;/best model results.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/best model results.txt&quot;</span>))</code></pre></div>
+<p>Generate some graphics to visualize results.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/distributions of stats.pdf&quot;</span>))
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(results)
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sigma2), <span class="dt">bins =</span> <span class="dv">300</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>))<span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="fl">0.0625</span>,<span class="dt">color =</span> <span class="st">&quot;red2&quot;</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">plain_theme</span>())
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">stat_bin</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sigma2), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="fl">0.25</span>,<span class="fl">0.25</span><span class="op">/</span><span class="dv">50</span>),<span class="dv">1</span>), <span class="dt">geom =</span> <span class="st">&quot;bar&quot;</span>)<span class="op">+</span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.25</span>)))
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">stat_ecdf</span>(<span class="kw">aes</span>(sigma2), <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>)))
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">stat_ecdf</span>(<span class="kw">aes</span>(<span class="kw">sqrt</span>(sigma2)), <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="kw">sqrt</span>(<span class="fl">0.5</span>))))
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> range.LL), <span class="dt">bins =</span> <span class="dv">60</span>))
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> nUnique.LL), <span class="dt">bins =</span> <span class="dv">60</span>))
+<span class="kw">dev.off</span>()</code></pre></div>
+<pre><code>## png 
+##   2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/lowest AICc model counts.pdf&quot;</span>), <span class="dt">height =</span> <span class="dv">8</span>, <span class="dt">width =</span> <span class="dv">32</span>)
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(
+  <span class="dt">model =</span> <span class="kw">as.integer</span>(<span class="kw">gsub</span>(<span class="st">&quot;mod&quot;</span>,<span class="st">&quot;&quot;</span>,<span class="kw">names</span>(<span class="kw">table</span>(results<span class="op">$</span>mod)))),
+  <span class="dt">counts =</span> <span class="kw">as.integer</span>(<span class="kw">table</span>(results<span class="op">$</span>mod))))<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> model, <span class="dt">y =</span> counts), <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="kw">nrow</span>(mods)), <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>,<span class="kw">nrow</span>(mods),<span class="dv">5</span>))<span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;model distribution of absolute lowest AICs&quot;</span>)
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">plain_theme</span>(<span class="dv">25</span>))
+<span class="kw">dev.off</span>()</code></pre></div>
+<pre><code>## png 
+##   2</code></pre>
+<p>Because two models are considered to perform differently if their AICc value difference is &gt;2, any models that have AICc values within two of the model with the lowest AICc are considered to have performed similarly. The number of models performing similarly to the best model are plotted as a histogram here. The number of different alpha groupings represented in these models is also plotted.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">min_mods &lt;-<span class="st"> </span><span class="kw">sapply</span>(models, <span class="cf">function</span>(x) <span class="kw">which</span> (x[, <span class="st">&quot;AICc&quot;</span>] <span class="op">&lt;</span><span class="st"> </span>(<span class="dv">2</span><span class="op">+</span><span class="kw">min</span>(x[, <span class="st">&quot;AICc&quot;</span>])))) 
+min_alpha_mods &lt;-<span class="st"> </span><span class="kw">lapply</span>(min_mods, <span class="cf">function</span>(x) <span class="kw">unique</span>(mods[x, <span class="st">&quot;a&quot;</span>]))
+
+<span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/number of models that performed similar to the one selected.pdf&quot;</span>))
+<span class="kw">barplot</span>(<span class="dt">height =</span> <span class="kw">table</span>(<span class="kw">sapply</span>(min_mods, length)), <span class="dt">xlab =</span> <span class="st">&quot;No. models in the lowest AICc group (not more than 2 different from lowest)&quot;</span>,
+        <span class="dt">ylab =</span> <span class="st">&quot;No. genes&quot;</span>)
+<span class="kw">barplot</span>(<span class="dt">height =</span> <span class="kw">table</span>(<span class="kw">sapply</span>(min_alpha_mods, length)), <span class="dt">xlab =</span> <span class="st">&quot;No. alpha groups in the lowest AICc group (not more than 2 different from lowest)&quot;</span>,
+        <span class="dt">ylab =</span> <span class="st">&quot;No. genes&quot;</span>)
+<span class="kw">dev.off</span>()</code></pre></div>
+<pre><code>## png 
+##   2</code></pre>
+<p>Build the modeling results data frame. Group genes with similar <span class="math inline">\(\alpha\)</span> groupings and then group genes with similar <span class="math inline">\(\beta\)</span> groupings.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/best model results.txt&quot;</span>))
+results<span class="op">$</span>alpha_grp &lt;-<span class="st"> </span>mods[<span class="kw">as.character</span>(results<span class="op">$</span>mod), <span class="st">&quot;a&quot;</span>]
+results<span class="op">$</span>beta_grp &lt;-<span class="st"> </span>mods[<span class="kw">as.character</span>(results<span class="op">$</span>mod), <span class="st">&quot;b&quot;</span>]
+results<span class="op">$</span>mod &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">gsub</span>(<span class="st">&quot;mod&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">as.character</span>(results<span class="op">$</span>mod)))
+
+results<span class="op">$</span>alphaPattern &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">rownames</span>(results), <span class="cf">function</span>(x) {
+  <span class="kw">paste0</span>(<span class="kw">gsub</span>(<span class="st">&quot;alpha_&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(results)[<span class="dv">3</span><span class="op">:</span>(<span class="dv">2</span><span class="op">+</span>nTreat)][<span class="kw">order</span>(<span class="kw">round</span>(results[x, <span class="dv">3</span><span class="op">:</span>(<span class="dv">2</span><span class="op">+</span>nTreat)], <span class="dv">4</span>))]), <span class="dt">collapse =</span> <span class="st">&quot;&lt;=&quot;</span>)
+  })
+results<span class="op">$</span>alphaPattern &lt;-<span class="st"> </span><span class="kw">paste0</span>(results<span class="op">$</span>alpha_grp, <span class="st">&quot;_&quot;</span>, results<span class="op">$</span>alphaPattern)
+results<span class="op">$</span>betaPattern &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">rownames</span>(results), <span class="cf">function</span>(x){
+  <span class="kw">paste0</span>(<span class="kw">gsub</span>(<span class="st">&quot;beta_&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(results)[(<span class="dv">3</span><span class="op">+</span>nTreat)<span class="op">:</span>(<span class="dv">2</span><span class="op">+</span><span class="dv">2</span><span class="op">*</span>nTreat)][<span class="kw">order</span>(<span class="kw">round</span>(results[x, (<span class="dv">3</span><span class="op">+</span>nTreat)<span class="op">:</span>(<span class="dv">2</span><span class="op">+</span><span class="dv">2</span><span class="op">*</span>nTreat)], <span class="dv">4</span>))]), <span class="dt">collapse =</span> <span class="st">&quot;&lt;=&quot;</span>)
+  })
+results<span class="op">$</span>betaPattern &lt;-<span class="st"> </span><span class="kw">paste0</span>(results<span class="op">$</span>beta_grp, <span class="st">&quot;_&quot;</span>, results<span class="op">$</span>betaPattern)
+
+results &lt;-<span class="st"> </span>results[<span class="kw">order</span>(<span class="kw">rownames</span>(results)), ]
+results &lt;-<span class="st"> </span>results[<span class="kw">order</span>(results<span class="op">$</span>beta_grp), ]
+results &lt;-<span class="st"> </span>results[<span class="kw">order</span>(results<span class="op">$</span>alphaPattern), ]
+results &lt;-<span class="st"> </span>results[<span class="kw">order</span>(results<span class="op">$</span>alpha_grp), ]
+
+results<span class="op">$</span>alphaPattern &lt;-<span class="st"> </span><span class="kw">factor</span>(results<span class="op">$</span>alphaPattern, <span class="dt">levels =</span> <span class="kw">as.character</span>(<span class="kw">unique</span>(results<span class="op">$</span>alphaPattern)))
+
+results &lt;-<span class="st"> </span><span class="kw">data.frame</span>(results[, <span class="dv">3</span><span class="op">:</span>(<span class="dv">2</span><span class="op">*</span>nTreat<span class="op">+</span><span class="dv">3</span>), <span class="dv">2</span>], results[, <span class="kw">c</span>(<span class="st">&quot;AICc&quot;</span>, <span class="st">&quot;alpha_grp&quot;</span>, <span class="st">&quot;beta_grp&quot;</span>, <span class="st">&quot;alphaPattern&quot;</span>, <span class="st">&quot;betaPattern&quot;</span>)])
+results<span class="op">$</span>nEqMods &lt;-<span class="st"> </span><span class="kw">sapply</span>(min_mods[<span class="kw">rownames</span>(results)], length)
+results<span class="op">$</span>nEqAgp &lt;-<span class="st"> </span><span class="kw">sapply</span>(min_alpha_mods[<span class="kw">rownames</span>(results)], length)
+
+<span class="co"># Customize: add columns of relative alphas and betas as desired, e.g.:</span>
+results<span class="op">$</span>rA_sov.WT    &lt;-<span class="st"> </span>results<span class="op">$</span>alpha_sov      <span class="op">/</span><span class="st"> </span>results<span class="op">$</span>alpha_WT
+results<span class="op">$</span>rA_vcs.WT    &lt;-<span class="st"> </span>results<span class="op">$</span>alpha_vcs      <span class="op">/</span><span class="st"> </span>results<span class="op">$</span>alpha_WT
+results<span class="op">$</span>rA_vcssov.WT &lt;-<span class="st"> </span>results<span class="op">$</span>alpha_vcs.sov  <span class="op">/</span><span class="st"> </span>results<span class="op">$</span>alpha_WT
+
+<span class="kw">write.table</span>(results, <span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+
+results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">paste0</span>(wrdir,<span class="st">&quot;/alphas+betas+mods+grps+patterns+relABs.txt&quot;</span>), <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">colClasses =</span>  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">2</span><span class="op">+</span><span class="dv">2</span><span class="op">*</span>nTreat), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">3</span>)))
+<span class="co"># results$alpha_subgroup &lt;- factor(results$alpha_subgroup, levels = unique(results$alpha_subgroup))</span>
+results<span class="op">$</span>alphaPattern &lt;-<span class="st"> </span><span class="kw">factor</span>(results<span class="op">$</span>alphaPattern, <span class="dt">levels =</span> <span class="kw">unique</span>(results<span class="op">$</span>alphaPattern))
+results<span class="op">$</span>betaPattern &lt;-<span class="st"> </span><span class="kw">factor</span>(results<span class="op">$</span>betaPattern, <span class="dt">levels =</span> <span class="kw">unique</span>(results<span class="op">$</span>betaPattern))
+results[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</code></pre></div>
+<pre><code>##             alpha_WT  alpha_sov  alpha_vcs alpha_vcs.sov    beta_WT
+## AT2G01430 0.08379579 0.05122255 0.01793076   0.014767874 0.07500000
+## AT1G69760 0.05813074 0.06732814 0.01556491   0.006992057 0.02257430
+## AT5G11090 0.07968370 0.06943801 0.01926957   0.030393364 0.07125452
+##             beta_sov    beta_vcs beta_vcs.sov      sigma2      AICc
+## AT2G01430 0.07500000 0.014944595  0.014944595 0.017846952 -137.8476
+## AT1G69760 0.02257430 0.005966764  0.002746884 0.009627945 -214.7804
+## AT5G11090 0.07125452 0.011931300  0.027141770 0.007789566 -241.9016
+##           alpha_grp beta_grp            alphaPattern
+## AT2G01430         1       12 1_vcs.sov&lt;=vcs&lt;=sov&lt;=WT
+## AT1G69760         1       11 1_vcs.sov&lt;=vcs&lt;=WT&lt;=sov
+## AT5G11090         1       11 1_vcs&lt;=vcs.sov&lt;=sov&lt;=WT
+##                        betaPattern nEqMods nEqAgp rA_sov.WT rA_vcs.WT
+## AT2G01430 12_vcs&lt;=vcs.sov&lt;=WT&lt;=sov       4      2 0.6112783 0.2139816
+## AT1G69760 11_vcs.sov&lt;=vcs&lt;=WT&lt;=sov       8      2 1.1582193 0.2677570
+## AT5G11090 11_vcs&lt;=vcs.sov&lt;=WT&lt;=sov       3      2 0.8714205 0.2418258
+##           rA_vcssov.WT
+## AT2G01430    0.1762365
+## AT1G69760    0.1202816
+## AT5G11090    0.3814251</code></pre>
+<p>All files were written to the <code>wrdir</code>. The modeling results are now ready to be visualized.</p>
+</div>
+</div>
+<div id="iii.-data-visulization" class="section level1">
+<h1>III. DATA VISULIZATION</h1>
+<div id="load-decay-data-and-modeling-results-and-optionally-gene-descriptions" class="section level2">
+<h2>7. LOAD DECAY DATA AND MODELING RESULTS (AND, OPTIONALLY, GENE DESCRIPTIONS)</h2>
+<p>Load normalized read data and reorder factor levels of “treatment” as you would like them to appear in the plot key and in the order you want them to plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(RNAdecay)
+decay_data &lt;-<span class="st"> </span>RNAdecay<span class="op">::</span>decay_data <span class="co"># built-in package example data; comment this line out to use your own decay_data</span>
+decay_data<span class="op">$</span>treatment &lt;-<span class="st"> </span><span class="kw">factor</span>(decay_data<span class="op">$</span>treatment, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;sov&quot;</span>, <span class="st">&quot;vcs&quot;</span>, <span class="st">&quot;vs&quot;</span>)) <span class="co"># you must type them identically in the new order  </span>
+<span class="kw">levels</span>(decay_data<span class="op">$</span>treatment)[<span class="dv">4</span>] &lt;-<span class="st"> &quot;vcs sov&quot;</span>
+decay_data[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>,]</code></pre></div>
+<pre><code>##      geneID treatment t.decay  rep     value
+## 1 AT1G02860        WT       0 rep1 1.0051056
+## 2 AT1G09660        WT       0 rep1 1.1187229
+## 3 AT1G13360        WT       0 rep1 1.0821496
+## 4 AT1G22470        WT       0 rep1 0.9173587</code></pre>
+<p>Load modeling results.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results &lt;-<span class="st"> </span>RNAdecay<span class="op">::</span>results <span class="co"># built-in package example data; comment this line out to use your own results</span>
+<span class="co"># For example:</span>
+<span class="co"># results &lt;- read.delim(&quot;~/DecayAnalysis/Example analysis results 2/alphas+betas+mods+grps+patterns+relABs.txt&quot;, header = TRUE, colClasses =  c(NA, rep(&quot;numeric&quot;, 9), rep(&quot;integer&quot;, 3), rep(&quot;character&quot;, 3), rep(&quot;numeric&quot;, 6)))</span>
+<span class="co"># results$alpha_subgroup &lt;- factor(results$alpha_subgroup, levels = unique(results$alpha_subgroup))</span>
+results[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</code></pre></div>
+<pre><code>##              alpha_WT   alpha_sov   alpha_vcs alpha_vcs.sov     beta_WT
+## AT1G02860 0.006571237 0.006571237 0.006571237   0.002956901 0.004372148
+## AT1G09660 0.006349482 0.006349482 0.006349482   0.003583661 0.005964932
+## AT1G13360 0.065720699 0.065720699 0.019776977   0.019776977 0.027849987
+##              beta_sov    beta_vcs beta_vcs.sov      sigma2 mod alpha_grp
+## AT1G02860 0.004372148 0.004372148  0.004372148 0.013891487  79         5
+## AT1G09660 0.005964932 0.009436538  0.005964932 0.006533780  68         5
+## AT1G13360 0.027849987 0.005538462  0.005538462 0.004749049 188        12
+##           beta_grp alpha_subgroup             alphaPattern
+## AT1G02860       15            5.1  5_vcs.sov&lt;=WT&lt;=sov&lt;=vcs
+## AT1G09660        4            5.1  5_vcs.sov&lt;=WT&lt;=sov&lt;=vcs
+## AT1G13360       12           12.1 12_vcs&lt;=vcs.sov&lt;=WT&lt;=sov
+##                        betaPattern rA_WT rA_sov    rA_vcs rA_vcssov
+## AT1G02860 15_WT&lt;=sov&lt;=vcs&lt;=vcs.sov     1      1 1.0000000 0.4499763
+## AT1G09660  4_WT&lt;=sov&lt;=vcs.sov&lt;=vcs     1      1 1.0000000 0.5644021
+## AT1G13360 12_vcs&lt;=vcs.sov&lt;=WT&lt;=sov     1      1 0.3009246 0.3009246
+##           nEqMods nEqAgp
+## AT1G02860       9      3
+## AT1G09660      13      4
+## AT1G13360       4      2</code></pre>
+<p>Optionally, for printing gene descriptions directly on the plot, load a gene description file and then generate a character vector of descriptions with elements named with geneIDs (e.g., for <em>Arabidopsis thaliana</em>, download and unzip <a href="https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/gene_description_20131231.txt.gz" class="uri">https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/gene_description_20131231.txt.gz</a>, and place it in your working directory).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># gene_desc &lt;- read.delim(&quot;~/gene_description_20140101.txt&quot;, quote = NULL, comment = '', header = FALSE)</span>
+<span class="co"># gene_desc[, 1] &lt;- substr(gene_desc[, 1], 1, 9)</span>
+<span class="co"># gene_desc &lt;- data.frame(gene_desc[!duplicated(gene_desc[, 1]), ], row.names = 1)</span>
+<span class="co"># colnames(gene_desc) &lt;- c(&quot;type&quot;, &quot;short description&quot;, &quot;long description&quot;, &quot;computational description&quot;)</span>
+<span class="co"># descriptions &lt;- gene_desc[, &quot;long description&quot;]</span>
+<span class="co"># names(descriptions) &lt;- rownames(gene_desc)</span>
+
+descriptions &lt;-<span class="st"> </span><span class="kw">c</span>(
+  <span class="st">&quot;Encodes a ubiquitin E3 ligase with RING and SPX domains that is involved in mediating immune responses and mediates degradation of PHT1s at plasma membranes.  Targeted by MIR827. Ubiquitinates PHT1;3, PHT1;2, PHT1;1/AtPT1 and PHT1;4/AtPT2.&quot;</span>,
+  <span class="st">&quot;&quot;</span>,
+  <span class="st">&quot;Related to Cys2/His2-type zinc-finger proteins found in higher plants. Compensated for a subset of calcineurin deficiency in yeast. Salt tolerance produced by ZAT10 appeared to be partially dependent on ENA1/PMR2, a P-type ATPase required for Li+ and Na+ efflux in yeast. The protein is localized to the nucleus, acts as a transcriptional repressor and is responsive to chitin oligomers. Also involved in response to photooxidative stress.&quot;</span>,
+  <span class="st">&quot;Encodes a stress enhanced protein that localizes to the thylakoid membrane and whose mRNA is upregulated in response to high light intensity.  It may be involved in chlorophyll binding.&quot;</span>
+  )
+<span class="kw">names</span>(descriptions) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AT1G02860&quot;</span>,<span class="st">&quot;AT5G54730&quot;</span>, <span class="st">&quot;AT1G27730&quot;</span>, <span class="st">&quot;AT4G34190&quot;</span>)</code></pre></div>
+</div>
+<div id="print-decay-plots-to-pdf" class="section level2">
+<h2>8. PRINT DECAY PLOTS TO PDF</h2>
+<p>Plot a single gene using <code>decay_plot</code>. If you do not have a gene desription file, do not include “Desc” in the <code>what</code> argument (see <code>?decay_plot</code>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">decay_plot</span>(<span class="dt">geneID =</span> <span class="st">&quot;AT1G02860&quot;</span>, 
+              <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">350</span>), 
+              <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">1.25</span>), 
+              <span class="dt">xticks =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span><span class="op">*</span><span class="dv">100</span>, 
+              <span class="dt">yticks =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">5</span><span class="op">/</span><span class="dv">4</span>,
+              <span class="dt">alphaSZ  =</span>  <span class="dv">12</span>, 
+              <span class="dt">what  =</span>  <span class="kw">c</span>(<span class="st">&quot;meanSE&quot;</span>, <span class="st">&quot;reps&quot;</span>, <span class="st">&quot;models&quot;</span>),
+              <span class="dt">treatments  =</span>  <span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;vcs sov&quot;</span>), 
+              <span class="dt">colors =</span> <span class="kw">c</span>(<span class="st">&quot;darkblue&quot;</span>, <span class="st">&quot;red3&quot;</span>),
+              <span class="dt">DATA =</span> decay_data, 
+              <span class="dt">mod.results =</span> results, 
+              <span class="dt">gdesc =</span> descriptions)
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">plain_theme</span>(<span class="dv">8</span>, <span class="dv">1</span>, <span class="dt">leg.pos =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.8</span>))) <span class="co">#this will print the plot to your current graphics device (dev.cur() tells you what that is), if you do not have a graphics device open (e.g., &quot;null device&quot;) initiate one (e.g., use quartz(),pdf(), or windows(); dev.off() closes the device and writes the file).</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Plot one or multiple genes; write them to a pdf file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make new directory for results</span>
+wrdir &lt;-<span class="st"> &quot;~/DecayAnalysis/Example analysis results 3&quot;</span>
+<span class="cf">if</span>(<span class="op">!</span><span class="kw">file.exists</span>(wrdir)) <span class="kw">dir.create</span>(wrdir, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)
+
+<span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir, <span class="st">&quot;/decay plot example.pdf&quot;</span>), <span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">8</span>)
+p &lt;-<span class="st"> </span><span class="kw">decay_plot</span>(<span class="dt">geneID =</span> <span class="st">&quot;AT1G02860&quot;</span>, 
+              <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">500</span>), 
+              <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">1.25</span>), 
+              <span class="dt">xticks =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span><span class="op">*</span><span class="dv">100</span>, 
+              <span class="dt">yticks =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">5</span><span class="op">/</span><span class="dv">4</span>,
+              <span class="dt">alphaSZ =</span> <span class="dv">10</span>, 
+              <span class="dt">what =</span> <span class="kw">c</span>(<span class="st">&quot;Desc&quot;</span>,<span class="st">&quot;meanSE&quot;</span>, <span class="st">&quot;reps&quot;</span>, <span class="st">&quot;models&quot;</span>,<span class="st">&quot;alphas&amp;betas&quot;</span>),
+              <span class="dt">treatments =</span> <span class="kw">c</span>(<span class="st">&quot;WT&quot;</span>, <span class="st">&quot;vcs sov&quot;</span>),
+              <span class="dt">colors =</span> <span class="kw">c</span>(<span class="st">&quot;darkblue&quot;</span>, <span class="st">&quot;red3&quot;</span>),
+              <span class="dt">DATA =</span> decay_data,
+              <span class="dt">mod.results =</span> results,
+              <span class="dt">gdesc =</span> descriptions)
+<span class="kw">print</span>(p<span class="op">+</span><span class="kw">plain_theme</span>(<span class="dv">32</span>, <span class="dv">1</span>, <span class="dt">leg.pos =</span> <span class="st">'right'</span>))
+<span class="kw">dev.off</span>()</code></pre></div>
+<pre><code>## png 
+##   2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot multiple genes</span>
+ids &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AT5G54730&quot;</span>, <span class="st">&quot;AT1G27730&quot;</span>, <span class="st">&quot;AT4G34190&quot;</span>)
+<span class="co"># or e.g.,</span>
+<span class="co"># ids &lt;- rownames(results[results$alpha_WT &gt; 0.1, ]) </span>
+
+<span class="kw">pdf</span>(<span class="kw">paste0</span>(wrdir, <span class="st">&quot;/multiple RNA decay plots.pdf&quot;</span>), <span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">7</span>)
+<span class="cf">for</span>(i <span class="cf">in</span> ids){
+  p &lt;-<span class="st"> </span><span class="kw">decay_plot</span>(i, 
+                <span class="dt">what =</span> <span class="kw">c</span>(<span class="st">&quot;meanSE&quot;</span>, <span class="st">&quot;models&quot;</span>, <span class="st">&quot;Desc&quot;</span>),
+                <span class="dt">mod.results =</span> results, 
+                <span class="dt">gdesc =</span> descriptions, 
+                <span class="dt">DATA =</span> decay_data)
+  <span class="kw">print</span>(p<span class="op">+</span><span class="kw">plain_theme</span>(<span class="fl">13.8</span>, <span class="dv">1</span>, <span class="dt">leg.pos =</span> <span class="st">'right'</span>))
+  <span class="kw">cat</span>(i, <span class="st">&quot; plotted.</span><span class="ch">\n</span><span class="st">&quot;</span>)
+}</code></pre></div>
+<pre><code>## AT5G54730  plotted.</code></pre>
+<pre><code>## AT1G27730  plotted.</code></pre>
+<pre><code>## AT4G34190  plotted.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dev.off</span>()</code></pre></div>
+<pre><code>## png 
+##   2</code></pre>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

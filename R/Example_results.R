@@ -1,24 +1,32 @@
 
 #' Example double exponential decay modeling results
 #'
-#' Example results from maximum likelihood modeling of double exponential RNA decay of 118 genes. Results include parameter estimates, selected model, and alpha and beta groupings.
+#' Example results from maximum likelihood modeling of double exponential RNA
+#'     decay of 118 genes. Results include parameter estimates, selected model,
+#'     and alpha and beta groupings.
 #'
 #' @format a data frame with 18 columns and 118 rows.
 #'  \describe{
-#'     \item{alpha_XXX}{decay rate estimate of genotype XXX, in per time (min^-1)}
-#'     \item{beta_XXX}{decay of decay rate estimate of genotype XXX, in per time (min^-1)}
+#'     \item{alpha_XXX}{decay rate estimate of genotype XXX, in per time
+#'     (min^-1)}
+#'     \item{beta_XXX}{decay of decay rate estimate of genotype XXX, in per time
+#'     (min^-1)}
 #'     \item{sigma2}{variance estimate}
 #'     \item{model}{selected model number}
 #'     \item{alpha_grp}{model alpha grouping number }
 #'     \item{beta_grp}{model beta grouping number }
 #'     \item{alpha_subgroup}{model alpha subgroup number}
-#'     \item{alphaPattern}{model alpha subgroup pattern; i.e. order of genotypes of increaseing decay rate}
-#'     \item{betaPattern}{model beta subgroup pattern; i.e. order of genotypes of increaseing decay of decay rate}
+#'     \item{alphaPattern}{model alpha subgroup pattern; i.e. order of genotypes
+#'     of increaseing decay rate}
+#'     \item{betaPattern}{model beta subgroup pattern; i.e. order of genotypes
+#'     of increaseing decay of decay rate}
 #'     \item{rA_XXX}{relative alpha value of genotype XXX compared to WT}
-#'     \item{nEqMods}{number of models that were not different than the selected model based on a AICc difference <2}
+#'     \item{nEqMods}{number of models that were not different than the selected
+#'     model based on a AICc difference <2}
 #'     \item{nEqAgp}{number of alpha groups represented in nEqMods}
 #'     }
 #'
-#' @source Sorenson et al. (2017) Submitted; \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86361}
+#' @source Sorenson et al. (2018);
+#'     \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86361}
 #'
 "results"

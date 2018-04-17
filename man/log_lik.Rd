@@ -11,13 +11,15 @@ log_lik(x, y, n)
 
 \item{y}{is sigma2 cooresponding to the minimum SSE}
 
-\item{n}{is the total number of observations of a single gene (e.g., 8 time points X 4 replicates X 4 treatments/genotypes = 128)}
+\item{n}{is the total number of observations of a single gene (e.g., 8 time
+points X 4 replicates X 4 treatments/genotypes = 128)}
 }
 \value{
 returns Log Likelihood
 }
 \description{
-Calculates the log likelihood value from the sum of the squared errors, sigma2, and the total number of data points.
+Calculates the log likelihood value from the sum of the squared errors, sigma2,
+    and the total number of data points.
 }
 \examples{
 log_lik(1,1/128,128)

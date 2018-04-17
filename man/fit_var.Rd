@@ -18,6 +18,6 @@ returns the sigma squared estimate
 Calculates the variance (sigma^2) estimate from the sum of the squared errors from the fit model.
 }
 \examples{
-sig.fun(1,128)
+fit_var(1,128)
 }
 \keyword{internal}

@@ -3,9 +3,9 @@ RNAdecay is an R package for modeling RNA abundance decrease after inhibition of
 
 C++ compilation is required upon installation from source. Modeling makes use of the functionality of the TMB package to generate high performance dynamically linked libraries from objective functions coded in C++ for efficient computation. C++ source files for these functions are provided but must be compiled. Compiling C++ code requires a compiler be installed separatedly on your system (e.g., Rtools34 or later for Windows,  https://cran.r-project.org/bin/windows/Rtools/; Xcode comand line tools for Mac, http://railsapps.github.io/xcode-command-line-tools.html; R development package for Linux, r-base-dev). 
 
-To install and use the development version of `RNAdecay` use the following commands on the R console: 
+To install and use `RNAdecay` use the following commands on the R console: 
 ```{r}
-install.packages("devtools")
-devtools::install_github("reedssorenson/RNAdecay@R-v4.2")
+source("https://bioconductor.org/biocLite.R")
+biocLite("RNAdecay")
 library(RNAdecay)
 ```

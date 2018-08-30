@@ -5,7 +5,8 @@ C++ compilation is required upon installation from source. Modeling makes use of
 
 To install and use `RNAdecay` use the following commands on the R console: 
 ```{r}
-source("https://bioconductor.org/biocLite.R")
-biocLite("RNAdecay")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("RNAdecay")
 library(RNAdecay)
 ```

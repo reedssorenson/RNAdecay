@@ -47,7 +47,7 @@ colnames(RPMs)[cols(RPMs, "WT", "00")]
 The mean and standard error (SE) RPM values are calculated by looping over label combinations and binding the values together in a new data frame.
 ```{r}
 # create a directory for results output
-wrdir <- "~/DecayAnalysis/Example analysis results 1"
+wrdir <- paste0(tempdir(),"/DecayAnalysis/Example analysis results 1")
 if(!file.exists(wrdir)) dir.create(wrdir, recursive = TRUE)
 
 # specify sample tags from colnames of RPMs
@@ -210,7 +210,7 @@ library(RNAdecay)
 decay_data <- RNAdecay::decay_data # built-in example data
 
 # make new directory for results
-wrdir <- "~/DecayAnalysis/Example analysis results 2"
+wrdir <- paste0(tempdir(),"/DecayAnalysis/Example analysis results 2")
 if(!file.exists(wrdir)) dir.create(wrdir, recursive = TRUE)
 ```
 
@@ -280,8 +280,8 @@ Efficient model parameter optimization is accomplished using objective functions
 
 Test the modeling on a couple of genes on a handful of models. 
 ```{r}
-mod_optimization("AT2G18150", decay_data, group = groups, mod = mods, a_bounds, b_bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file_only = FALSE) 
-mod_optimization("AT4G09680", decay_data, group = groups, mod = mods, a_bounds, b_bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file_only = FALSE) 
+mod_optimization("AT2G18150", decay_data, group = groups, mod = mods, a_bounds, b_bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file_only = FALSE, path = wrdir) 
+mod_optimization("AT4G09680", decay_data, group = groups, mod = mods, a_bounds, b_bounds, c("mod1", "mod2", "mod16", "mod239", "mod240"), file_only = FALSE, path = wrdir) 
 ```
 
 Next, run all the models on each and every gene. This requires significant computational resources depending on data set size, number of models, and computing speed. The sample data set has 8 time points x 4 replicates each x 4 treatments (= 128 samples) for 118 genes and requires about 10 h processor time. 20000 genes at ~5 min each is ~70 d processor time, so be sure to test a few different models on a few handfuls of genes to feel comfortable running all the modeling. We recommend parallel processing (on multiple processor cores) using `parallel::mclapply` to cut overall time. If this function is unavailable on your machine (e.g., on _Windows_) you can use lapply, but it will take much longer. `mod_optimization()` writes results to file in tab-delimited form, and, optionally, can also return them as a data frame object. 
@@ -446,7 +446,7 @@ Load modeling results.
 ```{r}
 results <- RNAdecay::results # built-in package example data; comment this line out to use your own results
 # For example:
-# results <- read.delim("~/DecayAnalysis/Example analysis results 2/alphas+betas+mods+grps+patterns+relABs.txt", header = TRUE, colClasses =  c(NA, rep("numeric", 9), rep("integer", 3), rep("character", 3), rep("numeric", 6)))
+# results <- read.delim(paste0(tempdir(),"/DecayAnalysis/Example analysis results 2/alphas+betas+mods+grps+patterns+relABs.txt"), header = TRUE, colClasses =  c(NA, rep("numeric", 9), rep("integer", 3), rep("character", 3), rep("numeric", 6)))
 # results$alpha_subgroup <- factor(results$alpha_subgroup, levels = unique(results$alpha_subgroup))
 results[1:3, ]
 ```
@@ -454,7 +454,7 @@ results[1:3, ]
 Optionally, for printing gene descriptions directly on the plot, load a gene description file and then generate a character vector of descriptions with elements named with geneIDs 
 (e.g., for _Arabidopsis thaliana_, download and unzip   https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/gene_description_20131231.txt.gz, and place it in your working directory).
 ```{r}
-# gene_desc <- read.delim("~/gene_description_20140101.txt", quote = NULL, comment = '', header = FALSE)
+# gene_desc <- read.delim("gene_description_20140101.txt"), quote = NULL, comment = '', header = FALSE)
 # gene_desc[, 1] <- substr(gene_desc[, 1], 1, 9)
 # gene_desc <- data.frame(gene_desc[!duplicated(gene_desc[, 1]), ], row.names = 1)
 # colnames(gene_desc) <- c("type", "short description", "long description", "computational description")
@@ -486,13 +486,13 @@ p <- decay_plot(geneID = "AT1G02860",
               DATA = decay_data, 
               mod.results = results, 
               gdesc = descriptions)
-print(p+plain_theme(8, 1, leg.pos = c(0.7, 0.8))) #this will print the plot to your current graphics device (dev.cur() tells you what that is), if you do not have a graphics device open (e.g., "null device") initiate one (e.g., use quartz(),pdf(), or windows(); dev.off() closes the device and writes the file).
+# print(p+plain_theme(8, 1, leg.pos = c(0.7, 0.8))) #this will print the plot to your current graphics device (dev.cur() tells you what that is), if you do not have a graphics device open (e.g., "null device") initiate one (e.g., use quartz(),pdf(), or windows(); dev.off() closes the device and writes the file).
 ```
 
 Plot one or multiple genes; write them to a pdf file. 
 ```{r}
 # make new directory for results
-wrdir <- "~/DecayAnalysis/Example analysis results 3"
+wrdir <- paste0(tempdir(),"/DecayAnalysis/Example analysis results 3")
 if(!file.exists(wrdir)) dir.create(wrdir, recursive = TRUE)
 
 pdf(paste0(wrdir, "/decay plot example.pdf"), width = 10, height = 8)

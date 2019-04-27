@@ -4,8 +4,8 @@
 \alias{plain_theme}
 \title{a custom ggplot2 theme}
 \usage{
-plain_theme(bigFont = 30, smFont = 0.85, x.ang = 0, leg.pos = c(0.85,
-  0.85))
+plain_theme(bigFont = 30, smFont = 0.85, x.ang = 0,
+  leg.pos = c(0.85, 0.85))
 }
 \arguments{
 \item{bigFont}{larger font size of axis labels in points (used for plot title, axis titles, facet titles)}

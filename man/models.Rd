@@ -4,7 +4,8 @@
 \name{models}
 \alias{models}
 \title{Example double exponential decay modeling results}
-\format{a list of data frames, each with 240 rows (1/model) with 22 columns and 240 rows.
+\format{
+a list of data frames, each with 240 rows (1/model) with 22 columns and 240 rows.
  \describe{
     \item{geneID}{gene identifier}
     \item{mod}{model names as factors}
@@ -22,7 +23,8 @@
     \item{C.tot}{C.alpha+C.beta}
     \item{AICc}{calculated from the single highest maximum likelihood of all parameter starting value sets}
     \item{AICc_est}{calculated from the log likelihood value computed by using the mean of each parameter from all optimizations that converged on the highest maximum likelihood of all starting parameter value sets}
-    }}
+    }
+}
 \source{
 Sorenson et al. (2017) Submitted; \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86361}
 }

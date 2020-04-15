@@ -4,8 +4,7 @@
 \alias{group_map}
 \title{model color map}
 \usage{
-group_map(decaydata, path, nEquivGrp = nEquivGrp, groups = groups,
-  mods = mods)
+group_map(decaydata, path, nEquivGrp = nEquivGrp, groups = groups, mods = mods)
 }
 \arguments{
 \item{decaydata}{5 column data.frame with colnames "geneID","treatment","t.decay","rep","value"}

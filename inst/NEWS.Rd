@@ -1,6 +1,8 @@
 \name{NEWS}
 \title{RNAdecay Release Notes}
 
+\section{CHANGES IN VERSION 1.6.1}{\itemize{\item Updates for Bioconductor 3.11: new function: hl_plot, fixed decay_plot bugs, rewrote cols function. }}
+
 \section{CHANGES IN VERSION 1.0.0}{\itemize{\item RNAdecay is accepted to Bioconductor.}}
 
 \section{CHANGES IN VERSION 0.99.11}{\itemize{\item Added a Makefile so compilation occurs on install using TMB::compile, and fixed a major error in the constraint_fun_list_maker for two and three treatment analysis.}}

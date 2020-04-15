@@ -18,6 +18,7 @@
 #' @param DATA (required) normalized abundance decay data with column names: "geneID", "treatment","t.decay", "rep","value"
 #' @param mod.results (optional; required for plotting models) data.frame of the model results as output from the modeling (e.g. "alphas+betas+mods+grps+patterns+relABs.txt")
 #' @param gdesc (optional; required for plotting gene descriptions) gene descriptions (geneID-named vector of gene descriptions geneID must match those of data)
+#' @param desc.width width of gene descriptions (in number of characters) before word wrap
 #'
 #' @return returns a ggplot to be used with print; could also be modified using the syntax of ggplot2 e.g.'+geom_XXXX(...)'
 #'
@@ -44,196 +45,129 @@
 #'
 
 
-decay_plot <- function(geneID,
-                     xlim = c(0, 500),
-                     ylim = c(0, 1.25),
-                     xticks = NA,
-                     yticks = 0:5 / 4,
-                     alphaSZ = 8,
-                     what = c("Desc", "models", "reps", "meanSE", "alphas&betas"),
-                     DATA,
-                     treatments = NA,
-                     colors = NA,
-                     mod.results = NA,
-                     gdesc = NA) {
-  dExp <- function(t, par) {
-    a <- par[1]
-    b <- par[2]
-    exp(-(a / b) * (1 - exp(-b * t)))
-  }
-  fun_exp <- function(t, a) {
-    exp(-a * t)
-  }
-  wrapper <-
-    function(x, ...) {
+decay_plot=
+  function (
+    geneID,
+    xlim = c(0, 500),
+    ylim = c(0, 1.25),
+    xticks = NA,
+    yticks = 0:5/4,
+    alphaSZ = 8,
+    what = c("Desc", "models", "reps", "meanSE", "alphas&betas"),
+    DATA,
+    treatments = NA,
+    colors = NA,
+    mod.results = NA,
+    gdesc = NA,
+    desc.width = 55) {
+    if(any(! geneID %in% rownames(mod.results))) {stop(paste0("geneID:",geneID," not found in the dataset."),call. = FALSE)}
+    if(any(!treatments %in% gsub("alpha_","",colnames(mod.results)[grep("alpha_",colnames(mod.results)[1:4])]))) {
+      stop(paste0("Supplied 'treatments' are not found in 'mod.results'."))
+    }
+    if(any(!treatments %in% unique(DATA$treatment))) {
+      stop(paste0("'treatments' indicated are not found in 'DATA'."))
+    }
+    dExp <- function(t, par) {
+      a <- par[1]
+      b <- par[2]
+      exp(-(a/b) * (1 - exp(-b * t)))
+    }
+    fun_exp <- function(t, a) {
+      exp(-a * t)
+    }
+    wrapper <- function(x, ...) {
       paste(strwrap(x, ...), collapse = "\n")
     }
-  if (any(what %in% "models"))
-    mod <- mod.results[geneID, "mod"]
-  else
-    mod <- NA
-  if (any(what %in% "models"))
-    A_grp <- mod.results[geneID, "alpha_subgroup"]
-  else
-    A_grp <- NA
-  if (is.na(treatments[1]))
-    Geno <- levels(DATA$treatment)
-  else
-    Geno <- treatments[treatments %in% levels(DATA$treatment)]
-  if (is.na(colors[1]))
-    colors <- grDevices::rainbow(length(Geno))
-  if (any(is.na(xticks)))
-    xticks <- c(0, 1:5 * diff(xlim) / 5 + xlim[1])
-  names(colors) <- Geno
-  p <- ggplot2::ggplot(data = DATA[DATA$geneID == geneID &
-                                    DATA$treatment %in% Geno,])
-  if (any(what %in% "Desc")) {
-    p <- p +
-      ggplot2::annotate(
-        geom = "text",
-        x = 250,
-        y = ylim[2],
-        label = wrapper(paste0(
-          geneID, if (any(what %in% "models")) {
-            paste0(" alpha Subgroup ", A_grp, " - Model ", mod)
-          } else {
-            ""
-          }, paste0(" - ", gdesc[geneID])
-        ), 75),
-        vjust = 1,
-        hjust = 0.5,
-        color = grDevices::gray(0.4),
-        size = alphaSZ * 0.3,
-        family = c("mono"),
-        fontface = "plain",
-        angle = 0
-      )
-  } else {
-    p <- p +
-      ggplot2::ggtitle(if (any(what %in% "models"))
-        paste0(geneID, " - alpha Grouping ", A_grp, " - Model ", mod)
-        else
-          geneID)
-  }
-  if (any(what %in% "alphas&betas")) {
-    for (g in Geno) {
-      p <- p +
-        ggplot2::geom_text(
-          parse = TRUE,
-          data = data.frame(
-            text = c(
-              paste0(
-                "alpha==",
-                as.character(round(mod.results[geneID, paste0("alpha_", gsub(" ", ".", g))], 4)),
-                "~beta==",
-                as.character(round(mod.results[geneID, paste0("beta_", gsub(" ", ".", g))], 4))
-              )
-            ),
-            x = rep(xlim[2], 4),
-            y = if (any(mod.results[geneID, (length(levels(DATA$treatment)) +
-                                             1):(length(levels(DATA$treatment)) * 2)] == 0)) {
-              c(max(fun_exp(xlim, unlist(
-                mod.results[geneID, paste0("alpha_", gsub(" ", ".", g))]
-              )) - 0.2, 0))
-            } else {
-              c(max(dExp(xlim[2], unlist(
-                mod.results[geneID, paste0(c("alpha_", "beta_"), gsub(" ", ".", g))]
-              )) - 0.2, 0))
-            }
-          ),
-          mapping = ggplot2::aes(label = text, x = x, y = y),
-          color = "black",
-          vjust = -0.5,
-          hjust = 1,
-          size = (alphaSZ / 1.3) * 1.5,
-          alpha = 0.5
-        )
-    }
-  }
-  if (any(what %in% "meanSE"))  {
-    p <- p +
-      ggplot2::stat_summary(
-        ggplot2::aes(x = t.decay, y = value, color = treatment),
-        fun.y = mean,
-        geom = "line",
-        size = if (any(what %in% "models"))
-          0.35
-        else
-          1.0,
-        alpha = if (any(what %in% "models"))
-          0.6
-        else
-          1
-      ) +
-      ggplot2::stat_summary(
-        ggplot2::aes(x = t.decay, y = value, color = treatment),
-        #fun.data=mean_cl_normal,mult = 1,geom = "errorbar", size=0.35,alpha=0.6) # 95 % confidence interval error bars
-        fun.data = ggplot2::mean_se,
-        geom = "errorbar",
-        size = 0.35,
-        alpha = 0.6
-      )
-  }
-  if (any(what %in% "reps")) {
-    p <- p +
-      ggplot2::geom_point(
-        ggplot2::aes(
-          x = t.decay,
-          y = value,
-          color = treatment,
-          shape = rep
-        ),
-        size = 1.2,
-        alpha = 0.5
-      )
-  }
-  if (any(what %in% "models")) {
-    if (any(mod.results[geneID, (length(levels(DATA$treatment)) + 1):(length(levels(DATA$treatment)) *
-                                                                      2)] == 0)) {
-      for (g in Geno) {
-        p <- p +
-          ggplot2::geom_line(
-            data = data.frame(
-              x = xlim[1]:xlim[2],
-              y = fun_exp(xlim[1]:xlim[2],
-                          a = unlist(mod.results[geneID, paste0("alpha_", gsub(" ", ".", g))]))
-            ),
-            ggplot2::aes(x = x, y = y),
-            color = colors[g],
-            size = 0.5,
-            alpha = 1
-          )
-      }
+    if (any(what %in% "models"))     mod <- mod.results[geneID, "mod"]  else mod <- NA
+    if (any(what %in% "models"))     A_grp <- mod.results[geneID, "alpha_subgroup"]   else ""
+    if (is.na(treatments[1]))     treatments <- unique(DATA$treatment)  else treatments <- treatments[treatments %in% unique(DATA$treatment)]
+    if (is.na(colors[1]))     colors <- grDevices::rainbow(length(treatments),alpha = 1)
+    if (any(is.na(xticks)))     xticks <- c(0, 1:5 * diff(xlim)/5 + xlim[1])
+    names(colors) <- treatments
+    p <- ggplot2::ggplot(data = DATA[DATA$geneID == geneID & DATA$treatment %in% treatments, ])
+    if (any(what %in% "Desc")) {
+      p <- p + ggplot2::annotate(geom = "text", x = xlim[2]/2, y = ylim[2],
+                                 label = wrapper(paste0(geneID,
+                                                        if (any(what %in% "models")) {
+                                                          paste0(" - model ",mod)
+                                                        } else { "" }, paste0(" - ", gdesc[geneID])), desc.width),
+                                 vjust = 1,
+                                 hjust = 0.5,
+                                 color = grDevices::gray(0.4),
+                                 size = alphaSZ *0.4,
+                                 family = c("mono"), fontface = "plain",
+                                 angle = 0)
     } else {
-      for (g in Geno) {
-        p <- p +
-          ggplot2::geom_line(
-            data = data.frame(
-              x = xlim[1]:xlim[2],
-              y = dExp(xlim[1]:xlim[2],
-                       par = unlist(mod.results[geneID, paste0(c("alpha_", "beta_"),
-                                                               gsub(" ", ".", g))]))
-            ),
-            ggplot2::aes(x = x, y = y),
-            color = colors[g],
-            size = 0.5,
-            alpha = 1
-          )
+      p <- p + ggplot2::ggtitle(if (any(what %in% "models")) {
+        paste0(geneID," - model ", mod)
+      } else {geneID}
+      )
+    }
+    if (any(what %in% "alphas&betas")) {
+      p <- p + ggplot2::geom_text(parse = TRUE,
+                                  data = data.frame(
+                                    treatment = treatments,
+                                    text = sapply(treatments,function(g) {
+                                      paste0(
+                                        "alpha==", as.character(round(mod.results[geneID, paste0("alpha_", g)], 4)),
+                                        "~beta==", as.character(round(mod.results[geneID, paste0("beta_", g)], 4))
+                                      )
+                                    }),
+                                    x = rep(xlim[2], length(treatments)),
+                                    y = if (any(mod.results[geneID, (length(unique(DATA$treatment)) + 1):(length(unique(DATA$treatment)) * 2)] == 0)) {
+                                      sapply(treatments,function(g) {
+                                        c(max(fun_exp(xlim[2], unlist(mod.results[geneID, paste0("alpha_", g)])) - 0.2, 0))}) # NEED TO ADD THE "[2] AFTER XLIM IN THE PACKAGE!!! 8/23/19.
+                                    } else {
+                                      sapply(treatments,function(g) {
+                                        c(max(dExp(xlim[2], unlist(mod.results[geneID, paste0(c("alpha_", "beta_"), g)])) - 0.2, 0))})
+                                    }
+                                  ),
+                                  mapping = ggplot2::aes(label = text, x = x, y = y, color = treatment),
+                                  # color = "black",
+                                  vjust = -0.5,
+                                  hjust = 1,
+                                  size = (alphaSZ/1.3) * 1.5,
+                                  alpha = 0.75)
+    }
+    if (any(what %in% "meanSE")) {
+      p <- p + ggplot2::stat_summary(ggplot2::aes(x = t.decay,
+                                                  y = value, color = treatment), fun = mean, geom = "line", #fun was fun.y
+                                     size = if (any(what %in% "models")) {
+                                       0.35} else {1}, alpha = if (any(what %in% "models")) {
+                                         0.6}  else {1}) + ggplot2::stat_summary(ggplot2::aes(x = t.decay,
+                                                                                              y = value, color = treatment), fun.data = ggplot2::mean_se,
+                                                                                 geom = "errorbar", size = 0.35, alpha = 0.6)
+    }
+    if (any(what %in% "reps")) {
+      p <- p + ggplot2::geom_point(ggplot2::aes(x = t.decay,
+                                                y = value, color = treatment, shape = rep), size = 1.2,
+                                   alpha = 0.5)
+    }
+    if (any(what %in% "models")) {
+      if (any(mod.results[geneID, (length(unique(DATA$treatment)) +
+                                   1):(length(unique(DATA$treatment)) * 2)] == 0)) {
+        for (g in treatments) {
+          p <- p + ggplot2::geom_line(data = data.frame(x = xlim[1]:xlim[2],
+                                                        y = fun_exp(xlim[1]:xlim[2], a = unlist(mod.results[geneID,
+                                                                                                            paste0("alpha_", gsub(" ", ".", g))]))),
+                                      ggplot2::aes(x = x, y = y), color = colors[g],
+                                      size = 0.5, alpha = 1)
+        }
+      } else {
+        for (g in treatments) {
+          p <- p + ggplot2::geom_line(data = data.frame(x = xlim[1]:xlim[2],
+                                                        y = dExp(xlim[1]:xlim[2], par = unlist(mod.results[geneID,
+                                                                                                           paste0(c("alpha_", "beta_"), gsub(" ", ".",
+                                                                                                                                             g))]))), ggplot2::aes(x = x, y = y), color = colors[g],
+                                      size = 0.5, alpha = 1)
+        }
       }
     }
+    p <- p + ggplot2::scale_color_manual("", breaks = names(colors),
+                                         values = colors, labels = gsub("\\.", " ", treatments)) + ggplot2::coord_cartesian(xlim = xlim,
+                                                                                                                            ylim = ylim) + ggplot2::scale_y_continuous(breaks = yticks) +
+      ggplot2::scale_x_continuous(breaks = xticks) + ggplot2::ylab("relative abundance") +
+      ggplot2::xlab("time (min)") + ggplot2::scale_shape(guide = "none")
+    return(p)
   }
-  p <- p +
-    ggplot2::scale_color_manual(
-      "",
-      breaks = names(colors),
-      values = colors,
-      labels = gsub("\\.", " ", Geno)
-    ) +
-    ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) +
-    ggplot2::scale_y_continuous(breaks = yticks) +
-    ggplot2::scale_x_continuous(breaks = xticks) +
-    ggplot2::ylab("relative abundance") +
-    ggplot2::xlab("time (min)") +
-    ggplot2::scale_shape(guide = 'none')
-  return(p)
-}
+

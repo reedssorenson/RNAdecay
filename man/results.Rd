@@ -4,7 +4,8 @@
 \name{results}
 \alias{results}
 \title{Example double exponential decay modeling results}
-\format{a data frame with 18 columns and 118 rows.
+\format{
+a data frame with 18 columns and 118 rows.
  \describe{
     \item{alpha_XXX}{decay rate estimate of genotype XXX, in per time (min^-1)}
     \item{beta_XXX}{decay of decay rate estimate of genotype XXX, in per time (min^-1)}
@@ -18,7 +19,8 @@
     \item{rA_XXX}{relative alpha value of genotype XXX compared to WT}
     \item{nEqMods}{number of models that were not different than the selected model based on a AICc difference <2}
     \item{nEqAgp}{number of alpha groups represented in nEqMods}
-    }}
+    }
+}
 \source{
 Sorenson et al. (2017) Submitted; \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86361}
 }

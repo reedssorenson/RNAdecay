@@ -4,7 +4,9 @@
 \name{RPMs}
 \alias{RPMs}
 \title{RNA abundance reads per million over RNA decay timecourse}
-\format{a data frame with 118 rows and 128 columns; data are all RNA abundance values presented as reads per million. Column names indicate genotype, time point, and replicate number separated by underscores.}
+\format{
+a data frame with 118 rows and 128 columns; data are all RNA abundance values presented as reads per million. Column names indicate genotype, time point, and replicate number separated by underscores.
+}
 \source{
 Sorenson et al. (2017) Submitted; \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86361}
 }

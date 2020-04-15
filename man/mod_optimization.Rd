@@ -4,8 +4,17 @@
 \alias{mod_optimization}
 \title{model optimization for fitting exponential decay models to normalized data}
 \usage{
-mod_optimization(gene, data, alpha_bounds, beta_bounds, models, group, mod,
-  file_only = TRUE, path = "modeling_results")
+mod_optimization(
+  gene,
+  data,
+  alpha_bounds,
+  beta_bounds,
+  models,
+  group,
+  mod,
+  file_only = TRUE,
+  path = "modeling_results"
+)
 }
 \arguments{
 \item{gene}{geneID from \code{data} to be modeled}

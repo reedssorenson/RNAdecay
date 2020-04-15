@@ -4,14 +4,16 @@
 \name{decay_data}
 \alias{decay_data}
 \title{Normalized RNA abundance RNA decay timecourse}
-\format{a data frame with 5 columns and 15104 rows.
+\format{
+a data frame with 5 columns and 15104 rows.
  \describe{
     \item{geneID}{gene identifier; AGI}
     \item{treatment}{Arabidopsis genotype}
     \item{t.decay}{time of decay, in minutes}
     \item{rep}{replicate number}
     \item{value}{RPM value normalized to the replicate samples' mean T0 abundance and decay factor corrected}
-    }}
+    }
+}
 \source{
 Sorenson et al. (2017) Submitted; \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86361}
 }

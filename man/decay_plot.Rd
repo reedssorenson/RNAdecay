@@ -4,10 +4,21 @@
 \alias{decay_plot}
 \title{decay_plot() function}
 \usage{
-decay_plot(geneID, xlim = c(0, 500), ylim = c(0, 1.25), xticks = NA,
-  yticks = 0:5/4, alphaSZ = 8, what = c("Desc", "models", "reps",
-  "meanSE", "alphas&betas"), DATA, treatments = NA, colors = NA,
-  mod.results = NA, gdesc = NA)
+decay_plot(
+  geneID,
+  xlim = c(0, 500),
+  ylim = c(0, 1.25),
+  xticks = NA,
+  yticks = 0:5/4,
+  alphaSZ = 8,
+  what = c("Desc", "models", "reps", "meanSE", "alphas&betas"),
+  DATA,
+  treatments = NA,
+  colors = NA,
+  mod.results = NA,
+  gdesc = NA,
+  desc.width = 55
+)
 }
 \arguments{
 \item{geneID}{single gene ID from data set (e.g. "AT1G00100") for which to plot data/model}
@@ -34,6 +45,8 @@ decay_plot(geneID, xlim = c(0, 500), ylim = c(0, 1.25), xticks = NA,
 \item{mod.results}{(optional; required for plotting models) data.frame of the model results as output from the modeling (e.g. "alphas+betas+mods+grps+patterns+relABs.txt")}
 
 \item{gdesc}{(optional; required for plotting gene descriptions) gene descriptions (geneID-named vector of gene descriptions geneID must match those of data)}
+
+\item{desc.width}{width of gene descriptions (in number of characters) before word wrap}
 }
 \value{
 returns a ggplot to be used with print; could also be modified using the syntax of ggplot2 e.g.'+geom_XXXX(...)'

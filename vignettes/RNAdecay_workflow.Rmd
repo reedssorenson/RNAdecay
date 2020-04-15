@@ -37,9 +37,9 @@ RPMs[1:2, c(1:11, 128)] # NOTE: not showing all columns here
 
 Biological replicate data columns are indexed using the `cols()` function.
 ```{r}
-cols(RPMs, "WT", "00") #gives the column indices that contain both tags in the column names
+cols(patterns = c("WT", "00"), df = RPMs) #gives the column indices that contain both tags in the column names
 
-colnames(RPMs)[cols(RPMs, "WT", "00")]
+colnames(RPMs)[cols(patterns = c("WT", "00"), RPMs, "WT", "00")]
 
 # NOTE: this is based on grep pattern matching so tags MUST be unique and non-nested (i.e. one entire label should not be part of another).
 ```
@@ -51,7 +51,7 @@ wrdir <- paste0(tempdir(),"/DecayAnalysis/Example analysis results 1")
 if(!file.exists(wrdir)) dir.create(wrdir, recursive = TRUE)
 
 # specify sample tags from colnames of RPMs
-treatment <- c("WT", "sov", "vcs", "vs") # NOTE: I did not use 'vcs sov' for the name of the double mutant, or cols(RPMs, "vcs", "00") would have indexed all T0 samples of both "vcs" and "vcs" sov"; instead, I used 'vs'.
+treatment <- c("WT", "sov", "vcs", "vs") # NOTE: I did not use 'vcs sov' for the name of the double mutant, or cols(df=RPMs, patterns = c("vcs", "00")) would have indexed all T0 samples of both "vcs" and "vcs" sov"; instead, I used 'vs'.
 reps <- c("r1", "r2", "r3", "r4")
 tdecay <- c("00", "07", "15", "30", "60", "120", "240", "480") #again NO nesting of one label in another hence "00" instead of "0".
 ```
@@ -62,9 +62,9 @@ mean_RPM <- data.frame("geneID" = rownames(RPMs))
 SE_RPM <- data.frame("geneID" = rownames(RPMs))
 for(g in treatment){
   for(t in tdecay){
-    mean_RPM <- cbind(mean_RPM, rowMeans(RPMs[, cols(RPMs, g, t)]))
+    mean_RPM <- cbind(mean_RPM, rowMeans(RPMs[, cols(df=RPMs, patterns = c(g, t))]))
     names(mean_RPM)[length(mean_RPM)] <- paste0(g, "_", t)
-    SE_RPM <- cbind(SE_RPM, apply(X = RPMs[, cols(RPMs, g, t)], MARGIN = 1, FUN = stats::sd)/sqrt(length(reps)))
+    SE_RPM <- cbind(SE_RPM, apply(X = RPMs[, cols(df=RPMs, patterns = c(g, t))], MARGIN = 1, FUN = stats::sd)/sqrt(length(reps)))
     names(SE_RPM)[length(SE_RPM)] <- paste0(g, "_", t)
   }}
 mean_RPM[1:2, ]
@@ -83,9 +83,9 @@ Replicate mean T0 RPM values are then used to normalize gene level data.
 ```{r}
 mT0norm <- data.frame(row.names = rownames(RPMs)[filt1])
 for(g in treatment){
-  mean_T0reps <- rowMeans(RPMs[filt1, cols(RPMs, g, "00")])
+  mean_T0reps <- rowMeans(RPMs[filt1, cols(df=RPMs, patterns=c(g, "00"))])
   for(r in reps){
-    df <- RPMs[filt1, colnames(RPMs)[cols(RPMs, g, r)]]
+    df <- RPMs[filt1, colnames(RPMs)[cols(df=RPMs, patterns=c(g, r))]]
     df <- df[, 1:length(tdecay)]/mean_T0reps
     mT0norm <- cbind(mT0norm, df)
   }}
@@ -98,14 +98,14 @@ The mean and standard error of the T0 normalized data are then calculated for re
 mean_mT0norm <- data.frame(row.names = rownames(mT0norm))
 for(g in treatment){
   for(t in tdecay){
-    mean_mT0norm <- cbind(mean_mT0norm, rowMeans(mT0norm[, cols(mT0norm, g, t)]))
+    mean_mT0norm <- cbind(mean_mT0norm, rowMeans(mT0norm[, cols(df=mT0norm, patterns=c(g, t))]))
     names(mean_mT0norm)[length(names(mean_mT0norm))] <- paste0(g, "_", t)
   }}
 
 SE_mT0norm <- data.frame(row.names = rownames(mT0norm))
 for(g in treatment){
   for(t in tdecay){
-    SE_mT0norm <- cbind(SE_mT0norm, apply(X = mT0norm[, cols(mT0norm, g, t)], MARGIN = 1, FUN = function(x) stats::sd(x)/sqrt(length(reps))))
+    SE_mT0norm <- cbind(SE_mT0norm, apply(X = mT0norm[, cols(df=mT0norm, patterns=c(g, t))], MARGIN = 1, FUN = function(x) stats::sd(x)/sqrt(length(reps))))
     names(SE_mT0norm)[length(names(SE_mT0norm))] <- paste0(g, "_", t)
   }}
 
@@ -438,7 +438,7 @@ Load normalized read data and reorder factor levels of "treatment" as you would 
 library(RNAdecay)
 decay_data <- RNAdecay::decay_data # built-in package example data; comment this line out to use your own decay_data
 decay_data$treatment <- factor(decay_data$treatment, levels = c("WT", "sov", "vcs", "vs")) # you must type them identically in the new order  
-levels(decay_data$treatment)[4] <- "vcs sov"
+levels(decay_data$treatment)[4] <- "vcs.sov"
 decay_data[1:4,]
 ```
 
@@ -481,7 +481,7 @@ p <- decay_plot(geneID = "AT1G02860",
               yticks = 0:5/4,
               alphaSZ  =  12, 
               what  =  c("meanSE", "reps", "models"),
-              treatments  =  c("WT", "vcs sov"), 
+              treatments  =  c("WT", "vcs.sov"), 
               colors = c("darkblue", "red3"),
               DATA = decay_data, 
               mod.results = results, 
@@ -503,7 +503,7 @@ p <- decay_plot(geneID = "AT1G02860",
               yticks = 0:5/4,
               alphaSZ = 10, 
               what = c("Desc","meanSE", "reps", "models","alphas&betas"),
-              treatments = c("WT", "vcs sov"),
+              treatments = c("WT", "vcs.sov"),
               colors = c("darkblue", "red3"),
               DATA = decay_data,
               mod.results = results,
@@ -521,12 +521,52 @@ for(i in ids){
   p <- decay_plot(i, 
                 what = c("meanSE", "models", "Desc"),
                 mod.results = results, 
-                gdesc = descriptions, 
+                gdesc = descriptions,
+                treatments = c("WT","sov","vcs","vcs.sov"),
                 DATA = decay_data)
   print(p+plain_theme(13.8, 1, leg.pos = 'right'))
   cat(i, " plotted.\n")
 }
 dev.off()
 ```
+
+
+Plot one or multiple genes using hl_plot; write them to a pdf file. 
+```{r}
+
+pdf(paste0(wrdir, "/halflife plot example.pdf"), width = 10, height = 8)
+
+p <- hl_plot(geneID = "AT1G02860",
+             gene_symbol = "SYG1",
+             df_decay_rates = RNAdecay::results,
+             hl_dist_treatment = "WT",
+             hl_treatment = c("WT","sov","vcs","vcs.sov"),
+             arrow_lab_loc = "key"
+             )
+  
+print(p)
+dev.off()
+
+# plot multiple genes
+ids <- c("AT5G54730", "AT1G27730", "AT4G34190")
+# or e.g.,
+# ids <- rownames(results[results$alpha_WT > 0.1, ]) 
+
+pdf(paste0(wrdir, "/multiple halflife plots.pdf"), width = 4, height = 4)
+for(i in ids) {
+  
+p <- hl_plot(geneID = i,
+             df_decay_rates = RNAdecay::results,
+             hl_dist_treatment = "WT",
+             hl_treatment = c("WT","sov","vcs","vcs.sov"),
+             arrow_lab_loc = "plot"
+             )
+  print(p+plain_theme(8, 1,leg.pos = 'right'))
+  cat(i, " plotted.\n")
+
+  }
+dev.off()
+```
+
 
 

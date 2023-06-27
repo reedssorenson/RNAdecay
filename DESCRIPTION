@@ -1,7 +1,7 @@
 Package: RNAdecay
 Date: 2020-04-14
 Title: Maximum Likelihood Decay Modeling of RNA Degradation Data
-Version: 1.21.0
+Version: 1.21.1
 Authors@R: c(person("Reed", "Sorenson", email = "reedssorenson@gmail.com", role = c("aut", "cre")), person("Katrina", "Johnson", email = "kjohnson@math.utah.edu", role = c("aut")),person("Frederick", "Adler", email = "adler@math.utah.edu", role = c("aut")),person("Leslie", "Sieburth", email = "sieburth@biology.utah.edu", role = c("aut")))
 Description: RNA degradation is monitored through measurement of RNA abundance after inhibiting RNA synthesis. This package has functions and example scripts to facilitate (1) data normalization, (2) data modeling using constant decay rate or time-dependent decay rate models, (3) the evaluation of treatment or genotype effects, and (4) plotting of the data and models. Data Normalization:  functions and scripts make easy the normalization to the initial (T0) RNA abundance, as well as a method to correct for artificial inflation of Reads per Million (RPM) abundance in global assessments as the total size of the RNA pool decreases. Modeling: Normalized data is then modeled using maximum likelihood to fit parameters. For making treatment or genotype comparisons (up to four), the modeling step models all possible treatment effects on each gene by repeating the modeling with constraints on the model parameters (i.e., the decay rate of treatments A and B are modeled once with them being equal and again allowing them to both vary independently). Model Selection: The AICc value is calculated for each model, and the model with the lowest AICc is chosen. Modeling results of selected models are then compiled into a single data frame. Graphical Plotting: functions are provided to easily visualize decay data model, or half-life distributions using ggplot2 package functions.
 Depends: R (>= 3.5)
@@ -13,3 +13,4 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0.9000
 VignetteBuilder: knitr
+PackageStatus: Deprecated

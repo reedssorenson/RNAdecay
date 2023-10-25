@@ -1,6 +1,8 @@
 \name{NEWS}
 \title{RNAdecay Release Notes}
 
+\section{CHANGES IN VERSION 1.20.1}{\itemize{\item Updates for Bioconductor 3.18: fixed bugs associated dependency package evolution}}
+
 \section{CHANGES IN VERSION 1.6.1}{\itemize{\item Updates for Bioconductor 3.11: new function: hl_plot, fixed decay_plot bugs, rewrote cols function. }}
 
 \section{CHANGES IN VERSION 1.0.0}{\itemize{\item RNAdecay is accepted to Bioconductor.}}

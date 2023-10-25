@@ -25,24 +25,25 @@
 #' @export
 #'
 #' @examples
-#' p<-decay_plot("Gene_BooFu",
-#'           mod.results = data.frame(alpha_WT = 0.0830195, beta_WT = 0.04998945,
-#'                                    model = 1, alpha_grp = 1, beta_grp = 1, alpha_subgroup = 1.1,
-#'                                    row.names = "Gene_BooFu"),
-#'           what = c("meanSE","alphas&betas","models"),
-#'           treatments = "WT",
-#'           colors = "black",
-#'           DATA = data.frame(geneID=rep("Gene_BooFu",15),
-#'                             treatment=rep("WT",15),
-#'                             t.decay=rep(c(0,7.5,15,30,60),3),
-#'                             rep=paste0("rep",c(rep(1,5),rep(2,5),rep(3,5))),
-#'                             value= c(0.9173587, 0.4798672, 0.3327807, 0.1990708, 0.1656554,
-#'                                      0.9407511, 0.7062988, 0.3450886, 0.3176824, 0.2749946,
-#'                                      1.1026497, 0.6156978, 0.4563346, 0.2865779, 0.1680075)),
-#'           xlim = c(0, 65),
-#'           alphaSZ = 10)
-#' print(p)
-#'
+# p<-RNAdecay::decay_plot(
+#   geneID = "GOI_id",
+#   mod.results = data.frame(alpha_WT = 0.0830195, beta_WT = 0.04998945,
+#                            model = 1, alpha_grp = 1, beta_grp = 1, alpha_subgroup = 1.1,
+#                            row.names = "GOI_id"),
+#   what = c("meanSE","alphas&betas","models"),
+#   treatments = "WT",
+#   colors = "black",
+#   DATA = data.frame(geneID=rep("GOI_id",15),
+#                     treatment=rep("WT",15),
+#                     t.decay=rep(c(0,7.5,15,30,60),3),
+#                     rep=paste0("rep",c(rep(1,5),rep(2,5),rep(3,5))),
+#                     value= c(0.9173587, 0.4798672, 0.3327807, 0.1990708, 0.1656554,
+#                              0.9407511, 0.7062988, 0.3450886, 0.3176824, 0.2749946,
+#                              1.1026497, 0.6156978, 0.4563346, 0.2865779, 0.1680075)),
+#   xlim = c(0, 65),
+#   alphaSZ = 10)
+# print(p)
+
 
 
 decay_plot=
@@ -60,7 +61,7 @@ decay_plot=
     mod.results = NA,
     gdesc = NA,
     desc.width = 55) {
-    if(any(! geneID %in% rownames(mod.results))) {stop(paste0("geneID:",geneID," not found in the dataset."),call. = FALSE)}
+    if(any(! geneID %in% rownames(mod.results))) {stop(paste0("geneID:",geneID," not found in the dataset."),call. = F)}
     if(any(!treatments %in% gsub("alpha_","",colnames(mod.results)[grep("alpha_",colnames(mod.results)[1:4])]))) {
       stop(paste0("Supplied 'treatments' are not found in 'mod.results'."))
     }
@@ -88,7 +89,7 @@ decay_plot=
     if (any(what %in% "Desc")) {
       p <- p + ggplot2::annotate(geom = "text", x = xlim[2]/2, y = ylim[2],
                                  label = wrapper(paste0(geneID,
-                                                        if (any(what %in% "models")) {
+                                                        if (any(what %in% "models" & !is.na(mod))) {
                                                           paste0(" - model ",mod)
                                                         } else { "" }, paste0(" - ", gdesc[geneID])), desc.width),
                                  vjust = 1,
@@ -98,7 +99,7 @@ decay_plot=
                                  family = c("mono"), fontface = "plain",
                                  angle = 0)
     } else {
-      p <- p + ggplot2::ggtitle(if (any(what %in% "models")) {
+      p <- p + ggplot2::ggtitle(if (any(what %in% "models") & !is.na(mod)) {
         paste0(geneID," - model ", mod)
       } else {geneID}
       )
@@ -116,7 +117,7 @@ decay_plot=
                                     x = rep(xlim[2], length(treatments)),
                                     y = if (any(mod.results[geneID, (length(unique(DATA$treatment)) + 1):(length(unique(DATA$treatment)) * 2)] == 0)) {
                                       sapply(treatments,function(g) {
-                                        c(max(fun_exp(xlim[2], unlist(mod.results[geneID, paste0("alpha_", g)])) - 0.2, 0))}) # NEED TO ADD THE "[2] AFTER XLIM IN THE PACKAGE!!! 8/23/19.
+                                        c(max(fun_exp(xlim[2], unlist(mod.results[geneID, paste0("alpha_", g)])) - 0.2, 0))})
                                     } else {
                                       sapply(treatments,function(g) {
                                         c(max(dExp(xlim[2], unlist(mod.results[geneID, paste0(c("alpha_", "beta_"), g)])) - 0.2, 0))})
@@ -151,7 +152,7 @@ decay_plot=
                                                         y = fun_exp(xlim[1]:xlim[2], a = unlist(mod.results[geneID,
                                                                                                             paste0("alpha_", gsub(" ", ".", g))]))),
                                       ggplot2::aes(x = x, y = y), color = colors[g],
-                                      size = 0.5, alpha = 1)
+                                      linewidth = 0.5, alpha = 1)
         }
       } else {
         for (g in treatments) {
@@ -159,7 +160,7 @@ decay_plot=
                                                         y = dExp(xlim[1]:xlim[2], par = unlist(mod.results[geneID,
                                                                                                            paste0(c("alpha_", "beta_"), gsub(" ", ".",
                                                                                                                                              g))]))), ggplot2::aes(x = x, y = y), color = colors[g],
-                                      size = 0.5, alpha = 1)
+                                      linewidth = 0.5, alpha = 1)
         }
       }
     }
@@ -170,4 +171,3 @@ decay_plot=
       ggplot2::xlab("time (min)") + ggplot2::scale_shape(guide = "none")
     return(p)
   }
-

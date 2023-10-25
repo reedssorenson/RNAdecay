@@ -19,6 +19,7 @@ Raw (Illumina) RNA-seq data are typically libraries made of up 10M-250M short (5
 Prior to modeling RNA decay, we normalize the read counts to the initial (T0) RNA abundance, the transcript level just prior to blocking transcription. This is unique for each gene, and, in an experiment with multiple replicates (reps), we use the mean value for all T0 reps. All RPM values in the time course are divided by the mean T0 value. For example:
 
 ```{r}
+
 # you can see that in this fabricated data the RNAs have a half-life of ~30 min
 RPM_geneX <- data.frame(T0 = c(150, 135, 148), T30 = c(72, 76, 69), T60 = c(35, 35, 30), 
                      row.names = paste0("rep", 1:3))
@@ -391,11 +392,11 @@ results$beta_grp <- mods[as.character(results$mod), "b"]
 results$mod <- as.numeric(gsub("mod", "", as.character(results$mod)))
 
 results$alphaPattern <- sapply(rownames(results), function(x) {
-  paste0(gsub("alpha_", "", colnames(results)[3:(2+nTreat)][order(round(results[x, 3:(2+nTreat)], 4))]), collapse = "<=")
+  paste0(gsub("alpha_", "", colnames(results)[3:(2+nTreat)][order(unlist(round(results[x, 3:(2+nTreat)], 4)))]), collapse = "<=")
   })
 results$alphaPattern <- paste0(results$alpha_grp, "_", results$alphaPattern)
 results$betaPattern <- sapply(rownames(results), function(x){
-  paste0(gsub("beta_", "", colnames(results)[(3+nTreat):(2+2*nTreat)][order(round(results[x, (3+nTreat):(2+2*nTreat)], 4))]), collapse = "<=")
+  paste0(gsub("beta_", "", colnames(results)[(3+nTreat):(2+2*nTreat)][order(unlist(round(results[x, (3+nTreat):(2+2*nTreat)], 4)))]), collapse = "<=")
   })
 results$betaPattern <- paste0(results$beta_grp, "_", results$betaPattern)
 
@@ -569,4 +570,9 @@ dev.off()
 ```
 
 
+## 9. Session Information of Most Recent Update
+
+```{r}
+sessionInfo()
+```
 

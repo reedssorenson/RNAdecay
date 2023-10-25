@@ -196,7 +196,7 @@ mod_optimization <- function(gene,
     parameters = par.default,
     silent = TRUE,
     DLL = paste0("general_dExp_", nTreat, "sse")
-  )
+    )
 
   results4ab <-
     sapply(models[models %in% rownames(mod)[mod$b != max(mod$b)]], function(x,

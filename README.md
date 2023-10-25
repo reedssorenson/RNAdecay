@@ -8,5 +8,12 @@ To install and use `RNAdecay` use the following commands on the R console:
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
 BiocManager::install("RNAdecay")
+```
+
+Alternatively, to install from github (requires compiling, see above) use:
+
+```{r}
+install.packages("devtools")
+devtools::install_github("reedssorenson/RNAdecay",type = "source")
 library(RNAdecay)
 ```

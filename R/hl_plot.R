@@ -150,9 +150,9 @@ hl_plot <-
                                      mapping = ggplot2::aes(x = log(2)/hl_dist),
                                      binwidth=0.02,
                                      fill = grDevices::gray(0.8))+
-      ggplot2::geom_vline(xintercept=quants[2],color = "white",linetype = "dashed",size = 0.25)+
-      ggplot2::geom_vline(xintercept=quants[3],color = "white",linetype = "dashed",size = 0.25)+
-      ggplot2::geom_vline(xintercept=quants[4],color = "white",linetype = "dashed",size = 0.25)+
+      ggplot2::geom_vline(xintercept=quants[2],color = "white",linetype = "dashed",linewidth = 0.25)+
+      ggplot2::geom_vline(xintercept=quants[3],color = "white",linetype = "dashed",linewidth = 0.25)+
+      ggplot2::geom_vline(xintercept=quants[4],color = "white",linetype = "dashed",linewidth = 0.25)+
       ggplot2::scale_x_log10(limits=x_limits,
                              breaks = x_breaks,
                              labels = x_tick_labels)+
@@ -178,7 +178,7 @@ hl_plot <-
                                                          length = grid::unit(arrowhead_length_in,"in"),
                                                          type = "closed"),#arrow head
                                      color = arrow_colors[i],
-                                     size = arrow_thickness[i],#arrow width in pts
+                                     linewidth = arrow_thickness[i],#arrow width in pts
                                      lineend = "butt",
                                      linejoin = "mitre")
 
@@ -203,7 +203,7 @@ hl_plot <-
                                                        labs = hl_treatment),
                                      mapping = ggplot2::aes(x = x, y=y,xend = x, yend = 0,
                                                             color = labs,
-                                                            size = labs),
+                                                            linewidth = labs),
                                      arrow = ggplot2::arrow(angle = 18,
                                                          length = grid::unit(arrowhead_length_in,"in"),
                                                          type = "closed"), #arrow head
@@ -211,7 +211,7 @@ hl_plot <-
                                      linejoin = "mitre")+
         ggplot2::scale_color_manual(NULL,values = arrow_colors,breaks = hl_treatment,labels=scales::parse_format()(labs[hl_treatment]))+
         ggplot2::scale_size_manual(values = arrow_thickness)+
-        ggplot2::guides(size=FALSE)
+        ggplot2::guides(size="none")
     }
 
     p <- p + ggplot2::annotate(geom="text",

@@ -391,11 +391,11 @@ results$beta_grp <- mods[as.character(results$mod), "b"]
 results$mod <- as.numeric(gsub("mod", "", as.character(results$mod)))
 
 results$alphaPattern <- sapply(rownames(results), function(x) {
-  paste0(gsub("alpha_", "", colnames(results)[3:(2+nTreat)][order(round(results[x, 3:(2+nTreat)], 4))]), collapse = "<=")
+  paste0(gsub("alpha_", "", colnames(results)[3:(2+nTreat)][order(unlist(round(results[x, 3:(2+nTreat)], 4)))]), collapse = "<=")
   })
 results$alphaPattern <- paste0(results$alpha_grp, "_", results$alphaPattern)
 results$betaPattern <- sapply(rownames(results), function(x){
-  paste0(gsub("beta_", "", colnames(results)[(3+nTreat):(2+2*nTreat)][order(round(results[x, (3+nTreat):(2+2*nTreat)], 4))]), collapse = "<=")
+  paste0(gsub("beta_", "", colnames(results)[(3+nTreat):(2+2*nTreat)][order(unlist(round(results[x, (3+nTreat):(2+2*nTreat)], 4)))]), collapse = "<=")
   })
 results$betaPattern <- paste0(results$beta_grp, "_", results$betaPattern)
 
